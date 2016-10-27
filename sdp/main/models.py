@@ -28,11 +28,15 @@ class Course(models.Model):
 	name = models.CharField(max_length=40)
 	description = models.TextField()
 	deployed = models.IntegerField(default=0)
+	def __str__(self):
+		return self.name
 
 class Module(models.Model):
 	course = models.ForeignKey(Course)
 	name = models.CharField(max_length=40)
 	position = models.IntegerField(default=0)
+	def __str__(self):
+		return self.name
 
 class Component(models.Model):
 	course = models.ForeignKey(Course)
@@ -40,15 +44,15 @@ class Component(models.Model):
 	name = models.CharField(max_length=40)
 	filename = models.CharField(max_length=40)
 	position = models.IntegerField(default=0)
+	def __str__(self):
+		return self.name
 	
 class Participant(models.Model):
 	participant = models.OneToOneField(
         User,
         primary_key=True,
     )
-	course = models.ForeignKey(Course, default=0)
+	course = models.ForeignKey(Course)
 	most_recent_unlocked = models.IntegerField(default=0)
-	
-
-	
-
+	def __str__(self):
+		return self.participant.name

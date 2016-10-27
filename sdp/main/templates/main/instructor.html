@@ -1,1 +1,6 @@
-<a href = "new"> Create </a>
+{% for course in course_list %}
+		<p>{{ course }} - {{course.category}}</p>
+{% endfor %}
+
+<a href="new">Create New Course</a>
+

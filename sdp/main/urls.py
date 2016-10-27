@@ -9,4 +9,5 @@ urlpatterns = [
 	url(r'^instructor/new/$', views.newCourse, name='newCourse'),
 	url(r'^participant/course/(?P<course_id>\d+)/$', views.view_course, name='view'),
 	url(r'^finish/$', views.enrolling, name='enrolling'),
+	url(r'^instructor/new/loadComponents/$', views.loadComponents, name='loadComponents'),
 ]
