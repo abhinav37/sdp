@@ -18,20 +18,6 @@
 		}
 	
 		$(document).ready(function() {
-			$(".moduleLoad").click(function(){
-				var csrftoken = getCookie('csrftoken');
-				$.ajax({
-					method: "POST",
-					url: "loadComponents/",
-					beforeSend: function( xhr ) {
-						xhr.setRequestHeader("X-CSRFToken", csrftoken);
-					},
-					data: {module_id: this.id, course_id: {{course_id}} }
-				}).done(function( msg ) {
-					$("#compContainer").html(msg);
-				});
-			});	
-
 			$("#addMod").click(function(){
 				
 				var csrftoken = getCookie('csrftoken');
@@ -45,7 +31,38 @@
 				}).done(function( msg ) {
 					$("#moduleContainer").html(msg);
 				});
-			});				
+			});	
+
+			var modSelected = 0;
+			$("#moduleContainer").on("click", ".moduleLoad", function(event){
+				modSelected = this.id;
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "loadComponents/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {module_id: this.id, course_id: {{course_id}} }
+				}).done(function( msg ) {
+					$("#compContainer").html(msg);
+				});
+			});	
+
+			$("#compContainer").on("click", ".addCom", function(event){
+				
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "add_component/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {module_id: modSelected, course_id: {{course_id}}, component_name: $("#component_name").val() }
+				}).done(function( msg ) {
+					$("#compContainer").html(msg);
+				});
+			});		
 		});
 	</script>
 </head>
@@ -67,11 +84,8 @@
 		
 		</br>
 		
-		<div id="moduleContainer">
-			{% for module in modules %}
-				<a href="#" class="moduleLoad" id="{{ module.id }}">{{ module.name }}</a></br>
-			{% endfor %}
-		</div></br>
+		<div id="moduleContainer"></div></br>
+
 		<input type="text" placeholder="enter the module name" name ="module_name" id="module_name" />
 		<a href="#" id="addMod"/>Add Module</a></br></br>
 	

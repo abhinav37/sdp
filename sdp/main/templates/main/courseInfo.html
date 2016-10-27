@@ -7,7 +7,7 @@
     </ul>
     <form name = "form" action = "{% url "enrolling" %}" method = "POST" > {% csrf_token %}
 		<div>
-			<input type="hidden" value={{information.id}} name="enrolflag" />
+			<input type="hidden" value={{information.id}} name="course_id" />
 			<input type ="submit" value="Enroll" />
 		</div>
 	</form>

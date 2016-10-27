@@ -52,13 +52,15 @@ def view_course(request,course_id):
 	return HttpResponse(template.render(context,request))
 
 def enrolling(request):
-
-	return HttpResponse("You have been enrolled in this course")
+	participantObj = Participant.objects.filter(pk=1)[0]
+	participantObj.course_id = request.POST['course_id']
+	participantObj.save()
+	return HttpResponse("You have been enrolled in this course!")
 
 def loadComponents(request):
 	component_list = Component.objects.filter(module_id=request.POST['module_id'], course_id=request.POST['course_id']).order_by("position")
 	context = {'components': component_list, 'module_id': request.POST['module_id']}
-	template = loader.get_template('main/components.html')
+	template = loader.get_template('main/component.html')
 	return HttpResponse(template.render(context,request))
 
 def add_module(request):
@@ -75,12 +77,31 @@ def add_module(request):
 	new_module.save()
 
 	#calling the newCourse funciton again
-	category_list = Category.objects.all()
-	course_id = Course.objects.all().order_by("id").reverse()[0].id
+	
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
 	
-	template = loader.get_template('main/new.html')
-	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
+	template = loader.get_template('main/module.html')
+	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+def add_component(request):
+
+	comps = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id'])
+	if not comps:
+		component_position = 0
+	else:
+		component_position = comps.order_by("position").reverse()[0].position
+
+	courseObj = Course.objects.filter(pk=request.POST['course_id'])[0]
+	moduleObj = Module.objects.filter(pk=request.POST['module_id'])[0]
+	new_component =Component(name=request.POST['component_name'], filename="xxx.xxx", position=component_position, course=courseObj, module=moduleObj)
+	new_component.save()
+
+	
+	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")
+	
+	template = loader.get_template('main/component.html')
+	context = {'components': component_list}
  	return HttpResponse(template.render(context,request))
 	
 
