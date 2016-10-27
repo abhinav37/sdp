@@ -14,9 +14,13 @@ class Instructor(models.Model):
         User,
         primary_key=True,
     )
+	def __str__(self):
+		return self.instructor.name
 
 class Category(models.Model):
 	name = models.CharField(max_length=40)
+	def __str__(self):
+		return self.name
 
 class Course(models.Model):
 	category = models.ForeignKey(Category)
@@ -42,7 +46,7 @@ class Participant(models.Model):
         User,
         primary_key=True,
     )
-	course = models.ForeignKey(Course)
+	course = models.ForeignKey(Course, default=0)
 	most_recent_unlocked = models.IntegerField(default=0)
 	
 

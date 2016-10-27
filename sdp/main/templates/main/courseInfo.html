@@ -1,0 +1,17 @@
+{% if information %}
+    <ul>
+    	Name: {{ information.name }} <br>
+        Category: {{ information.category }} <br>
+        Insructor: {{ information.instructor }} <br>
+        Description: {{ information.description }}
+    </ul>
+    <form name = "form" action = "{% url "enrolling" %}" method = "POST" > {% csrf_token %}
+		<div>
+			<input type="hidden" value={{information.id}} name="enrolflag" />
+			<input type ="submit" value="Enroll" />
+		</div>
+	</form>
+{% else %}
+    <p>No information available for this course</p>
+{% endif %}
+
