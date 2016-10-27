@@ -18,8 +18,13 @@ def participant(request):
 
 def instructor(request):
  	try:
-		newCourse = Course(name=request.POST['courseName'], description=request.POST['courseDesc'], deployed=0, category_id=request.POST['category'], instructor_id=1)
-		newCourse.save()		
+ 		print(request.POST['courseName'])
+		newCourse = Course.objects.all().order_by("id").reverse()[0]
+		newCourse.name = request.POST['courseName']
+		newCourse.description = request.POST['courseDesc']
+		newCourse.category_id=request.POST['category']
+		newCourse.instructor_id=1
+		newCourse.save()
 	except Exception, e:
 		pass
 	finally:
@@ -29,12 +34,15 @@ def instructor(request):
 		return HttpResponse(template.render(context,request))
 
 def newCourse(request):
+	newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=1, instructor_id=1)
+	newCourse.save()
+
 	category_list = Category.objects.all()
 	course_id = Course.objects.all().order_by("id").reverse()[0].id
-	module_list = Module.objects.filter(course_id=course_id+1).order_by("position")
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")
 	
 	template = loader.get_template('main/new.html')
-	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id+1 }
+	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
  	return HttpResponse(template.render(context,request))
 
 def view_course(request,course_id):
@@ -52,3 +60,29 @@ def loadComponents(request):
 	context = {'components': component_list, 'module_id': request.POST['module_id']}
 	template = loader.get_template('main/components.html')
 	return HttpResponse(template.render(context,request))
+
+def add_module(request):
+	course_id = Course.objects.all().order_by("id").reverse()[0].id
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")
+	mods = Module.objects.filter(course_id=course_id)
+	if not mods:
+		module_position = 0
+	else:
+		module_position = mods.order_by("position").reverse()[0].position
+
+	courseObj = Course.objects.filter(pk=course_id)[0]
+	new_module = Module(name=request.POST['module_name'], position = module_position+1, course = courseObj)
+	new_module.save()
+
+	#calling the newCourse funciton again
+	category_list = Category.objects.all()
+	course_id = Course.objects.all().order_by("id").reverse()[0].id
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")
+	
+	template = loader.get_template('main/new.html')
+	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
+ 	return HttpResponse(template.render(context,request))
+	
+
+	
+
