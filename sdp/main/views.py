@@ -18,22 +18,25 @@ def participant(request):
 
 def instructor(request):
  	try:
- 		print(request.POST['courseName'])
-		newCourse = Course.objects.all().order_by("id").reverse()[0]
+		print request.POST['course_id']
+		newCourse = Course.objects.filter(pk=request.POST['course_id'])[0]
+		print (newCourse)
 		newCourse.name = request.POST['courseName']
 		newCourse.description = request.POST['courseDesc']
-		newCourse.category_id=request.POST['category']
+		newCourse.category_id = request.POST['category']
 		newCourse.instructor_id=1
 		newCourse.save()
 	except Exception, e:
 		pass
 	finally:
+		#TODO intructor id based on login
 		course_list = Course.objects.filter(instructor_id=1)
 		template = loader.get_template('main/instructor.html')
 		context = {'course_list': course_list}
 		return HttpResponse(template.render(context,request))
 
 def newCourse(request):
+	#TODO change category id, intructor id, deployed implementation
 	newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=1, instructor_id=1)
 	newCourse.save()
 
@@ -64,7 +67,7 @@ def loadComponents(request):
 	return HttpResponse(template.render(context,request))
 
 def add_module(request):
-	course_id = Course.objects.all().order_by("id").reverse()[0].id
+	course_id = request.POST['course_id']
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
 	mods = Module.objects.filter(course_id=course_id)
 	if not mods:
@@ -85,7 +88,6 @@ def add_module(request):
  	return HttpResponse(template.render(context,request))
 
 def add_component(request):
-
 	comps = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id'])
 	if not comps:
 		component_position = 0
@@ -94,7 +96,7 @@ def add_component(request):
 
 	courseObj = Course.objects.filter(pk=request.POST['course_id'])[0]
 	moduleObj = Module.objects.filter(pk=request.POST['module_id'])[0]
-	new_component =Component(name=request.POST['component_name'], filename="xxx.xxx", position=component_position, course=courseObj, module=moduleObj)
+	new_component =Component(name=request.POST['component_name'], filename="xxx.xxx", position=component_position+1, course=courseObj, module=moduleObj)
 	new_component.save()
 
 	
@@ -103,7 +105,3 @@ def add_component(request):
 	template = loader.get_template('main/component.html')
 	context = {'components': component_list}
  	return HttpResponse(template.render(context,request))
-	
-
-	
-
