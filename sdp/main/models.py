@@ -8,6 +8,8 @@ class User(models.Model):
 	username = models.CharField(max_length=8)
 	password = models.CharField(max_length=10)
 	name = models.CharField(max_length=40)
+	def __str__(self):
+		return self.username
 	
 class Instructor(models.Model):
 	instructor = models.OneToOneField(
@@ -32,14 +34,14 @@ class Course(models.Model):
 		return self.name
 
 class Module(models.Model):
-	course = models.ForeignKey(Course)
+	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	name = models.CharField(max_length=40)
 	position = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
 
 class Component(models.Model):
-	course = models.ForeignKey(Course)
+	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	module = models.ForeignKey(Module)
 	name = models.CharField(max_length=40)
 	filename = models.CharField(max_length=40)

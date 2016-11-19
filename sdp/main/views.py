@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from .models import User
 from django.template import loader
 from .models import Course, Category, Participant, Module, Component
-
+import json
 
 def index(request):
 	try:
@@ -18,15 +18,27 @@ def participant(request):
 
 def instructor(request):
  	try:
-		print request.POST['course_id']
+		mods = json.loads(request.POST['modulePositions'])
+		comps = json.loads(request.POST['compsPositions'])
+		for idx,mod in enumerate(mods):
+			module = Module.objects.filter(pk=mod)[0]
+			module.position = idx+1
+			module.save()
+		
+		for key, value in comps.iteritems():
+			for idx,comp in enumerate(value):
+				compo = Component.objects.filter(pk=int(comp))[0]
+				compo.position = idx+1
+				compo.save()
+
 		newCourse = Course.objects.filter(pk=request.POST['course_id'])[0]
-		print (newCourse)
 		newCourse.name = request.POST['courseName']
 		newCourse.description = request.POST['courseDesc']
 		newCourse.category_id = request.POST['category']
 		newCourse.instructor_id=1
 		newCourse.save()
 	except Exception, e:
+		print e
 		pass
 	finally:
 		#TODO intructor id based on login
