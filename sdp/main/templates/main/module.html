@@ -1,3 +1,5 @@
+<ul class="nav nav-tabs" id="modules">
 {% for module in modules %}
-	<a href="#" class="moduleLoad" id="{{ module.id }}">{{ module.name }}</a></br>
+	<li role="presentation" id="{{ module.id }}"><a data-toggle="tab" href="#" class="moduleLoad" id="{{ module.id }}">{{ module.name }}</a></li>
 {% endfor %}
+</ul>

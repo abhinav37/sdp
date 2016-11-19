@@ -1,12 +1,15 @@
-<p> Components are </p>
+<ul class="nav nav-tabs" id="components">
 {% for component in components %}
-	<p> {{ component.name }} </p> 
+	<li role="presentation" id="{{ component.id }}"><a data-toggle="tab" href="#" class="componentLoad" id="{{ component.id }}">{{ component.name }}</a></li>
 {% endfor %}
+</ul>
+</br>
 
 <form action="" method="post" >
 	<input type="text" placeholder="enter the component name" name ="component_name" id="component_name" />
 	<a href="#" class="addCom">Add Component</a></br>
 </form>	
+</br>
 
 
 
