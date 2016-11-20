@@ -1,17 +1,49 @@
-{% if information %}
+{% if courseDetails %}
     <ul>
-    	Name: {{ information.name }} <br>
-        Category: {{ information.category }} <br>
-        Insructor: {{ information.instructor }} <br>
-        Description: {{ information.description }}
+    	Name: {{ courseDetails.name }} <br>
+        Category: {{ courseDetails.category }} <br>
+        Insructor: {{ courseDetails.instructor }} <br>
+        Description: {{ courseDetails.description }}
     </ul>
-    <form name = "form" action = "{% url "enrolling" %}" method = "POST" > {% csrf_token %}
+
+    <ul>
+        <p> Modules </p>
+    {% for module in moduleList %}
+        <li> {{module.name}} </li>
+    {% endfor %}
+    </ul>
+
+    {% if enrollStatus == 1 %} 
+    <form name = "form" action = "{% url "enrolling" %}" method = "POST" >
+        {% csrf_token %}
 		<div>
-			<input type="hidden" value={{information.id}} name="course_id" />
+			<input type="hidden" value={{courseDetails.id}} name="course_id" />
+			<input type ="submit" value="Drop" />
+		</div>
+	</form>
+    {% endif %}
+
+    {% if enrollStatus == 3 %} 
+    <form name = "form" action = "{% url "enrolling" %}" method = "POST" >
+        {% csrf_token %}
+		<div>
+			<input type="hidden" value={{courseDetails.id}} name="course_id" />
 			<input type ="submit" value="Enroll" />
 		</div>
 	</form>
+    {% endif %}
+
+    {% if enrollStatus == 2 %} 
+    <form name = "form" action = "{% url "enrolling" %}" method = "POST" >
+        {% csrf_token %}
+		<div>
+			<input type="hidden" value={{courseDetails.id}} name="course_id" />
+			<input type ="submit" value="Drop Current & Enroll" />
+		</div>
+	</form>
+    {% endif %}
+
 {% else %}
-    <p>No information available for this course</p>
+    <p>No course details available for this course</p>
 {% endif %}
 
