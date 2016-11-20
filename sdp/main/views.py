@@ -18,23 +18,27 @@ def participant(request):
 
 def instructor(request):
  	try:
-		mods = json.loads(request.POST['modulePositions'])
-		comps = json.loads(request.POST['compsPositions'])
-		for idx,mod in enumerate(mods):
-			module = Module.objects.filter(pk=mod)[0]
-			module.position = idx+1
-			module.save()
-		
-		for key, value in comps.iteritems():
-			for idx,comp in enumerate(value):
-				compo = Component.objects.filter(pk=int(comp))[0]
-				compo.position = idx+1
-				compo.save()
+		if request.POST['modulePositions'] != "":
+			mods = json.loads(request.POST['modulePositions'])
+			for idx,mod in enumerate(mods):
+				module = Module.objects.filter(pk=mod)[0]
+				module.position = idx+1
+				module.save()
+
+		if request.POST['compsPositions'] != "":
+			comps = json.loads(request.POST['compsPositions'])
+			print comps
+			for key, value in comps.iteritems():
+				for idx,comp in enumerate(value):
+					compo = Component.objects.filter(pk=int(comp))[0]
+					compo.position = idx+1
+					compo.save()
 
 		newCourse = Course.objects.filter(pk=request.POST['course_id'])[0]
 		newCourse.name = request.POST['courseName']
 		newCourse.description = request.POST['courseDesc']
 		newCourse.category_id = request.POST['category']
+		#TODO intructor id based on login
 		newCourse.instructor_id=1
 		newCourse.save()
 	except Exception, e:
@@ -75,7 +79,7 @@ def enrolling(request):
 def loadComponents(request):
 	component_list = Component.objects.filter(module_id=request.POST['module_id'], course_id=request.POST['course_id']).order_by("position")
 	context = {'components': component_list, 'module_id': request.POST['module_id']}
-	template = loader.get_template('main/component.html')
+	template = loader.get_template('main/componentList.html')
 	return HttpResponse(template.render(context,request))
 
 def add_module(request):
@@ -111,9 +115,19 @@ def add_component(request):
 	new_component =Component(name=request.POST['component_name'], filename="xxx.xxx", position=component_position+1, course=courseObj, module=moduleObj)
 	new_component.save()
 
-	
 	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")
 	
-	template = loader.get_template('main/component.html')
+	template = loader.get_template('main/componentList.html')
 	context = {'components': component_list}
+ 	return HttpResponse(template.render(context,request))
+
+def editCourse(request, course_id):
+	courseObj = Course.objects.filter(pk=course_id)[0]
+	modules = Module.objects.filter(course_id=course_id).order_by("position")
+	components = Component.objects.filter(course_id=course_id).order_by("position")
+	category_list = Category.objects.all()
+
+	template = loader.get_template('main/editCourse.html')
+	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
+
  	return HttpResponse(template.render(context,request))
