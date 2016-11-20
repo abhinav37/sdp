@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from .models import User
 from django.template import loader
 from .models import Course, Category, Participant, Module, Component
+from django.shortcuts import redirect
 import json
 
 def index(request):
@@ -11,10 +12,19 @@ def index(request):
 		return HttpResponse("404 Not found"); 
 
 def participant(request):
-	all_courses = Course.objects.all()
+	#TODO use participant id of logged in user
+	participantID = 3
+	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
-	context = {'all_courses': all_courses, }
- 	return HttpResponse(template.render(context,request))
+
+	if participantObj.course_id is not None:
+		allCourses = Course.objects.exclude(pk=participantObj.course_id)
+		enrolledCourse = Course.objects.filter(pk=participantObj.course_id)[0]
+		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses, }
+	else:
+		allCourses = Course.objects.all()
+		context = {'allCourses': allCourses, }
+	return HttpResponse(template.render(context,request))
 
 def instructor(request):
  	try:
@@ -65,16 +75,41 @@ def newCourse(request):
  	return HttpResponse(template.render(context,request))
 
 def view_course(request,course_id):
-	course_details = Course.objects.filter(id=course_id)[0]
+	#TODO get logged in participant id
+	participantID = 3
+	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
-	context={'information': course_details }
+
+	if participantObj.course_id is None:
+		#not enrolled in any course, show everything + option to enroll
+		courseDetails = Course.objects.filter(id=course_id)[0]
+		moduleList = Module.objects.filter(course_id=course_id).order_by("position")
+		x = 3
+	else:
+		if participantObj.course_id == int(course_id):
+			#load course accordingly, as this is Participant's enrolled course
+			courseDetails = Course.objects.filter(id=course_id)[0]
+			moduleList = Module.objects.filter(course_id=course_id).order_by("position")
+			x = 1
+		else:
+			#load course accordingly, Participant is enrolled in another course. give option to drop current course to get this course
+			courseDetails = Course.objects.filter(id=course_id)[0]
+			moduleList = Module.objects.filter(course_id=course_id).order_by("position")
+			x = 2
+
+	context={'courseDetails': courseDetails, 'moduleList': moduleList, 'enrollStatus': x }
 	return HttpResponse(template.render(context,request))
 
-def enrolling(request):
-	participantObj = Participant.objects.filter(pk=1)[0]
-	participantObj.course_id = request.POST['course_id']
+def addDrop(request):
+	#TODO get logged in participant id
+	participantID = 3
+	participantObj = Participant.objects.filter(pk=participantID)[0]
+	if request.POST['drop'] == "1":
+		participantObj.course_id = None
+	else:
+		participantObj.course_id = request.POST['course_id']
 	participantObj.save()
-	return HttpResponse("You have been enrolled in this course!")
+	return redirect(participant)
 
 def loadComponents(request):
 	component_list = Component.objects.filter(module_id=request.POST['module_id'], course_id=request.POST['course_id']).order_by("position")

@@ -9,7 +9,7 @@ class User(models.Model):
 	password = models.CharField(max_length=10)
 	name = models.CharField(max_length=40)
 	def __str__(self):
-		return self.username
+		return self.name
 	
 class Instructor(models.Model):
 	instructor = models.OneToOneField(
@@ -54,7 +54,7 @@ class Participant(models.Model):
         User,
         primary_key=True,
     )
-	course = models.ForeignKey(Course)
+	course = models.ForeignKey(Course, null=True, blank=True, default = None)
 	most_recent_unlocked = models.IntegerField(default=0)
 	def __str__(self):
 		return self.participant.name
