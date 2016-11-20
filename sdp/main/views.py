@@ -117,6 +117,12 @@ def loadComponents(request):
 	template = loader.get_template('main/componentList.html')
 	return HttpResponse(template.render(context,request))
 
+def loadComponentBody(request):
+	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
+	context = {'component': componentObj}
+	template = loader.get_template('main/componentBody.html')
+	return HttpResponse(template.render(context,request))
+
 def add_module(request):
 	course_id = request.POST['course_id']
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
@@ -147,7 +153,7 @@ def add_component(request):
 
 	courseObj = Course.objects.filter(pk=request.POST['course_id'])[0]
 	moduleObj = Module.objects.filter(pk=request.POST['module_id'])[0]
-	new_component =Component(name=request.POST['component_name'], filename="xxx.xxx", position=component_position+1, course=courseObj, module=moduleObj)
+	new_component =Component(name=request.POST['component_name'], file=None, position=component_position+1, course=courseObj, module=moduleObj)
 	new_component.save()
 
 	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")

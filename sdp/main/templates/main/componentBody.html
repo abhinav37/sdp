@@ -1,0 +1,19 @@
+<div class="form-group">
+    {% csrf_token %}
+    <div class="col-sm-6">
+        <label for="compName">Component Name:</label>
+    </div>
+    <div class="col-sm-6">
+        <input type="text" name="compName" id="compName" required value={{component.name}} />
+        </br>
+        </br>
+    </div>
+    <div class="col-sm-6">
+        <label for="compFile">File: </label>
+    </div>
+    <div class="col-sm-6">
+        <input type="file" name="compFile" id="compFile" required value={{component.file}} />
+    </div>
+</div>
+
+<a href="#" id="componentSubmit"> Update Component </a>

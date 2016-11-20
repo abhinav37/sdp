@@ -95,6 +95,40 @@
 						$("#components").sortable();
 						$("#components").disableSelection();
 					});
+				});
+
+				$("#compContainer").on("click", ".componentLoad", function(event){	
+					var csrftoken = getCookie('csrftoken');
+					$.ajax({
+						method: "POST",
+						url: "loadComponentBody/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: { component_id: this.id }
+					}).done(function( msg ) {
+						$("#componentBody").html(msg);
+					});
+				});	
+
+				$("#compContainer").on("click", "#componentSubmit", function(event){
+					var fd = new FormData();
+					var file = $("#compFile")[0].files[0];
+					fd.append('compFile', file);
+					console.log(fd.file);
+
+					var csrftoken = getCookie('csrftoken');
+					console.log("comp submi");
+					/*$.ajax({
+						method: "POST",
+						url: "loadComponentBody/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: { component_id: this.id }
+					}).done(function( msg ) {
+						$("#componentBody").html(msg);
+					});*/
 				});		
 			});
 
@@ -222,7 +256,7 @@
 							</br>
 						</div>
 						{% for category in categories %}
-							<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
+						<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
 						{% endfor %}
 					</div>
 
@@ -233,7 +267,7 @@
 					<a href="#" id="addMod" />Add Module</a>
 					</br>
 					</br>
-					
+
 					<input type="hidden" value="{{course_id}}" name="course_id" />
 					<input type="hidden" value="" name="modulePositions" id="modulePositions" />
 					<input type="hidden" value="" name="compsPositions" id="compsPositions" />

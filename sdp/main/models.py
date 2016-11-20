@@ -40,11 +40,14 @@ class Module(models.Model):
 	def __str__(self):
 		return self.name
 
+def fileUploadPath(instance, filename):
+    return 'uploads/{0}/{1}/{2}'.format(instance.course.id, instance.module.id, filename)
+
 class Component(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	module = models.ForeignKey(Module)
 	name = models.CharField(max_length=40)
-	filename = models.CharField(max_length=40)
+	file = models.FileField(upload_to=fileUploadPath, null=True, blank=True, default = None)
 	position = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
