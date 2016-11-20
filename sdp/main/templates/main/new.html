@@ -99,9 +99,16 @@
 			});
 
 			function formSubmit(){
-				compsForMods[modSelected] = $("#components").sortable( "toArray" ); //get latest comp ordering in case changed
-				$("#modulePositions").val( JSON.stringify($("#modules").sortable( "toArray" )) );
-				$("#compsPositions").val( JSON.stringify(compsForMods));
+				if ($("#components li").length != 0){
+					compsForMods[modSelected] = $("#components").sortable( "toArray" );
+				}
+
+				var modulePos = $("#modules").sortable( "toArray" );
+				if(modulePos.length !=0 )
+					$("#modulePositions").val( JSON.stringify(modulePos) );			
+				if(!(Object.keys(compsForMods).length === 0 && compsForMods.constructor === Object)){
+					$("#compsPositions").val( JSON.stringify(compsForMods));
+				}
 			}
 		</script>
 </head>
@@ -202,7 +209,7 @@
 							<label for="courseName">Course Name:</label>
 						</div>
 						<div class="col-sm-6">
-							<input type="text" name="courseName" id="courseName" />
+							<input type="text" name="courseName" id="courseName" required/>
 							</br>
 							</br>
 						</div>
@@ -210,13 +217,13 @@
 							<label for="courseDesc">Course Description: </label>
 						</div>
 						<div class="col-sm-6">
-							<input type="text" name="courseDesc" id="courseDesc" />
+							<input type="text" name="courseDesc" id="courseDesc" required/>
 							</br>
 							</br>
 						</div>
 						{% for category in categories %}
-						<input type="radio" name="category" id="category{{ forloop.counter }}" value="{{ category.id }}" />
-						<label for="category{{ forloop.counter }}">{{ category.name }}</label>{% endfor %}
+							<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
+						{% endfor %}
 					</div>
 
 					<div id="moduleContainer"></div>
