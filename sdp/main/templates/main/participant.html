@@ -89,35 +89,38 @@
 </div>
 
 <div class="container">
-  <div class="col-md-12" <div class="col-md-3">
-    <h4>Courses</h4>
-    {% if enrolledCourse %}
+  <div class="col-md-12">
+    <div class="col-md-3">
+      <h4>Courses</h4>
+      {% if enrolledCourse %}
       <div class="row well">
+        <h4>Enrolled Course</h4>
         <ul>
           <div class="row">
-            <h4>Enrolled Course</h4>
             <h7><a href="course/{{ enrolledCourse.id }}/">{{ enrolledCourse.name }}</a></h7>
+            <p> {{enrolledCourse.description}} </p>
           </div>
         </ul>
       </div>
-    {% endif %}
-
-    <div class="row well">
-      <h4>Suggested Courses</h4>
-      {% if allCourses %}
-      <ul>
-        {% for course in allCourses %}
-        <div class="row">
-          <h7><a href="course/{{ course.id }}/">{{ course.name }}</a></h7>
-        </div>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p>No other courses are available.</p>
       {% endif %}
+
+      <div class="row well">
+        <h4>Suggested Courses</h4>
+        {% if allCourses %}
+        <ul>
+          {% for course in allCourses %}
+          <div class="row">
+            <h7><a href="course/{{ course.id }}/">{{ course.name }}</a></h7>
+            <p> {{course.description}} </p>
+          </div>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No other courses are available.</p>
+        {% endif %}
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 <footer class="site-footer" style="padding-bottom: 10px;">
