@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from .models import User
 from django.template import loader
-from .models import Course, Category, Participant, Module, Component
+from .models import Course, Category, Participant, Module, Component, Instructor
 from django.shortcuts import redirect
 import json
 
@@ -188,5 +188,10 @@ def admin(request):
 	template = loader.get_template('main/admin.html')
 	all_categories = Category.objects.all()
 	all_users = User.objects.all()
-	context = {'all_categories': all_categories,'all_users': all_users, }
+	all_instructor= Instructor.objects.filter()
+	print(all_instructor)
+	context = {'all_categories': all_categories,'all_users': all_users,'all_instructor':all_instructor }
 	return HttpResponse(template.render(context,request))
+	
+def adminchange(request):
+    info=request.POST['info']
