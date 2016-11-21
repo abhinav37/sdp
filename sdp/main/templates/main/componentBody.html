@@ -4,16 +4,16 @@
         <label for="compName">Component Name:</label>
     </div>
     <div class="col-sm-6">
-        <input type="text" name="compName" id="compName" required value={{component.name}} />
+        <input type="text" name="compName" id="compName" required value="{{component.name}}" />
         </br>
         </br>
     </div>
     <div class="col-sm-6">
-        <label for="compFile">File: </label>
+        <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
     </div>
     <div class="col-sm-6">
-        <input type="file" name="compFile" id="compFile" required value={{component.file}} />
+        <input type="file" name="compFile" id="compFile" {% if component.file ==  None %} required {% endif %} />
     </div>
 </div>
 
-<a href="#" id="componentSubmit"> Update Component </a>
+<a href="#" class="componentSubmit" id="{{component.id}}"> Update Component </a>

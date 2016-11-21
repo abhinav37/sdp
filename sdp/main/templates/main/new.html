@@ -25,7 +25,16 @@
 			}
 			
 			var modSelected = 0;
+			var modulesOrder = [];
 			var compsForMods = {};
+
+			var modulesSortEventHandler = function(event, ui){
+				modulesOrder = $("#modules").sortable( "toArray" );
+			};
+
+			var compsSortEventHandler = function(event, ui){
+				compsForMods[modSelected] = $("#components").sortable( "toArray" );
+			};
 
 			$(document).ready(function() {
 				$("#addMod").click(function(){
@@ -38,20 +47,23 @@
 						},
 						data: {module_id: this.id, course_id: {{course_id}}, module_name: $("#module_name").val() }
 					}).done(function( msg ) {
-						$("#moduleContainer").html(msg);
-						$("#moduleContainer").find('#' + modSelected).addClass("active");
-						$( "#modules" ).sortable();
+						$("#moduleContainer").html(msg);						
+						$( "#modules" ).sortable({ stop: modulesSortEventHandler });
 						$( "#modules" ).disableSelection();
+						
+						//restore old order of modules
+						modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
+						$.each(modulesOrder, function(key, val){
+							var mod = "#modules > #"+val;
+							$( "#modules" ).append($(mod));
+						});
+						$("#moduleContainer").find('#' + modSelected).addClass("active");
 					});
 				});	
 
 				$("#moduleContainer").on("click", ".moduleLoad", function(event){
 					if(modSelected==this.id)
 						return;
-					
-					if ($("#components li").length != 0){ //save order of the components for module that was selected 
-						compsForMods[modSelected] = $("#components").sortable( "toArray" );
-					}
 
 					$("#moduleContainer").find('#' + modSelected).removeClass("active");
 					modSelected = this.id;
@@ -68,7 +80,7 @@
 						data: {module_id: this.id, course_id: {{course_id}} }
 					}).done(function( msg ) {
 						$("#compContainer").html(msg);
-						$( "#components" ).sortable();
+						$( "#components" ).sortable({ stop: compsSortEventHandler });
 						$( "#components" ).disableSelection();
 
 						if (typeof compsForMods[modSelected] === "undefined") {}
@@ -92,8 +104,19 @@
 						data: {module_id: modSelected, course_id: {{course_id}}, component_name: $("#component_name").val() }
 					}).done(function( msg ) {
 						$("#compContainer").html(msg);
-						$("#components").sortable();
+						$("#components").sortable({ stop: compsSortEventHandler });
 						$("#components").disableSelection();
+						
+						if (typeof compsForMods[modSelected] === "undefined") {
+							compsForMods[modSelected] = [];
+						}
+
+						compsForMods[modSelected].push($("#components").sortable( "toArray" )[$("#components").sortable( "toArray" ).length - 1]);
+
+						$.each(compsForMods[modSelected], function(key, val){
+							var comp = "#components > #"+val;
+							$( "#components" ).append($(comp));
+						});					
 					});
 				});
 
@@ -111,24 +134,30 @@
 					});
 				});	
 
-				$("#compContainer").on("click", "#componentSubmit", function(event){
+				$("#compContainer").on("click", ".componentSubmit", function(event){
 					var fd = new FormData();
 					var file = $("#compFile")[0].files[0];
 					fd.append('compFile', file);
-					console.log(fd.file);
+					fd.append('component_id', this.id)
+					fd.append('compName', $("#compName").val());
+					for (var [key, value] of fd.entries()) { 
+						console.log(key, value);
+					}
 
 					var csrftoken = getCookie('csrftoken');
-					console.log("comp submi");
-					/*$.ajax({
+					$.ajax({
 						method: "POST",
+						processData: false,
+  						contentType: false,
 						url: "loadComponentBody/",
 						beforeSend: function( xhr ) {
 							xhr.setRequestHeader("X-CSRFToken", csrftoken);
 						},
-						data: { component_id: this.id }
+						data: fd
 					}).done(function( msg ) {
 						$("#componentBody").html(msg);
-					});*/
+
+					});
 				});		
 			});
 
