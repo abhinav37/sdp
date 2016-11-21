@@ -118,7 +118,18 @@ def loadComponents(request):
 	return HttpResponse(template.render(context,request))
 
 def loadComponentBody(request):
+	compFile = request.FILES.get('compFile', False)
+	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
+	if compFile:
+		#TODO delete old file if exits
+		componentObj.file = compFile
+		componentObj.save()
+	
+	if compName:
+		componentObj.name = compName
+		componentObj.save()
+
 	context = {'component': componentObj}
 	template = loader.get_template('main/componentBody.html')
 	return HttpResponse(template.render(context,request))

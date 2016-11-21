@@ -1,4 +1,6 @@
 from django.conf.urls import url
+from django.conf.urls.static import static
+from django.conf import settings
 
 from . import views
 
@@ -15,4 +17,4 @@ urlpatterns = [
 	url(r'^instructor/new/add_component/$', views.add_component, name='add_component'),
 	url(r'^instructor/new/loadComponentBody/$', views.loadComponentBody, name='loadComponentBody'),
 	url(r'^admin/$', views.admin, name='admin'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

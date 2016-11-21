@@ -41,7 +41,7 @@ class Module(models.Model):
 		return self.name
 
 def fileUploadPath(instance, filename):
-    return 'uploads/{0}/{1}/{2}'.format(instance.course.id, instance.module.id, filename)
+    return '{0}/{1}/{2}'.format(instance.course.id, instance.module.id, filename)
 
 class Component(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
