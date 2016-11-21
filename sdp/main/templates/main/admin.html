@@ -8,35 +8,7 @@
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
-<style>
-  footer {
-    background-color: #f2f2f2;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  #ticker {
-    background-color: slategrey;
-    color: white;
-  }
-  
-  .page-wrap {
-    min-height: 100%;
-    /* equal to footer height */
-    margin-bottom: -1px;
-  }
-  
-  .page-wrap:after {
-    content: "";
-    display: block;
-  }
-  
-  .site-footer,
-  .page-wrap:after {
-    height: 60px;
-  }
-</style>
+
 
 <script>
 $('#checkbox1').mousedown(function() {
@@ -45,22 +17,24 @@ $('#checkbox1').mousedown(function() {
         $(this).trigger("change");
     }
 });
-function fx(username){
-window.alert();
-window.alert("no");
-var i=0;
-var ins=[];
-{% for instructor in all_instructor %}
-ins[i++]="{{instructor}}";
-{% endfor %}				
-if($.inArray(username, ins)==-1)
-{document.getelementbyid(username).innerHtml="NO";
-window.alert("no");
-}else
-{document.getelementbyid(username).innerHtml="Yes";
-window.alert("no");
-}
-				
+function fx1(username)
+{		document.getElementById(username).innerHTML="Yes";
+		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+}		
+function fx2(username)
+{document.getElementById(username).innerHTML="No";
+		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\')" type="checkbox" ><div class="slider round"></div></label>';
+}		
+
+
+
+
+
+function fx(username,instructor)
+{if(username==instructor)
+{		document.getElementById(username).innerHTML="Yes";
+		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+}		
 				}
 </script>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -116,13 +90,11 @@ window.alert("no");
     <p>New News and programs</p>
   </marquee>
 </div>
-<div style="padding-top:10px">
-</div>
 
-<div class="container">
-  <h4>Categories</h4>
-     <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button>
-  
+
+<div class="container" style="padding-top:10px">
+  <h4>Categories   <button type="button" style="font-size:10px;"class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button>
+  </h4>
   <div class="col-md-12">
      
 	<div class="row well">
@@ -143,7 +115,7 @@ window.alert("no");
 		  {% for category in all_categories %}
             <tr>
 				<td><h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4></td>
-				<td>delete</td>
+				<td><button class="del">Delete</button</td>
 				
 			</tr>
 		
@@ -162,13 +134,8 @@ window.alert("no");
   </div>
 </div>
 
-<div style="padding-top:10px">
-</div>
-
-<div class="container">
-  <h4>Users</h4>
-      
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">View Users</button>
+<div class="container" style="padding-top:10px">
+  <h4>Users   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">View Users</button></h4>
   <div class="col-md-12">
     <div class="row well">
       <div class="collapse" id="demo2">
@@ -181,13 +148,25 @@ window.alert("no");
 			  <tr>
 				<th>Username</th>
 				<th>instructor</th>
+				<th></th>
 			  </tr>
           </thead>
 			<tbody>
 
 		{% for user in all_users %}
-            <td><h4><a href="course/{{ course.id }}/">{{ user }}</a></h4></td>
-				<td onload="fx('{{ user.name }}');" id ="{{ user.name }}">red</td>
+            
+			<td><h4><a href="course/{{ course.id }}/">{{ user }}</a></h4></td>
+			
+			<td  id ="{{ user.name }}">No</td>			
+			<td  id ="{{ user.name }}s">			
+			<label class="switch">
+			<input type="checkbox" onclick="fx1('{{user.name}}')" >
+			<div class="slider round"></div>
+		</label></td>
+			{% for instructor in all_instructor %}
+			<script type="text/javascript">
+			fx('{{ user.name }}','{{ instructor.instructor }}');</script>
+				{% endfor %}
 					
 			</tr>
 			

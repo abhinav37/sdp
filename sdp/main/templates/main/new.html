@@ -6,214 +6,187 @@
 	<link rel="stylesheet" href="/static/css/bootstrap.css">
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
 	<script>
-			function getCookie(name) {
-				var cookieValue = null;
-				if (document.cookie && document.cookie !== '') {
-					var cookies = document.cookie.split(';');
-					for (var i = 0; i < cookies.length; i++) {
-						var cookie = jQuery.trim(cookies[i]);
-						// Does this cookie string begin with the name we want?
-						if (cookie.substring(0, name.length + 1) === (name + '=')) {
-							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-							break;
-						}
+		function getCookie(name) {
+			var cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				var cookies = document.cookie.split(';');
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = jQuery.trim(cookies[i]);
+					// Does this cookie string begin with the name we want?
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
 					}
 				}
-				return cookieValue;
 			}
-			
-			var modSelected = 0;
-			var modulesOrder = [];
-			var compsForMods = {};
-
-			var modulesSortEventHandler = function(event, ui){
-				modulesOrder = $("#modules").sortable( "toArray" );
-			};
-
-			var compsSortEventHandler = function(event, ui){
-				compsForMods[modSelected] = $("#components").sortable( "toArray" );
-			};
-
-			$(document).ready(function() {
-				$("#addMod").click(function(){
-					var csrftoken = getCookie('csrftoken');
-					$.ajax({
-						method: "POST",
-						url: "add_module/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: {module_id: this.id, course_id: {{course_id}}, module_name: $("#module_name").val() }
-					}).done(function( msg ) {
-						$("#moduleContainer").html(msg);						
-						$( "#modules" ).sortable({ stop: modulesSortEventHandler });
-						$( "#modules" ).disableSelection();
-						
-						//restore old order of modules
-						modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
-						$.each(modulesOrder, function(key, val){
-							var mod = "#modules > #"+val;
-							$( "#modules" ).append($(mod));
-						});
-						$("#moduleContainer").find('#' + modSelected).addClass("active");
+			return cookieValue;
+		}
+		
+		var modSelected = 0;
+		var modulesOrder = [];
+		var compsForMods = {};
+		
+		var modulesSortEventHandler = function(event, ui){
+			modulesOrder = $("#modules").sortable( "toArray" );
+		};
+		
+		var compsSortEventHandler = function(event, ui){
+			compsForMods[modSelected] = $("#components").sortable( "toArray" );
+		};
+		
+		$(document).ready(function() {
+			$("#addMod").click(function(){
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "add_module/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {module_id: this.id, course_id: {{course_id}}, module_name: $("#module_name").val() }
+				}).done(function( msg ) {
+					$("#moduleContainer").html(msg);						
+					$( "#modules" ).sortable({ stop: modulesSortEventHandler });
+					$( "#modules" ).disableSelection();
+					
+					//restore old order of modules
+					modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
+					$.each(modulesOrder, function(key, val){
+						var mod = "#modules > #"+val;
+						$( "#modules" ).append($(mod));
 					});
-				});	
-
-				$("#moduleContainer").on("click", ".moduleLoad", function(event){
-					if(modSelected==this.id)
-						return;
-
-					$("#moduleContainer").find('#' + modSelected).removeClass("active");
-					modSelected = this.id;
-					$(this).addClass("active");
-					$("#compContainer").html("Loading...");
-
-					var csrftoken = getCookie('csrftoken');
-					$.ajax({
-						method: "POST",
-						url: "loadComponents/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: {module_id: this.id, course_id: {{course_id}} }
-					}).done(function( msg ) {
-						$("#compContainer").html(msg);
-						$( "#components" ).sortable({ stop: compsSortEventHandler });
-						$( "#components" ).disableSelection();
-
-						if (typeof compsForMods[modSelected] === "undefined") {}
-						else{ //restore order from array
-							$.each(compsForMods[modSelected], function(key, val){
-								var comp = "#components > #"+val;
-								$( "#components" ).append($(comp));
-							});
-						}
-					});
-				});	
-
-				$("#compContainer").on("click", ".addCom", function(event){	
-					var csrftoken = getCookie('csrftoken');
-					$.ajax({
-						method: "POST",
-						url: "add_component/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: {module_id: modSelected, course_id: {{course_id}}, component_name: $("#component_name").val() }
-					}).done(function( msg ) {
-						$("#compContainer").html(msg);
-						$("#components").sortable({ stop: compsSortEventHandler });
-						$("#components").disableSelection();
-						
-						if (typeof compsForMods[modSelected] === "undefined") {
-							compsForMods[modSelected] = [];
-						}
-
-						compsForMods[modSelected].push($("#components").sortable( "toArray" )[$("#components").sortable( "toArray" ).length - 1]);
-
+					$("#moduleContainer").find('#' + modSelected).addClass("active");
+				});
+			});	
+		
+			$("#moduleContainer").on("click", ".moduleLoad", function(event){
+				if(modSelected==this.id)
+					return;
+		
+				$("#moduleContainer").find('#' + modSelected).removeClass("active");
+				modSelected = this.id;
+				$(this).addClass("active");
+				$("#compContainer").html("Loading...");
+		
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "loadComponents/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {module_id: this.id, course_id: {{course_id}} }
+				}).done(function( msg ) {
+					$("#compContainer").html(msg);
+					$( "#components" ).sortable({ stop: compsSortEventHandler });
+					$( "#components" ).disableSelection();
+		
+					if (typeof compsForMods[modSelected] === "undefined") {}
+					else{ //restore order from array
 						$.each(compsForMods[modSelected], function(key, val){
 							var comp = "#components > #"+val;
 							$( "#components" ).append($(comp));
-						});					
-					});
-				});
-
-				$("#compContainer").on("click", ".componentLoad", function(event){	
-					var csrftoken = getCookie('csrftoken');
-					$.ajax({
-						method: "POST",
-						url: "loadComponentBody/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: { component_id: this.id }
-					}).done(function( msg ) {
-						$("#componentBody").html(msg);
-					});
-				});	
-
-				$("#compContainer").on("click", ".componentSubmit", function(event){
-					var fd = new FormData();
-					var file = $("#compFile")[0].files[0];
-					fd.append('compFile', file);
-					fd.append('component_id', this.id)
-					fd.append('compName', $("#compName").val());
-					for (var [key, value] of fd.entries()) { 
-						console.log(key, value);
+						});
 					}
-
-					var csrftoken = getCookie('csrftoken');
-					$.ajax({
-						method: "POST",
-						processData: false,
-  						contentType: false,
-						url: "loadComponentBody/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: fd
-					}).done(function( msg ) {
-						$("#componentBody").html(msg);
-
-					});
-				});		
+				});
+			});	
+		
+			$("#compContainer").on("click", ".addCom", function(event){	
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "add_component/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {module_id: modSelected, course_id: {{course_id}}, component_name: $("#component_name").val() }
+				}).done(function( msg ) {
+					$("#compContainer").html(msg);
+					$("#components").sortable({ stop: compsSortEventHandler });
+					$("#components").disableSelection();
+					
+					if (typeof compsForMods[modSelected] === "undefined") {
+						compsForMods[modSelected] = [];
+					}
+		
+					compsForMods[modSelected].push($("#components").sortable( "toArray" )[$("#components").sortable( "toArray" ).length - 1]);
+		
+					$.each(compsForMods[modSelected], function(key, val){
+						var comp = "#components > #"+val;
+						$( "#components" ).append($(comp));
+					});					
+				});
 			});
-
-			function formSubmit(){
-				if ($("#components li").length != 0){
-					compsForMods[modSelected] = $("#components").sortable( "toArray" );
+		
+			$("#compContainer").on("click", ".componentLoad", function(event){	
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "loadComponentBody/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: { component_id: this.id }
+				}).done(function( msg ) {
+					$("#componentBody").html(msg);
+				});
+			});	
+		
+			$("#compContainer").on("click", ".componentSubmit", function(event){
+				var fd = new FormData();
+				var file = $("#compFile")[0].files[0];
+				fd.append('compFile', file);
+				fd.append('component_id', this.id)
+				fd.append('compName', $("#compName").val());
+				for (var [key, value] of fd.entries()) { 
+					console.log(key, value);
 				}
-
-				var modulePos = $("#modules").sortable( "toArray" );
-				if(modulePos.length !=0 )
-					$("#modulePositions").val( JSON.stringify(modulePos) );			
-				if(!(Object.keys(compsForMods).length === 0 && compsForMods.constructor === Object)){
-					$("#compsPositions").val( JSON.stringify(compsForMods));
-				}
+		
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					processData: false,
+							contentType: false,
+					url: "loadComponentBody/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: fd
+				}).done(function( msg ) {
+					$("#componentBody").html(msg);
+		
+				});
+			});		
+		});
+		
+		function formSubmit(){
+			if ($("#components li").length != 0){
+				compsForMods[modSelected] = $("#components").sortable( "toArray" );
 			}
-		</script>
+		
+			var modulePos = $("#modules").sortable( "toArray" );
+			if(modulePos.length !=0 )
+				$("#modulePositions").val( JSON.stringify(modulePos) );			
+			if(!(Object.keys(compsForMods).length === 0 && compsForMods.constructor === Object)){
+				$("#compsPositions").val( JSON.stringify(compsForMods));
+			}
+		}
+	function unhide(){
+	$("#compContainer").show();
+	
+	}
+	</script>
 </head>
-
 <body>
-	<style>
-		footer {
-			background-color: #f2f2f2;
-			position: fixed;
-			bottom: 0;
-			width: 100%;
-		}
-		
-		#ticker {
-			background-color: slategrey;
-			color: white;
-		}
-		
-		.page-wrap {
-			min-height: 100%;
-			/* equal to footer height */
-			margin-bottom: -1px;
-		}
-		
-		.page-wrap:after {
-			content: "";
-			display: block;
-		}
-		
-		.site-footer,
-		.page-wrap:after {
-			height: 60px;
-		}
-	</style>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>                        
+				</button>
 				<a class="navbar-brand" href="#">Staff Development Platform	</a>
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
@@ -241,13 +214,13 @@
 	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 		<div class="modal-dialog">
 			<div class="loginmodal-container">
-				<h1>Login to Your Account</h1><br>
+				<h1>Login to Your Account</h1>
+				<br>
 				<form>
 					<input type="text" name="user" placeholder="Username">
 					<input type="password" name="pass" placeholder="Password">
 					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
 				</form>
-
 				<div class="login-help">
 					<a href="#">Register</a> - <a href="#">Forgot Password</a>
 				</div>
@@ -259,54 +232,76 @@
 			<p>New News and programs</p>
 		</marquee>
 	</div>
+	
+	
+	
 	<div class="container">
-
+	<h4>Enter Course Details</h4>	
 		<div class="col-md-12">
-
-			<h4>Enter Course Details</h4>
 			<div class="row well">
+				
 				<form action="{% url 'instructor' %}" method="post">
-					<div class="form-group">
-						{% csrf_token %}
-						<div class="col-sm-6">
-							<label for="courseName">Course Name:</label>
-						</div>
-						<div class="col-sm-6">
-							<input type="text" name="courseName" id="courseName" required/>
-							</br>
-							</br>
-						</div>
-						<div class="col-sm-6">
-							<label for="courseDesc">Course Description: </label>
-						</div>
-						<div class="col-sm-6">
-							<input type="text" name="courseDesc" id="courseDesc" required/>
-							</br>
-							</br>
-						</div>
-						{% for category in categories %}
-						<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
-						{% endfor %}
+					{% csrf_token %}
+					<div class="col-sm-6">
+						<label for="courseName">Course Name:</label>
 					</div>
-
-					<div id="moduleContainer"></div>
-					<div id="compContainer"></div>
-
-					<input type="text" placeholder="enter the module name" name="module_name" id="module_name" />
-					<a href="#" id="addMod" />Add Module</a>
-					</br>
-					</br>
-
-					<input type="hidden" value="{{course_id}}" name="course_id" />
-					<input type="hidden" value="" name="modulePositions" id="modulePositions" />
-					<input type="hidden" value="" name="compsPositions" id="compsPositions" />
-					<input type="submit" value="Add Course" onclick="formSubmit()" /></div>
-			</form>
+					<div class="col-sm-6">
+						<input type="text" name="courseName" id="courseName" required/>
+						</br>
+						</br>
+					</div>
+					<div class="col-sm-6">
+						<label for="courseDesc">Course Description: </label>
+					</div>
+					<div class="col-sm-6">
+						<input type="text" name="courseDesc" id="courseDesc" required/>
+						</br>
+						</br>
+					</div>
+			</div>
 		</div>
-
-
-		<footer class="site-footer" style="padding-bottom: 10px;">
-			<p class="text-muted" align="center">Contact us</p>
-			<p class="text-muted" align="center">2016</p>
-		</footer>
+	</div>
+	<div class="container">
+		<div class="col-md-12">
+			<div class="row well">
+				
+				{% for category in categories %}
+			<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+	
+	<div  class="container">
+		<div class="col-md-12">
+			<div class="row well">
+			<div id="moduleContainer"></div>
+			<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
+	<a href="#" id="addMod" onclick="unhide()">Add Module</a>
+	
+	</div>
+		</div>
+	</div>
+	
+	<div class="container">
+		<div class="col-md-12">
+			<div class="row well">
+	
+	<div id="compContainer"></div>
+	
+	<input type="hidden" value="{{course_id}}" name="course_id" />
+	<input type="hidden" value="" name="modulePositions" id="modulePositions" />
+	<input type="hidden" value="" name="compsPositions" id="compsPositions" />
+	<input type="submit" value="Add Course" onclick="formSubmit()" /></div>
+		</div>
+	</div>
+	
+	</form>
+	<script>$("#compContainer").hide();</script>
+	
+	</div>
+	<footer class="site-footer" style="padding-bottom: 10px;">
+		<p class="text-muted" align="center">Contact us</p>
+		<p class="text-muted" align="center">2016</p>
+	</footer>
 </body>

@@ -14,6 +14,111 @@
  @import url(http://fonts.googleapis.com/css?family=Roboto);
 /*djdskdj*/
 
+#moduleContainer{
+ padding-bottom: 15px;
+}
+.footer {
+	background-color: #f2f2f2;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+
+#ticker {
+	background-color: slategrey;
+	color: white;
+}
+
+.page-wrap {
+	min-height: 100%;
+	/* equal to footer height */
+	margin-bottom: -1px;
+}
+
+.page-wrap:after {
+	content: "";
+	display: block;
+}
+
+.site-footer,.page-wrap:after {
+	height: 60px;
+}
+.del {
+	background-color:white;
+	color:red;
+	border: none;
+    
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.del:hover {
+    background-color:red;
+    color: white;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
 .loginmodal-container {
   padding: 30px;
   max-width: 350px;
@@ -3109,8 +3214,8 @@ select[multiple].input-lg {
   background-image: none;
   border: 1px solid transparent;
   white-space: nowrap;
-  padding: 10px 15px;
-  font-size: 15px;
+  padding: 5px 10px;
+  font-size: 10px;
   line-height: 1.42857143;
   border-radius: 4px;
   -webkit-user-select: none;

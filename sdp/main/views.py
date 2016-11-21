@@ -189,7 +189,7 @@ def admin(request):
 	all_categories = Category.objects.all()
 	all_users = User.objects.all()
 	all_instructor= Instructor.objects.filter()
-	print(all_instructor)
+	
 	context = {'all_categories': all_categories,'all_users': all_users,'all_instructor':all_instructor }
 	return HttpResponse(template.render(context,request))
 	
