@@ -172,3 +172,10 @@ def editCourse(request, course_id):
 	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
 
  	return HttpResponse(template.render(context,request))
+
+def admin(request):		
+	template = loader.get_template('main/admin.html')
+	all_categories = Category.objects.all()
+	all_users = User.objects.all()
+	context = {'all_categories': all_categories,'all_users': all_users, }
+	return HttpResponse(template.render(context,request))

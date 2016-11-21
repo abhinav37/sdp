@@ -14,4 +14,5 @@ urlpatterns = [
 	url(r'^instructor/new/add_module/$', views.add_module, name='add_modules'),
 	url(r'^instructor/new/add_component/$', views.add_component, name='add_component'),
 	url(r'^instructor/new/loadComponentBody/$', views.loadComponentBody, name='loadComponentBody'),
+	url(r'^admin/$', views.admin, name='admin'),
 ]
