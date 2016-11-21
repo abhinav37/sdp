@@ -1,3 +1,73 @@
+<meta charset="utf-8">
+{% load static %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/css/bootstrap.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">Staff Development Platform	</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="Home.html">Home</a></li>
+        <li><a href="#">Courses Offered</a></li>
+        <li><a href="Home.html#ab">About Us</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <form class="navbar-form navbar-left" role="search">
+            <div id="search-form" class="form-group">
+              <div class="input-group">
+                <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <input type="text" class="form-control" placeholder="Search">
+              </div>
+            </div>
+          </form>
+        </li>
+        <li><a href="#" data-toggle="modal" data-target="#login-modal"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="loginmodal-container">
+      <h1>Login to Your Account</h1><br>
+      <form>
+        <input type="text" name="user" placeholder="Username">
+        <input type="password" name="pass" placeholder="Password">
+        <input type="submit" name="login" class="login loginmodal-submit" value="Login">
+      </form>
+
+      <div class="login-help">
+        <a href="#">Register</a> - <a href="#">Forgot Password</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" id="ticker" style="padding-top: 60px;">
+  <marquee>
+    <p>New News and programs</p>
+  </marquee>
+</div>
+
+<div class="container" style="padding-top:10px">
+  <h4>Course Detail</h4>
+	<div class="row well">
+	<div class="col-md-12">
+     
+      
 {% if courseDetails %}
     <ul>
     	Name: {{ courseDetails.name }} <br>
@@ -19,7 +89,7 @@
 		<div>
 			<input type="hidden" value={{courseDetails.id}} name="course_id" />
             <input type="hidden" value=1 name="drop" />
-			<input type ="submit" value="Drop" />
+			<input style="margin-left: 35px;"  type ="submit" value="Drop" />
 		</div>
 	</form>
     {% endif %}
@@ -30,7 +100,7 @@
 		<div>
 			<input type="hidden" value={{courseDetails.id}} name="course_id" />
             <input type="hidden" value=0 name="drop" />
-			<input type ="submit" value="Enroll" />
+			<input style="margin-left: 35px;" type ="submit" value="Enroll" />
 		</div>
 	</form>
     {% endif %}
@@ -38,10 +108,10 @@
     {% if enrollStatus == 2 %} 
     <form name = "form" action = "{% url "addDrop" %}" method = "POST" >
         {% csrf_token %}
-		<div>
+		<div >
 			<input type="hidden" value={{courseDetails.id}} name="course_id" />
             <input type="hidden" value=0 name="drop" />
-			<input type ="submit" value="Drop Current & Enroll" />
+			<input style="margin-left: 35px;" type ="submit" value="Drop Current & Enroll" />
 		</div>
 	</form>
     {% endif %}
@@ -50,3 +120,4 @@
     <p>No course details available for this course</p>
 {% endif %}
 
+</div></div></div>
