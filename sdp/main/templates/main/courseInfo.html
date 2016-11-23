@@ -4,6 +4,79 @@
 <link rel="stylesheet" href="/static/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script>
+		function getCookie(name) {
+			var cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				var cookies = document.cookie.split(';');
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = jQuery.trim(cookies[i]);
+					// Does this cookie string begin with the name we want?
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+
+  $(document).ready(function() {
+      var modSelected = 0;
+      var compSelected = 0;
+			$("#moduleContainer").on("click", ".moduleLoad", function(event){
+				if(modSelected==this.id)
+					return;
+        modSelected = this.id
+        $("#compContainer").html("Loading...");
+		
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "/main/instructor/new/loadComponents/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {module_id: this.id, course_id: {{course.id}}, participant_id: {{participant_id}} }
+				}).done(function( msg ) {
+					$("#compContainer").html(msg);
+          var csrftoken = getCookie('csrftoken');
+          $.ajax({
+            method: "POST",
+            url: "loadModules/",
+            beforeSend: function( xhr ) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            data: { }
+			  	}).done(function( msg ) {
+				  	$("#moduleContainer").html(msg);
+            $("#"+modSelected).addClass("active");
+          });
+				});
+			});
+
+      $("#compContainer").on("click", ".componentLoad", function(event){
+				if(compSelected==this.id)
+					return;
+				compSelected = this.id;
+        $("#componentBody").html("Loading...");
+		
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "partiComponentBody/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {component_id: this.id }
+				}).done(function( msg ) {
+					$("#componentBody").html(msg);
+				});
+			});
+
+  });
+</script>
+
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
@@ -64,48 +137,61 @@
   <div class="row well">
     <div class="col-md-12">
 
-      {% if courseDetails %}
-      <ul>
-        Name: {{ courseDetails.name }} <br> Category: {{ courseDetails.category }} <br> Insructor: {{ courseDetails.instructor
-        }} <br> Description: {{ courseDetails.description }}
-      </ul>
+      {% if course %}
+      <p> Name: {{ course.name }} </p>
+      <p> Category: {{ course.category }}</p>
+      <p> Insructor: {{ course.instructor }}</p>
+      <p> Description: {{ course.description }}</p>
+      {% if enrollStatus == 1 %}
+      <p> Progress:
+        <div class="progress">
+          <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="70" aria-valuemin="0"
+            aria-valuemax="100" style="width:70%">
+            70%
+          </div>
+        </div>
+      </p>
+      {% endif %}
+      </br>
+      
+      <p> Modules </p>
+      <div id="moduleContainer">
+        {% if enrollStatus == 1 %} {% include "main/module.html" %} {% else %} {% for module in modules %}
+        <li> {{module.name}} </li>
+        {% endfor %} {% endif %}
+      </div>
 
-      <ul>
-        <p> Modules </p>
-        {% for module in moduleList %}
-        {% if enrollStatus == 1 %}    <li> {{module.name}} </li>
-        {% endfor %}
-      </ul>
+      <div id="compContainer"></div>
 
       {% if enrollStatus == 1 %}
-      <form name="form" action="{% url " addDrop " %}" method="POST">
+      <form name="form" action="{% url 'addDrop' %}" method="POST">
         {% csrf_token %}
         <div>
-          <input type="hidden" value={{courseDetails.id}} name="course_id" />
+          <input type="hidden" value={{course.id}} name="course_id" />
           <input type="hidden" value=1 name="drop" />
-          <input style="margin-left: 35px;" type="submit" value="Drop" />
-        </div>
-      </form>
-      {% endif %} {% if enrollStatus == 3 %}
-      <form name="form" action="{% url " addDrop " %}" method="POST">
-        {% csrf_token %}
-        <div>
-          <input type="hidden" value={{courseDetails.id}} name="course_id" />
-          <input type="hidden" value=0 name="drop" />
-          <input style="margin-left: 35px;" type="submit" value="Enroll" />
+          <input type="submit" value="Drop" />
         </div>
       </form>
       {% endif %} {% if enrollStatus == 2 %}
-      <form name="form" action="{% url " addDrop " %}" method="POST">
+      <form name="form" action="{% url 'addDrop' %}" method="POST">
         {% csrf_token %}
         <div>
-          <input type="hidden" value={{courseDetails.id}} name="course_id" />
+          <input type="hidden" value={{course.id}} name="course_id" />
           <input type="hidden" value=0 name="drop" />
-          <input style="margin-left: 35px;" type="submit" value="Drop Current & Enroll" />
+          <input type="submit" value="Drop Current & Enroll" />
         </div>
       </form>
       {% endif %} {% else %}
       <p>No course details available for this course</p>
+      {% endif %} {% if enrollStatus == 3 %}
+      <form name="form" action="{% url 'addDrop' %}" method="POST">
+        {% csrf_token %}
+        <div>
+          <input type="hidden" value={{course.id}} name="course_id" />
+          <input type="hidden" value=0 name="drop" />
+          <input type="submit" value="Enroll" />
+        </div>
+      </form>
       {% endif %}
     </div>
   </div>

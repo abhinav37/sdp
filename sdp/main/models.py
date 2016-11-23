@@ -58,7 +58,7 @@ class Participant(models.Model):
         primary_key=True,
     )
 	course = models.ForeignKey(Course, null=True, blank=True, default = None)
-	most_recent_unlocked = models.IntegerField(default=0)
+	access = models.IntegerField(default=0)
 	def __str__(self):
 		return self.participant.name
 

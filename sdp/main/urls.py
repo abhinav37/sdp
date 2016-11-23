@@ -20,5 +20,7 @@ urlpatterns = [
 	url(r'^adminchange/$', views.adminchange, name='adminchange'),
 	url(r'^register/$', views.register, name='register'),
 	url(r'^regComplete/$', views.regComplete, name='regComplete'),
+	url(r'^participant/course/(?P<course_id>\d+)/partiComponentBody/$', views.partiComponentBody, name='partiComponentBody'),
+	url(r'^participant/course/(?P<course_id>\d+)/loadModules/$', views.loadModules, name='loadModules'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
