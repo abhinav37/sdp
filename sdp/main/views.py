@@ -155,7 +155,7 @@ def add_module(request):
 	context = {'modules': module_list}
  	return HttpResponse(template.render(context,request))
 
-def add_component(request):
+def addComponent(request):
 	comps = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id'])
 	if not comps:
 		component_position = 0
