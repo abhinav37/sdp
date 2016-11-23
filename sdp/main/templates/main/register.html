@@ -1,0 +1,49 @@
+<script>
+    function validate(){
+        var username = document.getElementById('username').value
+        if(username.length != 8){
+            alert("Use your 8-character AB Credit username!")
+            return false;
+        }
+        var pwd = document.getElementById('pwd').value
+        var rpwd = document.getElementById('rpwd').value
+        if(pwd != rpwd){
+            alert("Passwords dont match")
+            return false;
+        }
+        return true;
+    }
+</script>
+
+{% if error %}
+    Username already exists! Try a different username.
+{% endif %}
+
+<form action="{% url 'regComplete' %}" method="post"  onsubmit="return validate();">
+    {% csrf_token %}
+    <div class="col-sm-6">
+        <label for="name">Name:</label>
+    </div>
+    <div class="col-sm-6">
+        <input type="text" name="name" id="name" {% if error %} value="{{name}}" {% endif %} required/>
+    </div>
+    <div class="col-sm-6">
+        <label for="username">Username:</label>
+    </div>
+    <div class="col-sm-6">
+        <input type="text" name="username" id="username" {% if error %} value="{{username}}" {% endif %} required/>
+    </div>
+    <div class="col-sm-6">
+        <label for="pwd">Password:</label>
+    </div>
+    <div class="col-sm-6">
+        <input type="password" name="pwd" id="pwd" required/>
+    </div>
+    <div class="col-sm-6">
+        <label for="rpwd">Repeat Password:</label>
+    </div>
+    <div class="col-sm-6">
+        <input type="password" name="rpwd" id="rpwd" required/>
+    </div>
+	<input type="submit" value="Register" /></div>
+</form>

@@ -18,4 +18,7 @@ urlpatterns = [
 	url(r'^instructor/new/loadComponentBody/$', views.loadComponentBody, name='loadComponentBody'),
 	url(r'^admin/$', views.admin, name='admin'),
 	url(r'^adminchange/$', views.adminchange, name='adminchange'),
+	url(r'^register/$', views.register, name='register'),
+	url(r'^regComplete/$', views.regComplete, name='regComplete'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
