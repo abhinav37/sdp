@@ -13,7 +13,7 @@ def index(request):
 
 def participant(request):
 	#TODO use participant id of logged in user
-	participantID = 10
+	participantID = 3
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
 
