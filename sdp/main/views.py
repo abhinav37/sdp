@@ -13,7 +13,7 @@ def index(request):
 
 def participant(request):
 	#TODO use participant id of logged in user
-	participantID = 3
+	participantID = 10
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
 
@@ -76,7 +76,7 @@ def newCourse(request):
 
 def view_course(request,course_id):
 	#TODO get logged in participant id
-	participantID = 3
+	participantID = 10
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
 
@@ -102,7 +102,7 @@ def view_course(request,course_id):
 
 def addDrop(request):
 	#TODO get logged in participant id
-	participantID = 3
+	participantID = 10
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	if request.POST['drop'] == "1":
 		participantObj.course_id = None
@@ -195,3 +195,26 @@ def admin(request):
 	
 def adminchange(request):
     info=request.POST['info']
+
+def register(request):
+	return callReg(request, {})
+
+def callReg(request, context1):
+	template = loader.get_template('main/register.html')
+	return HttpResponse(template.render(context1, request))
+
+def regComplete(request):
+	uname = request.POST['username']
+	name = request.POST['name']
+	try:
+		userObjs = User.objects.get(username=uname)
+		context = {'error': 1, 'username': uname, 'name': name, }
+		return callReg(request, context)
+	except Exception, e:
+		newUser = User(username=uname, name=name, password=request.POST['pwd'])
+		newUser.save()
+		newParti = Participant(pk=newUser.id)
+		newParti.save()
+		#TODO redirect to login page
+		return HttpResponse("done")
+	
