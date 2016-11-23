@@ -96,7 +96,7 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "add_component/",
+					url: "addComponent/",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
