@@ -13,7 +13,10 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
  @import url(http://fonts.googleapis.com/css?family=Roboto);
 /*djdskdj*/
-
+#body{
+   min-height: 500px;
+	margin-bottom: 100px;
+   clear: both;}
 #moduleContainer{
  padding-bottom: 15px;
 }

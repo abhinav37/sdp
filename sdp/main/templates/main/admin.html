@@ -21,6 +21,10 @@ function fx1(username)
 {		document.getElementById(username).innerHTML="Yes";
 		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
 }		
+function fxdel(o){ var p=o.parentNode.parentNode;
+         p.parentNode.removeChild(p);
+		 }
+
 function fx2(username)
 {document.getElementById(username).innerHTML="No";
 		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\')" type="checkbox" ><div class="slider round"></div></label>';
@@ -115,7 +119,7 @@ function fx(username,instructor)
 		  {% for category in all_categories %}
             <tr>
 				<td><h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4></td>
-				<td><button class="del">Delete</button</td>
+				<td><button onclick="fxdel(this)"class="del">Delete</button</td>
 				
 			</tr>
 		
