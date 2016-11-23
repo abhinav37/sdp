@@ -134,7 +134,7 @@ def loadComponentBody(request):
 	template = loader.get_template('main/componentBody.html')
 	return HttpResponse(template.render(context,request))
 
-def add_module(request):
+def addModule(request):
 	course_id = request.POST['course_id']
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
 	mods = Module.objects.filter(course_id=course_id)

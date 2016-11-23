@@ -61,3 +61,11 @@ class Participant(models.Model):
 	most_recent_unlocked = models.IntegerField(default=0)
 	def __str__(self):
 		return self.participant.name
+
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+
+@receiver(pre_delete, sender=Component)
+def component_delete(sender, instance, **kwargs):
+    # Pass false so FileField doesn't save the model.
+    instance.file.delete(False)
