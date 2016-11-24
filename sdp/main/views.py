@@ -3,6 +3,7 @@ from .models import User
 from django.template import loader
 from .models import Course, Category, Participant, Module, Component, Instructor
 from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login
 import json
 
 def index(request):
@@ -207,14 +208,29 @@ def regComplete(request):
 	uname = request.POST['username']
 	name = request.POST['name']
 	try:
-		userObjs = User.objects.get(username=uname)
+		userObjs = User.objects.get(username1=uname)
 		context = {'error': 1, 'username': uname, 'name': name, }
 		return callReg(request, context)
 	except Exception, e:
-		newUser = User(username=uname, name=name, password=request.POST['pwd'])
+		newUser = User(username1=uname, name=name, password=request.POST['pwd'])
 		newUser.save()
 		newParti = Participant(pk=newUser.id)
 		newParti.save()
 		#TODO redirect to login page
 		return HttpResponse("done")
-	
+
+def login(request):
+	template = loader.get_template('main/login.html')
+	context = {}
+	return HttpResponse(template.render(context, request))
+
+def authen(request):
+	uname = request.POST['username']
+	password = request.POST['pwd']
+	user = authenticate(username1=uname, password=password)
+	context = {'username1': uname, 'password': password,}
+	if user is not None:
+		return HttpResponse("authenticated")
+	else:
+		return HttpResponse(context)
+

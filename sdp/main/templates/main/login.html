@@ -1,12 +1,25 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Login</title>
+	<script>
+    function authenticate(){
+        var username = document.getElementById('username').value
+        if(username.length != 8){
+            alert("Use your 8-character AB Credit username!")
+            return false;
+        }
+        var pwd = document.getElementById('pwd').value
+        return true;
+    }
+</script>
 </head>
 <body>
-	<form>
-		username: <input type="text"></input>
-		password: <input type="password"></input>
+	<form action="{% url 'authenticate' %}" method="post"  onsubmit="return authenticate();">
+    {% csrf_token %}
+		username: <input type="text" name="username" id="username" {% if error %} value="{{username}}" {% endif %} required/><p>
+		password: <input type="password" name="pwd" id="pwd" required/>
+		<input type="submit" value="Login" />
 	</form>
 </body>
 </html>
