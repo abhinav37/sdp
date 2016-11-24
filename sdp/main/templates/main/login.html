@@ -1,10 +1,21 @@
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
+<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/css/bootstrap.css">
+<body style="background-color:#7c9e85;">
+  <div class="modal-dialog">
+    <div class="loginmodal-container">
+      <h1>Login to Your Account</h1><br>
+      <form method="post">
+            {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-{% endblock %}
 
-<a href={% url 'register' %} > Register </a>
+        <input type="submit" name="login" class="login loginmodal-submit" value="Login">
+      </form>
+
+      <div class="login-help">
+        <a href="{% url 'register' %}">Register</a>
+      </div>
+    </div>
+  </div>
+  </body>
+{% endblock %}
