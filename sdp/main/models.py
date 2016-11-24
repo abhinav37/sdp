@@ -1,15 +1,16 @@
 from __future__ import unicode_literals
+from django.contrib.auth.models import User
 
 from django.db import models
 
 # Create your models here.
 
-class User(models.Model):
+''' class User(models.Model):
 	username = models.CharField(max_length=8)
 	password = models.CharField(max_length=10)
 	name = models.CharField(max_length=40)
 	def __str__(self):
-		return self.name
+		return self.name '''
 	
 class Instructor(models.Model):
 	instructor = models.OneToOneField(
@@ -17,7 +18,7 @@ class Instructor(models.Model):
         primary_key=True,
     )
 	def __str__(self):
-		return self.instructor.name
+		return self.instructor.first_name + " " + self.instructor.last_name 
 
 class Category(models.Model):
 	name = models.CharField(max_length=40)
@@ -60,7 +61,7 @@ class Participant(models.Model):
 	course = models.ForeignKey(Course, null=True, blank=True, default = None)
 	access = models.IntegerField(default=0)
 	def __str__(self):
-		return self.participant.name
+		return self.participant.first_name + " " + self.participant.last_name 
 
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver

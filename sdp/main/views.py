@@ -1,19 +1,31 @@
 from django.http import HttpResponse
-from django.contrib.auth.models import User
 from django.template import loader
 from .models import Course, Category, Participant, Module, Component, Instructor
 from django.shortcuts import redirect
-from django.contrib.auth import authenticate, logout
-from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.models import User
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 import json
 
+#Tests for users
+def isInstructor(user):
+    return user.is_staff==1
+
+def isAdmin(user):
+    return user.is_superuser==1
+
 def index(request):
-	logout(request)
 	if request.user.is_authenticated:
 		return redirect('participant')
 	else:
 		return redirect('login') 
+
+def logOut(request):
+	if request.user.is_authenticated:
+		logout(request)
+	return redirect('login') 
 
 @login_required
 def participant(request):
@@ -31,6 +43,8 @@ def participant(request):
 		context = {'allCourses': allCourses, }
 	return HttpResponse(template.render(context,request))
 
+@login_required
+@user_passes_test(isInstructor)
 def instructor(request):
  	try:
 		if request.POST['modulePositions'] != "":
@@ -54,21 +68,23 @@ def instructor(request):
 		newCourse.description = request.POST['courseDesc']
 		newCourse.category_id = request.POST['category']
 		#TODO intructor id based on login
-		newCourse.instructor_id=12
+		newCourse.instructor_id = request.user.id
 		newCourse.save()
 	except Exception, e:
 		print e
 		pass
 	finally:
 		#TODO intructor id based on login
-		course_list = Course.objects.filter(instructor_id=12)
+		course_list = Course.objects.filter(instructor_id=request.user.id)
 		template = loader.get_template('main/instructor.html')
 		context = {'course_list': course_list}
 		return HttpResponse(template.render(context,request))
 
+@login_required
+@user_passes_test(isInstructor)
 def newCourse(request):
 	#TODO change category id, intructor id, deployed implementation
-	newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=12, instructor_id=1)
+	newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=-1, instructor_id=request.user.id)
 	newCourse.save()
 
 	category_list = Category.objects.all()
@@ -79,6 +95,7 @@ def newCourse(request):
 	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
  	return HttpResponse(template.render(context,request))
 
+@login_required
 def view_course(request,course_id):
 	#TODO get logged in participant id
 	participantID = request.user.id
@@ -104,6 +121,7 @@ def view_course(request,course_id):
 	context={'course': course, 'modules': modules, 'enrollStatus': x, 'participant_id': participantID }
 	return HttpResponse(template.render(context,request))
 
+@login_required
 def loadModules(request, course_id):
 	#TODO get logged in participant id
 	participantID = request.user.id
@@ -115,6 +133,7 @@ def loadModules(request, course_id):
 	context = {'modules': modules}
  	return HttpResponse(template.render(context,request))
 
+@login_required
 def addDrop(request):
 	#TODO get logged in participant id
 	participantID = request.user.id
@@ -128,6 +147,7 @@ def addDrop(request):
 	participantObj.save()
 	return redirect(participant)
 
+@login_required
 def loadComponents(request):
 	participantID = request.POST.get('participant_id', False)
 	moduleID = request.POST['module_id']
@@ -150,6 +170,7 @@ def loadComponents(request):
 	template = loader.get_template('main/componentList.html')
 	return HttpResponse(template.render(context,request))
 
+@login_required
 def loadComponentBody(request):
 	compFile = request.FILES.get('compFile', False)
 	compName = request.POST.get('compName', False)
@@ -167,12 +188,15 @@ def loadComponentBody(request):
 	template = loader.get_template('main/componentBody.html')
 	return HttpResponse(template.render(context,request))
 
+@login_required
 def partiComponentBody(request, course_id):
 	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
 	context = {'component': componentObj}
 	template = loader.get_template('main/partiComponentBody.html')
 	return HttpResponse(template.render(context,request))
 
+@login_required
+@user_passes_test(isInstructor)
 def addModule(request):
 	course_id = request.POST['course_id']
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
@@ -194,6 +218,8 @@ def addModule(request):
 	context = {'modules': module_list}
  	return HttpResponse(template.render(context,request))
 
+@login_required
+@user_passes_test(isInstructor)
 def addComponent(request):
 	comps = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id'])
 	if not comps:
@@ -212,6 +238,8 @@ def addComponent(request):
 	context = {'components': component_list, 'canAdd': 1}
  	return HttpResponse(template.render(context,request))
 
+@login_required
+@user_passes_test(isInstructor)
 def editCourse(request, course_id):
 	courseObj = Course.objects.filter(pk=course_id)[0]
 	modules = Module.objects.filter(course_id=course_id).order_by("position")
@@ -223,6 +251,8 @@ def editCourse(request, course_id):
 
  	return HttpResponse(template.render(context,request))
 
+@login_required
+@user_passes_test(isAdmin)
 def admin(request):		
 	template = loader.get_template('main/admin.html')
 	all_categories = Category.objects.all()
@@ -260,5 +290,5 @@ def regComplete(request):
 		newParti = Participant(pk=newUser.id)
 		newParti.save()
 		#TODO redirect to login page
-		return HttpResponse("done")
+		return redirect('login')
 	
