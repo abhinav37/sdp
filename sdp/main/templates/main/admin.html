@@ -3,32 +3,135 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 <link rel="stylesheet" href="/static/css/bootstrap.css">
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+
+
 <script>
-$('#checkbox1').mousedown(function() {
-    if (!$(this).is(':checked')) {
-        this.checked = confirm("Are you sure?");
-        $(this).trigger("change");
+function getCookie(name) {
+			var cookieValue = null;
+			if (document.cookie && document.cookie !== '') {
+				var cookies = document.cookie.split(';');
+				for (var i = 0; i < cookies.length; i++) {
+					var cookie = jQuery.trim(cookies[i]);
+					// Does this cookie string begin with the name we want?
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
+		}
+$(document).ready(function() {
+			$("#addMod").click(function(){
+		})});
+
+function fxdel(o,name,cid){
+var p=o.parentNode.parentNode;
+   
+		if(confirm("you sure you want to delete"))
+		{
+		
+		 var csrftoken = getCookie('csrftoken');
+				
+				$.ajax({
+					method: "POST",
+					url: "admindel/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {category_id: cid,category_na: name}
+				}).done(function( msg ){
+          
+				if(msg!='del')
+			  {
+          	alert("Cannot be deleted conatins some courses");
+        }
+        	else
+        { 
+            p.parentNode.removeChild(p);
+        }});
     }
-});
+}
+		 
+		
 function fx1(username)
 {		document.getElementById(username).innerHTML="Yes";
 		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+    		 var csrftoken = getCookie('csrftoken');
+				
+				$.ajax({
+					method: "POST",
+					url: "adminchange/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {name: username,val: '1'}
+				}).done();
+    
+
+
 }		
-function fxdel(o){ var p=o.parentNode.parentNode;
-         p.parentNode.removeChild(p);
-		 }
 
 function fx2(username)
+{var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "adminchange/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {name: username,val: 2}
+				}).done(function(msg){
+if(msg=='change')
 {document.getElementById(username).innerHTML="No";
 		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\')" type="checkbox" ><div class="slider round"></div></label>';
+}
+else
+alert("instructor has courses")
+		document.getElementById(username).innerHTML="Yes";
+		document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+ 				
+        });
+    
 }		
 
+function opencat(){
+$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input type="submit" value="Add Course" onclick="newcat()" /> </div></div></div></div>'); 
+}
 
+function newcat(){
+var value=$("#catName").val();
 
+if(value!="")
+{var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "newcat/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {cat: value}
+				}).done(function(msg){
+if(msg=='exist')
+alert("already exist");
+else
+{
+$("#tt").append('<tr><td><h4><a href="course/'+msg+'/">'+value+'</a></h4></td><td><button onclick="fxdel(this,'+value+','+msg+')"class="del">Delete</button</td><tr>'
+);
 
+}
+        });
+
+$("#openc").html('<a onclick=opencat()>   Create new Cateory</a>');
+}
+else
+alert("Enter Category");
+}
 
 function fx(username,instructor)
 {if(username==instructor)
@@ -93,7 +196,9 @@ function fx(username,instructor)
 
 
 <div class="container" style="padding-top:10px">
-  <h4>Categories   <button type="button" style="font-size:10px;"class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button>
+  <h4>Categories   <button  type="button" style="font-size:10px;"class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button>
+  
+  
   </h4>
   <div class="col-md-12">
      
@@ -102,7 +207,7 @@ function fx(username,instructor)
         {% if all_categories %}
         <ul>
           <div class="row">
-			<table class="table">
+			<table class="table" id="tt">
 			<thead>
 			  <tr>
 				<th>Category name</th>
@@ -115,8 +220,7 @@ function fx(username,instructor)
 		  {% for category in all_categories %}
             <tr>
 				<td><h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4></td>
-				<td><button onclick="fxdel(this)"class="del">Delete</button</td>
-				
+				<td><button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')"class="del">Delete</button</td>
 			</tr>
 		
 		  
@@ -130,10 +234,13 @@ function fx(username,instructor)
         <p>No categories are available.</p>
         {% endif %}
       </div>
+
     </div>
+<div id="openc">
+<a onclick=opencat()>   Create new Cateory</a></div>
+
   </div>
 </div>
-
 <div class="container" style="padding-top:10px">
   <h4>Users   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">View Users</button></h4>
   <div class="col-md-12">

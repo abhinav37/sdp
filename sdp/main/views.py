@@ -262,8 +262,64 @@ def admin(request):
 	context = {'all_categories': all_categories,'all_users': all_users,'all_instructor':all_instructor }
 	return HttpResponse(template.render(context,request))
 	
+def admindel(request):
+	try:
+		if request.POST['category_id']:
+			x = Category.objects.filter(id=request.POST['category_id'])
+			if not Course.objects.filter(category=x):
+				Category.objects.filter(id=request.POST['category_id']).delete()
+				print "yes del"		
+				return HttpResponse("del")
+			else:
+				print "no del"
+				return HttpResponse("no")
+		else:
+			
+			return HttpResponse("no")
+	except Exception, e:
+		return HttpResponse("ex")
+		print e
+		pass
+	
 def adminchange(request):
-    info=request.POST['info']
+	try:
+		if request.POST['val']=='2':
+			us=User.objects.filter(username=request.POST['name'])
+			x = Instructor.objects.filter(instructor=us)
+			if not Course.objects.filter(instructor=x):
+				us=User(username=request.POST['name'])
+				x = Instructor(us)
+				x.save()
+				print "yes"
+				return HttpResponse("change")
+			else:
+				print "has course"
+				return HttpResponse("no")
+		elif request.POST['val']=='1':
+				us=User(username=request.POST['name'])
+				x = Instructor(us)
+				x.save()
+				return HttpResponse("done")
+		
+	
+	except Exception, e:
+		return HttpResponse("expetion")
+		print e
+		pass
+
+
+def newcat(request):
+	try:
+		if request.POST['cat']:
+			newCat=Category(name=request.POST['cat'])
+			newCat.save()
+			return HttpResponse(newCat.id)
+		else:
+			return HttpResponse("exist")
+		
+	except Exception, e:
+		print e
+		pass
 
 def register(request):
 	return callReg(request, {})
