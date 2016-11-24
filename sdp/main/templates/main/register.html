@@ -22,10 +22,16 @@
 <form action="{% url 'regComplete' %}" method="post"  onsubmit="return validate();">
     {% csrf_token %}
     <div class="col-sm-6">
-        <label for="name">Name:</label>
+        <label for="fname">First Name:</label>
     </div>
     <div class="col-sm-6">
-        <input type="text" name="name" id="name" {% if error %} value="{{name}}" {% endif %} required/>
+        <input type="text" name="fname" id="fname" {% if error %} value="{{fname}}" {% endif %} required/>
+    </div>
+    <div class="col-sm-6">
+        <label for="lname">Last Name:</label>
+    </div>
+    <div class="col-sm-6">
+        <input type="text" name="lname" id="lname" {% if error %} value="{{lname}}" {% endif %} required/>
     </div>
     <div class="col-sm-6">
         <label for="username">Username:</label>

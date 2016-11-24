@@ -130,3 +130,6 @@ STATICFILES_DIRS = ( os.path.join('static'), )
 
 MEDIA_ROOT = '/mnt/c/Users/Kanak/Desktop/sdp/sdp/uploads'
 MEDIA_URL = '/uploads/'
+
+LOGIN_REDIRECT_URL = 'participant'
+LOGIN_URL = 'login'

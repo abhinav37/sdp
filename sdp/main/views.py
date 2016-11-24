@@ -1,19 +1,24 @@
 from django.http import HttpResponse
-from .models import User
+from django.contrib.auth.models import User
 from django.template import loader
 from .models import Course, Category, Participant, Module, Component, Instructor
 from django.shortcuts import redirect
+from django.contrib.auth import authenticate, logout
+from django.contrib.auth.decorators import login_required
+
 import json
 
 def index(request):
-	try:
-		return HttpResponse(request.POST['enrolflag'])
-	except Exception,e:
-		return HttpResponse("404 Not found"); 
+	logout(request)
+	if request.user.is_authenticated:
+		return redirect('participant')
+	else:
+		return redirect('login') 
 
+@login_required
 def participant(request):
 	#TODO use participant id of logged in user
-	participantID = 11
+	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
 
@@ -76,7 +81,7 @@ def newCourse(request):
 
 def view_course(request,course_id):
 	#TODO get logged in participant id
-	participantID = 11
+	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
 	course = Course.objects.filter(id=course_id)[0]
@@ -100,7 +105,8 @@ def view_course(request,course_id):
 	return HttpResponse(template.render(context,request))
 
 def loadModules(request, course_id):
-	participantID = 11
+	#TODO get logged in participant id
+	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	lastUnlocked = participantObj.access
 	modules = Module.objects.filter(course_id=course_id, position__lte = lastUnlocked).order_by("position")
@@ -111,7 +117,7 @@ def loadModules(request, course_id):
 
 def addDrop(request):
 	#TODO get logged in participant id
-	participantID = 11
+	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	if request.POST['drop'] == "1":
 		participantObj.course_id = None
@@ -238,14 +244,19 @@ def callReg(request, context1):
 
 def regComplete(request):
 	uname = request.POST['username']
-	name = request.POST['name']
+	fname = request.POST['fname']
+	lname = request.POST['lname']
 	try:
 		userObjs = User.objects.get(username=uname)
-		context = {'error': 1, 'username': uname, 'name': name, }
+		context = {'error': 1, 'username': uname, 'fname': fname, 'lname': lname, }
 		return callReg(request, context)
 	except Exception, e:
-		newUser = User(username=uname, name=name, password=request.POST['pwd'])
+		newUser = User.objects.create_user(uname, None, request.POST['pwd']) 
+		newUser.first_name = fname
+		newUser.last_name = lname
+		newUser.is_staff = 0	
 		newUser.save()
+
 		newParti = Participant(pk=newUser.id)
 		newParti.save()
 		#TODO redirect to login page
