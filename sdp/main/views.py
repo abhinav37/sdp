@@ -14,7 +14,8 @@ def isInstructor(user):
     return user.is_staff==1
 
 def isAdmin(user):
-    return user.is_superuser==1
+	print user.is_superuser
+	return user.is_superuser
 
 def index(request):
 	if request.user.is_authenticated:
