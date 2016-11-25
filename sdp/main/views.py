@@ -146,7 +146,7 @@ def addDrop(request):
 	participantObj.save()
 	return redirect(participant)
 
-@login_required
+@login_required															
 def loadComponents(request):
 	participantID = request.POST.get('participant_id', False)
 	moduleID = request.POST['module_id']

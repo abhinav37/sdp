@@ -35,7 +35,7 @@
 					var csrftoken = getCookie('csrftoken');
 					$.ajax({
 						method: "POST",
-						url: "/main/instructor/new/add_module/",
+						url: "/main/instructor/new/addModule/",
 						beforeSend: function( xhr ) {
 							xhr.setRequestHeader("X-CSRFToken", csrftoken);
 						},
@@ -88,7 +88,7 @@
 					var csrftoken = getCookie('csrftoken');
 					$.ajax({
 						method: "POST",
-						url: "/main/instructor/new/add_component/",
+						url: "/main/instructor/new/addComponent/",
 						beforeSend: function( xhr ) {
 							xhr.setRequestHeader("X-CSRFToken", csrftoken);
 						},
