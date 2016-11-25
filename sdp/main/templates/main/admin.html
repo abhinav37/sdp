@@ -1,14 +1,9 @@
-<meta charset="utf-8">
-{% load static %}
+<meta charset="utf-8"> {% load static %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 <link rel="stylesheet" href="/static/css/bootstrap.css">
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
-
 
 <script>
 	function getCookie(name) {
@@ -33,12 +28,12 @@
 	function fxdel(o,name,cid)
 	{
 			var p=o.parentNode.parentNode;
-	   	if(confirm("you sure you want to delete"))
+	   	if(confirm("Are you sure?"))
 			{
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 						method: "POST",
-						url: "admindel/",
+						url: "deleteCategory/",
 						beforeSend: function( xhr ) {
 							xhr.setRequestHeader("X-CSRFToken", csrftoken);
 						},
@@ -100,7 +95,7 @@
 	
 	function opencat()
 	{
-		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input type="submit" value="Add Course" onclick="newcat()" /></div></div></div></div>'); 
+		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input type="submit" value="Add Category" onclick="newcat()" /></div></div></div></div>'); 
 	}
 	
 	function newcat()
@@ -111,25 +106,21 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 								method: "POST",
-								url: "newcat/",
+								url: "newCategory/",
 								beforeSend: function( xhr ) {
 									xhr.setRequestHeader("X-CSRFToken", csrftoken);
 								},
 								data: {cat: value}
 							}).done(function(msg){
 										if(msg=='exist')
-											alert("already exist");
+											alert("Category with this name already exists!");
 										else
-										{
-										$("#tt").append('<tr><td><h4><a href="course/'+msg+'/">'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><tr>');
-										}
+											$("#tt").append('<tr><td><h4><a href="course/'+msg+'/">'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><tr>');
 							});
-			
 			$("#openc").html('<a onclick=opencat()>   Create new Cateory</a>');
 		}
 		else
 		alert("Enter Category");
-	
 	}
 	
 	function fx(username,instructor)
@@ -143,148 +134,138 @@
 </script>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="#">Staff Development Platform	</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="Home.html">Home</a></li>
-        <li><a href="#">Courses Offered</a></li>
-        <li><a href="Home.html#ab">About Us</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="{%url "logout"%}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-      </ul>
-    </div>
-  </div>
+			<a class="navbar-brand" href="#">Staff Development Platform	</a>
+		</div>
+		<div class="collapse navbar-collapse" id="myNavbar">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="Home.html">Home</a></li>
+				<li><a href="#">Courses Offered</a></li>
+				<li><a href="Home.html#ab">About Us</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+			</ul>
+		</div>
+	</div>
 </nav>
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-  <div class="modal-dialog">
-    <div class="loginmodal-container">
-      <h1>Login to Your Account</h1><br>
-      <form>
-        <input type="text" name="user" placeholder="Username">
-        <input type="password" name="pass" placeholder="Password">
-        <input type="submit" name="login" class="login loginmodal-submit" value="Login">
-      </form>
+	<div class="modal-dialog">
+		<div class="loginmodal-container">
+			<h1>Login to Your Account</h1><br>
+			<form>
+				<input type="text" name="user" placeholder="Username">
+				<input type="password" name="pass" placeholder="Password">
+				<input type="submit" name="login" class="login loginmodal-submit" value="Login">
+			</form>
 
-      <div class="login-help">
-        <a href="#">Register</a> - <a href="#">Forgot Password</a>
-      </div>
-    </div>
-  </div>
+			<div class="login-help">
+				<a href="#">Register</a> - <a href="#">Forgot Password</a>
+			</div>
+		</div>
+	</div>
 </div>
 <div class="container-fluid" id="ticker" style="padding-top: 60px;">
-  <marquee>
-    <p>New News and programs</p>
-  </marquee>
+	<marquee>
+		<p>New News and programs</p>
+	</marquee>
 </div>
 
 
 <div class="container" style="padding-top:10px">
-  <h4>Categories   <button  type="button" style="font-size:10px;"class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button>
-  
-  
-  </h4>
-  <div class="col-md-12">
-     
-	<div class="row well">
-      <div class="collapse" id="demo">
-        {% if all_categories %}
-        <ul>
-          <div class="row">
-			<table class="table" id="tt">
-			<thead>
-			  <tr>
-				<th>Category name</th>
-				<th>Delete</th>
-				
-			  </tr>
-          </thead>
-			<tbody>
-			
-		  {% for category in all_categories %}
-            <tr>
-				<td><h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4></td>
-				<td><button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')"class="del">Delete</button</td>
-			</tr>
-		
-		  
-          {% endfor %}
-        </tbody>
-		  </table>
+	<h4>Categories <button type="button" style="font-size:10px;" class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button></h4>
+	<div class="col-md-12">
+		<div class="row well">
+			<div class="collapse" id="demo">
+				{% if all_categories %}
+				<ul>
+					<div class="row">
+						<table class="table" id="tt">
+							<thead>
+								<tr>
+									<th>Category</th>
+									<th>Delete</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for category in all_categories %}
+								<tr>
+									<td>
+										<h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4>
+									</td>
+									<td>
+										<button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')" class="del">Delete</button>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</ul>
+				{% else %}
+				<p>No categories are available.</p>
+				{% endif %}
+			</div>
+		</div>
+		<div id="openc">
+			<a onclick=opencat()>   Create new Cateory</a>
+		</div>
+	</div>
 </div>
-		
-		</ul>
-        {% else %}
-        <p>No categories are available.</p>
-        {% endif %}
-      </div>
 
-    </div>
-<div id="openc">
-<a onclick=opencat()>   Create new Cateory</a></div>
-
-  </div>
-</div>
 <div class="container" style="padding-top:10px">
-  <h4>Users   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">View Users</button></h4>
-  <div class="col-md-12">
-    <div class="row well">
-      <div class="collapse" id="demo2">
-        {% if all_users %}
-        <ul>
-          <div class="row">
+	<h4>Users <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">View Users</button></h4>
+	<div class="col-md-12">
+		<div class="row well">
+			<div class="collapse" id="demo2">
+				{% if all_users %}
+				<ul>
+					<div class="row">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Username</th>
+									<th>instructor</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for user in all_users %}
+								<tr>
+								<td>
+									<h4>{{ user }}</h4>
+								</td>
+								<td id="{{ user.name }}">No</td>
+								<td id="{{ user.name }}s">
+									<label class="switch"><input type="checkbox" onclick="fx1('{{user.name}}')" > 
+											<div class="slider round"></div>
+										</label>
+								</td>
+								{% for instructor in all_instructor %}
+								<script type="text/javascript">
+										fx('{{ user.name }}','{{ instructor.instructor }}');
+									</script> 
+								{% endfor %}
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+				</ul>
+				{% else %}
+				<p>No user added</p>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
 
-			<table class="table">
-			<thead>
-			  <tr>
-				<th>Username</th>
-				<th>instructor</th>
-				<th></th>
-			  </tr>
-          </thead>
-			<tbody>
-
-		{% for user in all_users %}
-            
-			<td><h4><a href="course/{{ course.id }}/">{{ user }}</a></h4></td>
-			
-			<td  id ="{{ user.name }}">No</td>			
-			<td  id ="{{ user.name }}s">			
-			<label class="switch">
-			<input type="checkbox" onclick="fx1('{{user.name}}')" >
-			<div class="slider round"></div>
-		</label></td>
-			{% for instructor in all_instructor %}
-			<script type="text/javascript">
-			fx('{{ user.name }}','{{ instructor.instructor }}');</script>
-				{% endfor %}
-					
-			</tr>
-			
-			
-          {% endfor %}
-        </tbody>
-		  </table>
-
-		</ul>
-        {% else %}
-        <p>No user added</p>
-        {% endif %}
-      </div></div>
-    </div>
-  </div>
-</div>
-
-<footer class="site-footer" style="padding-bottom: 10px;">
-  <p class="text-muted" align="center">Contact us</p>
-  <p class="text-muted" align="center">2016</p>
-</footer>
-<div class="col-md-3">
+	<footer class="site-footer" style="padding-bottom: 10px;">
+		<p class="text-muted" align="center">Contact us</p>
+		<p class="text-muted" align="center">2016</p>
+	</footer>

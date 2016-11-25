@@ -9,13 +9,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 import json
 
-#Tests for users
+#######Tests for users#######
 def isInstructor(user):
     return user.is_staff==1
 
 def isAdmin(user):
 	print user.is_superuser
 	return user.is_superuser
+#############################
 
 def index(request):
 	if request.user.is_authenticated:
@@ -84,7 +85,7 @@ def instructor(request):
 @login_required
 @user_passes_test(isInstructor)
 def newCourse(request):
-	#TODO change category id, intructor id, deployed implementation
+	#TODO deployed implementation
 	newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=-1, instructor_id=request.user.id)
 	newCourse.save()
 
@@ -98,7 +99,6 @@ def newCourse(request):
 
 @login_required
 def view_course(request,course_id):
-	#TODO get logged in participant id
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
@@ -124,7 +124,6 @@ def view_course(request,course_id):
 
 @login_required
 def loadModules(request, course_id):
-	#TODO get logged in participant id
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	lastUnlocked = participantObj.access
@@ -136,7 +135,6 @@ def loadModules(request, course_id):
 
 @login_required
 def addDrop(request):
-	#TODO get logged in participant id
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	if request.POST['drop'] == "1":
@@ -177,7 +175,7 @@ def loadComponentBody(request):
 	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
 	if compFile:
-		#TODO delete old file if exits
+		#TODO delete old file if exists
 		componentObj.file = compFile
 		componentObj.save()
 	
@@ -211,10 +209,7 @@ def addModule(request):
 	new_module = Module(name=request.POST['module_name'], position = module_position+1, course = courseObj)
 	new_module.save()
 
-	#calling the newCourse funciton again
-	
-	module_list = Module.objects.filter(course_id=course_id).order_by("position")
-	
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
 	template = loader.get_template('main/module.html')
 	context = {'modules': module_list}
  	return HttpResponse(template.render(context,request))
@@ -234,7 +229,6 @@ def addComponent(request):
 	new_component.save()
 
 	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")
-	
 	template = loader.get_template('main/componentList.html')
 	context = {'components': component_list, 'canAdd': 1}
  	return HttpResponse(template.render(context,request))
@@ -249,7 +243,6 @@ def editCourse(request, course_id):
 
 	template = loader.get_template('main/editCourse.html')
 	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
-
  	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -262,8 +255,10 @@ def admin(request):
 	
 	context = {'all_categories': all_categories,'all_users': all_users,'all_instructor':all_instructor }
 	return HttpResponse(template.render(context,request))
-	
-def admindel(request):
+
+@login_required
+@user_passes_test(isAdmin)
+def deleteCategory(request):
 	try:
 		if request.POST['category_id']:
 			x = Category.objects.filter(id=request.POST['category_id'])
@@ -281,7 +276,9 @@ def admindel(request):
 		return HttpResponse("ex")
 		print e
 		pass
-	
+
+@login_required
+@user_passes_test(isAdmin)
 def adminchange(request):
 	try:
 		if request.POST['val']=='2':
@@ -308,8 +305,9 @@ def adminchange(request):
 		print e
 		pass
 
-
-def newcat(request):
+@login_required
+@user_passes_test(isAdmin)
+def newCategory(request):
 	try:
 		if request.POST['cat']:
 			newCat=Category(name=request.POST['cat'])
@@ -317,7 +315,6 @@ def newcat(request):
 			return HttpResponse(newCat.id)
 		else:
 			return HttpResponse("exist")
-		
 	except Exception, e:
 		print e
 		pass
