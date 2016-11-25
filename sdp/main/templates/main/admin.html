@@ -211,7 +211,7 @@
 			
 		  {% for category in all_categories %}
             <tr>
-				<td><h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4></td>
+				<td><h4>{{ category.name }}</h4></td>
 				<td><button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')"class="del">Delete</button</td>
 			</tr>
 		
