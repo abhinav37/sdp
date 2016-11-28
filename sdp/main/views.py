@@ -14,7 +14,6 @@ def isInstructor(user):
     return user.is_staff==1
 
 def isAdmin(user):
-	print user.is_superuser
 	return user.is_superuser
 #############################
 
@@ -196,6 +195,31 @@ def partiComponentBody(request, course_id):
 
 @login_required
 @user_passes_test(isInstructor)
+def renameModule(request):
+	course_id = request.POST['course_id']
+	moduleToChange = Module.objects.filter(pk=request.POST['module_id'])[0]
+	moduleToChange.name = request.POST['module_name']
+	moduleToChange.save()
+
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
+	template = loader.get_template('main/module.html')
+	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
+def deleteModule(request):
+	course_id = request.POST['course_id']
+	moduleToDelete = Module.objects.filter(pk=request.POST['module_id'])[0]
+	moduleToDelete.delete()
+
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
+	template = loader.get_template('main/module.html')
+	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
 def addModule(request):
 	course_id = request.POST['course_id']
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
@@ -212,6 +236,18 @@ def addModule(request):
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
 	template = loader.get_template('main/module.html')
 	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
+def deleteComponent(request):
+	course_id = request.POST['course_id']
+	compToDelete = Component.objects.filter(pk=request.POST['component_id'])[0]
+	compToDelete.delete()
+
+	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")
+	template = loader.get_template('main/componentList.html')
+	context = {'components': component_list, 'canAdd': 1}
  	return HttpResponse(template.render(context,request))
 
 @login_required
