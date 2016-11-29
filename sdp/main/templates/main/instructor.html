@@ -99,7 +99,9 @@
     <div class="col-md-12">
       <h4>Your Courses</h4>
       <div class="row well">
-        <table>
+        <div class="row">
+        <table class="table" id="tt">
+          <thead>
           <tr>
             <td>
               Course name
@@ -108,17 +110,23 @@
               Deployed
             </td>
           </tr>
+          </thead>
+          <tbody>
           {% for course in course_list %}
           <tr>
             <td>
               <h4><a href="{% url 'editCourse' course.id %}" class="editCourse"> {{ course }} </a></h4>
             </td>
             <td>
-              <input type="checkbox" id="{{course.id}}" {% if course.deployed %} checked {% endif %} />
+              
+            		<label class="switch"><input type="checkbox" id="{{course.id}}" {% if course.deployed %} checked {% endif %} /><div class="slider round"></div></label>
+							
             </td>
           </tr>
           {% endfor %}
+        </tbody>
         </table>
+      </div>
       </div>
       <div style="padding-bottom: 10px;">
         <a href="new">Create New Course</a>

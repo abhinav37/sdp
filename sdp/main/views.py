@@ -42,14 +42,25 @@ def participant(request):
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
-
 	if participantObj.course_id is not None:
 		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
+		ids=[]
+		for course in allCourses:
+			if not course.category_id in ids:
+				ids.append(course.category_id)
+				
+		allCategory=Category.objects.filter(id__in=ids)
 		enrolledCourse = Course.objects.filter(pk=participantObj.course_id)[0]
-		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses, }
+		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses,'allCategory':allCategory, }
 	else:
 		allCourses = Course.objects.filter(deployed=1)
-		context = {'allCourses': allCourses, }
+		ids=[]
+		for course in allCourses:
+			if not course.category_id in ids:
+				ids.append(course.category_id)
+				
+		allCategory=Category.objects.filter(id__in=ids)
+		context = {'allCourses': allCourses,'allCategory':allCategory, }
 	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -123,7 +134,10 @@ def view_course(request,course_id):
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
 	course = Course.objects.filter(id=course_id)[0]
-	lastModule = Module.objects.filter(course_id=course_id).last().id
+	x=Module.objects.filter(course_id=course_id)
+	lastModule=Module()
+	if x:
+		lastModule = x.last().id
 	
 	if participantObj.course_id is None:
 		#not enrolled in any course, show everything + option to enroll
@@ -184,10 +198,11 @@ def loadComponents(request):
 	moduleID = request.POST['module_id']
 	courseID = request.POST['course_id']
 	canAdd = 1
+	modList = Module.objects.filter(course_id=courseID).order_by("position")
+	lastModule = modList.last().id
 	if participantID:
 		participantObj = Participant.objects.filter(pk=participantID)[0]
 		access = participantObj.access
-		modList = Module.objects.filter(course_id=courseID).order_by("position")
 		noOfMods = modList.count()
 		accessibleMod = modList[access-1].id
 		if accessibleMod == int(moduleID):
@@ -195,7 +210,6 @@ def loadComponents(request):
 				participantObj.access = access + 1
 				participantObj.save()
 		canAdd = 0
-		lastModule = modList.last().id
 		print lastModule
 
 	component_list = Component.objects.filter(module_id=moduleID, course_id=courseID).order_by("position")
