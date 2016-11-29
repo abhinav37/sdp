@@ -53,10 +53,10 @@
 	}
 			 
 			
-	function fx1(username)
+	function fx1(username,id)
 	{
-			document.getElementById(username).innerHTML="Yes";
-			document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+			document.getElementById(id+"_t").innerHTML="Yes";
+			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\''+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			var csrftoken = getCookie('csrftoken');
 			$.ajax({
 						method: "POST",
@@ -64,11 +64,11 @@
 						beforeSend: function( xhr ) {
 							xhr.setRequestHeader("X-CSRFToken", csrftoken);
 						},
-						data: {name: username,val: '1'}
+						data: {u_id: id,val: '1'}
 					}).done();
 	}		
 	
-	function fx2(username)
+	function fx2(username,id)
 	{				
 		var csrftoken = getCookie('csrftoken');
 		$.ajax({
@@ -77,17 +77,17 @@
 			beforeSend: function( xhr ) {
 				xhr.setRequestHeader("X-CSRFToken", csrftoken);
 			},
-			data: {name: username,val: 2}
+			data: {u_id: id,val: 2}
 		}).done(function(msg){
 						if(msg=='change')
 						{
-							document.getElementById(username).innerHTML="No";
-							document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\')" type="checkbox" ><div class="slider round"></div></label>';
+							document.getElementById(id+"_t").innerHTML="No";
+							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\','+id+')" type="checkbox" ><div class="slider round"></div></label>';
 						}
 					else
 			{		alert("instructor has courses")
-							document.getElementById(username).innerHTML="Yes";
-							document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+							document.getElementById(id+"_t").innerHTML="Yes";
+							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\''+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			}						
 			});
 	    
@@ -99,7 +99,7 @@
 	}
 	
 	function newcat()
-	{
+	{		alert("Enter Category");
 			var value=$("#catName").val();
 			if(value!="")
 			{
@@ -123,12 +123,12 @@
 		alert("Enter Category");
 	}
 	
-	function fx(username,instructor)
+	function fx(username,instructor,id)
 	{
 		if(username==instructor)
 		{
-			document.getElementById(username).innerHTML="Yes";
-			document.getElementById(username+"s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\')" type="checkbox" checked><div class="slider round"></div></label>';
+			document.getElementById(id+"_t").innerHTML="Yes";
+			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 		}		
 	}
 </script>
@@ -241,15 +241,15 @@
 								<td>
 									<h4>{{ user }}</h4>
 								</td>
-								<td id="{{ user.name }}">No</td>
-								<td id="{{ user.name }}s">
-									<label class="switch"><input type="checkbox" onclick="fx1('{{user.name}}')" > 
+								<td id="{{ user.id }}_t">No</td>
+								<td id="{{ user.id }}_s">
+									<label class="switch"><input type="checkbox" onclick="fx1('{{user.username}}',{{user.id}})" > 
 											<div class="slider round"></div>
 										</label>
 								</td>
 								{% for instructor in all_instructor %}
 								<script type="text/javascript">
-										fx('{{ user.name }}','{{ instructor.instructor }}');
+										fx('{{ user.username }}','{{ instructor.instructor }}',{{ user.id }});
 									</script> 
 								{% endfor %}
 								</tr>

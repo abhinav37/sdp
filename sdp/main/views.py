@@ -328,30 +328,30 @@ def deleteCategory(request):
 
 @login_required
 @user_passes_test(isAdmin)
-def adminchange(request):
+def adminchange(request): 
 	try:
 		if request.POST['val']=='2':
-			us=User.objects.filter(username=request.POST['name'])
+			
+			us=User.objects.filter(id=request.POST['u_id'])
 			x = Instructor.objects.filter(instructor=us)
 			if not Course.objects.filter(instructor=x):
-				us=User(username=request.POST['name'])
-				x = Instructor(us)
-				x.save()
-				print "yes"
+				us=User.objects.filter(id=request.POST['u_id'])[0]
+				Instructor.objects.filter(instructor_id=us.id).delete()
+				print "deleted"
 				return HttpResponse("change")
 			else:
 				print "has course"
 				return HttpResponse("no")
 		elif request.POST['val']=='1':
-				us=User(username=request.POST['name'])
-				x = Instructor(us)
+				us=User.objects.filter(id=request.POST['u_id'])[0]
+				x = Instructor(us.id)
 				x.save()
 				return HttpResponse("done")
 		
 	
 	except Exception, e:
-		return HttpResponse("expetion")
 		print e
+		return HttpResponse("expetion")
 		pass
 
 @login_required
