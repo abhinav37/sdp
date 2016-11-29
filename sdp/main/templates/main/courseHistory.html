@@ -36,11 +36,15 @@
   <div class="col-md-12">
     <h4>All Participants</h4>
     <div class="row well">
+    {% if courseHistory %} 
       {% for course in courseHistory %}
       <div class="row">
-        <h4>{{participantObj}}</a></h4>
+        <h4>{{course.course}}</a></h4>
       </div>
       {% endfor %}
+    {% else %}
+      <p>The participant has not completed any course.</p>
+    {% endif %}
     </div>
     
   </div>
