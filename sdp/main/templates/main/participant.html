@@ -80,6 +80,22 @@
         <p>No other courses are available.</p>
         {% endif %}
       </div>
+
+      <div class="row well">
+        <h4>Completed Courses</h4>
+        {% if courseObj %}
+        <ul>
+          {% for course in courseObj %}
+          <div class="row">
+            <h7><a href="{% url 'completedCourses' course.id %}">{{ course.course }}</a></h7>
+          </div>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No other courses are available.</p>
+        {% endif %}
+      </div>
+
     </div>
   </div>
 </div>
