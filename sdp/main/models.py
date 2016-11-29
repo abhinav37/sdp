@@ -5,13 +5,6 @@ from django.db import models
 
 # Create your models here.
 
-''' class User(models.Model):
-	username = models.CharField(max_length=8)
-	password = models.CharField(max_length=10)
-	name = models.CharField(max_length=40)
-	def __str__(self):
-		return self.name '''
-	
 class Instructor(models.Model):
 	instructor = models.OneToOneField(
         User,
@@ -62,6 +55,16 @@ class Participant(models.Model):
 	access = models.IntegerField(default=0)
 	def __str__(self):
 		return self.participant.first_name + " " + self.participant.last_name 
+
+class HR(models.Model):
+	hr_id = models.IntegerField(default=0)
+
+
+class History(models.Model):
+	history_id = models.IntegerField(default=0)
+	course = models.ForeignKey(Course, on_delete=models.CASCADE)
+	participant = models.ForeignKey(Participant)
+	
 
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver

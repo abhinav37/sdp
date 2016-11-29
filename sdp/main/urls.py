@@ -14,6 +14,7 @@ urlpatterns = [
 	url(r'^instructor/deployCourse/$', views.deployCourse, name='deployCourse'),
 	url(r'^instructor/edit/(?P<course_id>\d+)/$', views.editCourse, name='editCourse'),
 	url(r'^participant/course/(?P<course_id>\d+)/$', views.view_course, name='view'),
+	url(r'^participant/course/(?P<course_id>\d+)/(?P<participant_id>\d+)/complete/$', views.completeCourse, name='completeCourse'),
 	url(r'^addDrop/$', views.addDrop, name='addDrop'),
 	url(r'^instructor/new/loadComponents/$', views.loadComponents, name='loadComponents'),
 	url(r'^instructor/new/addModule/$', views.addModule, name='addModules'),
@@ -31,7 +32,8 @@ urlpatterns = [
 	url(r'^regComplete/$', views.regComplete, name='regComplete'),
 	url(r'^participant/course/(?P<course_id>\d+)/partiComponentBody/$', views.partiComponentBody, name='partiComponentBody'),
 	url(r'^participant/course/(?P<course_id>\d+)/loadModules/$', views.loadModules, name='loadModules'),
-
+	url(r'^hr/$', views.participantList, name='participantList'),
+	url(r'^hr/(?P<participant_id>\d+)/$', views.courseHistory, name='courseHistory'),
     url(r'^login/$', auth_views.login, {'template_name': 'main/login.html'}, name='login'),
     url(r'^logout/$', views.logOut, name='logout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

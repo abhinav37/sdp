@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import Course, Category, Participant, Module, Component, Instructor
+from .models import Course, Category, Participant, Module, Component, Instructor, HR, History
 from django.shortcuts import redirect
 
 from django.contrib.auth.models import User
@@ -17,6 +17,13 @@ def isAdmin(user):
 	return user.is_superuser
 #############################
 
+def isHR(user):
+	ishr = HR.objects.filter(hr_id=user_id)
+	if ishr:
+		return True
+	else:
+		return False
+
 def index(request):
 	if request.user.is_authenticated:
 		return redirect('participant')
@@ -27,6 +34,7 @@ def logOut(request):
 	if request.user.is_authenticated:
 		logout(request)
 	return redirect('login') 
+
 
 @login_required
 def participant(request):
@@ -115,7 +123,8 @@ def view_course(request,course_id):
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
 	course = Course.objects.filter(id=course_id)[0]
-
+	lastModule = Module.objects.filter(course_id=course_id).last().id
+	
 	if participantObj.course_id is None:
 		#not enrolled in any course, show everything + option to enroll
 		modules = Module.objects.filter(course_id=course_id).order_by("position")
@@ -131,8 +140,19 @@ def view_course(request,course_id):
 			modules = Module.objects.filter(course_id=course_id).order_by("position")
 			x = 2
 
-	context={'course': course, 'modules': modules, 'enrollStatus': x, 'participant_id': participantID }
+	context={'course': course, 'modules': modules, 'enrollStatus': x, 'participant_id': participantID, 'lastModule': lastModule }
 	return HttpResponse(template.render(context,request))
+
+def completeCourse(request, course_id, participant_id):
+	modCount = Module.objects.filter(course_id=course_id).count()
+	participantObj = Participant.objects.filter(pk=participant_id)[0]
+	if participantObj.access == modCount:
+		#history = History(course=course_id, participant=participant_id)
+		participantObj.course_id = None
+		participantObj.access = 0
+		participantObj.save()
+	
+	return redirect(participant)
 
 @login_required
 def loadModules(request, course_id):
@@ -175,9 +195,11 @@ def loadComponents(request):
 				participantObj.access = access + 1
 				participantObj.save()
 		canAdd = 0
+		lastModule = modList.last().id
+		print lastModule
 
 	component_list = Component.objects.filter(module_id=moduleID, course_id=courseID).order_by("position")
-	context = {'components': component_list, 'module_id': moduleID, 'canAdd':canAdd}
+	context = {'components': component_list, 'module_id': moduleID, 'canAdd': canAdd , 'lastModule': lastModule }
 	template = loader.get_template('main/componentList.html')
 	return HttpResponse(template.render(context,request))
 
@@ -411,4 +433,18 @@ def regComplete(request):
 		newParti.save()
 		#TODO redirect to login page
 		return redirect('login')
-	
+
+
+def participantList(request):
+	template = loader.get_template('main/hr.html')
+	all_users = User.objects.all()
+	context = {'all_users' : all_users}
+	return HttpResponse(template.render(context,request))
+
+
+def courseHistory(request, participant_id):	
+	template = loader.get_template('main/courseHistory.html')
+	courseHistory = History.objects.filter(participant=participant_id)
+	participantObj = Participant.objects.filter(pk = participant_id)
+	context = {'courseHistory': courseHistory, 'participantObj': participantObj[0]}
+	return HttpResponse(template.render(context,request))
