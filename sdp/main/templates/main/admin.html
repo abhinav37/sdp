@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/static/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
+<title>Administrator</title>
 <script>
 	function getCookie(name) {
 				var cookieValue = null;
@@ -86,7 +86,7 @@
 	function fx1(username,id)
 	{
 			document.getElementById(id+"_t").innerHTML="Yes";
-			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\''+id+')" type="checkbox" checked><div class="slider round"></div></label>';
+			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			var csrftoken = getCookie('csrftoken');
 			$.ajax({
 						method: "POST",
@@ -117,7 +117,7 @@
 					else
 			{		alert("instructor has courses")
 							document.getElementById(id+"_t").innerHTML="Yes";
-							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\''+id+')" type="checkbox" checked><div class="slider round"></div></label>';
+							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			}						
 			});
 	    
@@ -279,8 +279,3 @@
 			</div>
 		</div>
 	</div>
-
-	<footer class="site-footer" style="padding-bottom: 10px;">
-		<p class="text-muted" align="center">Contact us</p>
-		<p class="text-muted" align="center">2016</p>
-	</footer>
