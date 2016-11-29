@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-import json
+import json,datetime
 
 #######Tests for users#######
 def isInstructor(user):
@@ -42,11 +42,11 @@ def participant(request):
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
-<<<<<<< HEAD
+
 	courseObj = History.objects.filter(participant=request.user.id)
 
-=======
->>>>>>> 554e97e1f290cd911f1e14976e5fba3086583784
+	print courseObj
+
 	if participantObj.course_id is not None:
 		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
 		ids=[]
@@ -56,20 +56,20 @@ def participant(request):
 				
 		allCategory=Category.objects.filter(id__in=ids)
 		enrolledCourse = Course.objects.filter(pk=participantObj.course_id)[0]
-		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses,'allCategory':allCategory, }
+		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses,'allCategory':allCategory,'courseObj':courseObj }
 	else:
 		allCourses = Course.objects.filter(deployed=1)
-<<<<<<< HEAD
+
 		context = {'allCourses': allCourses, 'courseObj':courseObj }
-=======
+
 		ids=[]
 		for course in allCourses:
 			if not course.category_id in ids:
 				ids.append(course.category_id)
 				
 		allCategory=Category.objects.filter(id__in=ids)
-		context = {'allCourses': allCourses,'allCategory':allCategory, }
->>>>>>> 554e97e1f290cd911f1e14976e5fba3086583784
+		context = {'allCourses': allCourses,'allCategory':allCategory,'courseObj':courseObj }
+
 	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -172,22 +172,20 @@ def viewFullContent(request,course_id):
 	template=loader.get_template('main/viewFullContent.html')
 	course = Course.objects.filter(id=course_id)[0]
 	lastModule = Module.objects.filter(course_id=course_id).last()
-	print course
+	modules = Module.objects.filter(course_id=course_id).order_by("position")
 	if participantObj.course_id is None:
 		#not enrolled in any course, show everything + option to enroll
-		modules = Module.objects.filter(course_id=course_id).order_by("position")
-		x = 3
+		
+		x = 1
 	else:
 		if participantObj.course_id == int(course_id):
 			#load course accordingly, as this is Participant's enrolled course
-			lastUnlocked = participantObj.access
-			modules = Module.objects.filter(course_id=course_id).order_by("position")
-			x = 1
+			x = 2
 		else:
 			#load course accordingly, Participant is enrolled in another course. give option to drop current course to get this course
-			modules = Module.objects.filter(course_id=course_id).order_by("position")
-			x = 2
-	print modules
+			x = 3
+
+
 	context={'course': course, 'modules': modules, 'enrollStatus': x, 'participant_id': participantID }
 	return HttpResponse(template.render(context,request))
 
@@ -196,8 +194,14 @@ def completeCourse(request, course_id, participant_id):
 	participantObj = Participant.objects.filter(pk=participant_id)[0]
 	if participantObj.access == modCount:
 		courseObj = Course.objects.filter(pk=course_id)[0]
-		history = History(course=courseObj, participant=participantObj)
-		history.save()
+		var = History.objects.filter(course=course_id, participant= participant_id)
+		if var:
+			var[0].date = datetime.date.today
+			var[0].save()
+		else:
+			history = History(course=courseObj, participant=participantObj)
+			history.save()
+
 		participantObj.course_id = None
 		participantObj.access = 0
 		participantObj.save()
@@ -236,12 +240,15 @@ def loadComponents(request):
 	modList = Module.objects.filter(course_id=courseID).order_by("position")
 	lastModule = modList.last().id
 	canAdd = 1
-<<<<<<< HEAD
+	if isInstructor(request.user):
+		canAdd=1
+	else:
+		canAdd =0
 	lastModule = Module()
-=======
+
 	modList = Module.objects.filter(course_id=courseID).order_by("position")
 	lastModule = modList.last().id
->>>>>>> 554e97e1f290cd911f1e14976e5fba3086583784
+
 	if participantID:
 		participantObj = Participant.objects.filter(pk=participantID)[0]
 		access = participantObj.access

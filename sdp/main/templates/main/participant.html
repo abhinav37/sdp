@@ -97,7 +97,7 @@
         <ul>
           {% for course in courseObj %}
           <div class="row">
-            <h7><a href="{% url 'completedCourses' course.id %}">{{ course.course }}</a></h7>
+            <h7><a href="{% url 'completedCourses' course.course_id %}">{{ course.course }}</a></h7>
           </div>
           {% endfor %}
         </ul>
