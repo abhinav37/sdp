@@ -14,6 +14,7 @@ urlpatterns = [
 	url(r'^instructor/deployCourse/$', views.deployCourse, name='deployCourse'),
 	url(r'^instructor/edit/(?P<course_id>\d+)/$', views.editCourse, name='editCourse'),
 	url(r'^participant/course/(?P<course_id>\d+)/$', views.view_course, name='view'),
+	url(r'^participant/course/(?P<course_id>\d+)/(?P<participant_id>\d+)/complete/$', views.completeCourse, name='completeCourse'),
 	url(r'^addDrop/$', views.addDrop, name='addDrop'),
 	url(r'^instructor/new/loadComponents/$', views.loadComponents, name='loadComponents'),
 	url(r'^instructor/new/addModule/$', views.addModule, name='addModules'),
