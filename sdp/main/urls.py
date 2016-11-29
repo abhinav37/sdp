@@ -26,6 +26,7 @@ urlpatterns = [
 	url(r'^admin/newCategory/$', views.newCategory, name='newCategory'),
 	url(r'^admin/adminchange/$', views.adminchange, name='adminchange'),
 	url(r'^admin/deleteCategory/$', views.deleteCategory, name='deleteCategory'),
+	url(r'^admin/renamecat/$', views.renamecat, name='renamecat'),
 	url(r'^register/$', views.register, name='register'),
 	url(r'^regComplete/$', views.regComplete, name='regComplete'),
 	url(r'^participant/course/(?P<course_id>\d+)/partiComponentBody/$', views.partiComponentBody, name='partiComponentBody'),
