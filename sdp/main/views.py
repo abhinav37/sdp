@@ -45,7 +45,7 @@ def participant(request):
 
 	courseObj = History.objects.filter(participant=request.user.id)
 
-	print courseObj
+	
 
 	if participantObj.course_id is not None:
 		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
@@ -85,7 +85,7 @@ def instructor(request):
 
 		if request.POST['compsPositions'] != "":
 			comps = json.loads(request.POST['compsPositions'])
-			print comps
+			
 			for key, value in comps.iteritems():
 				for idx,comp in enumerate(value):
 					compo = Component.objects.filter(pk=int(comp))[0]
@@ -119,7 +119,6 @@ def newCourse(request):
 	category_list = Category.objects.all()
 	course_id = Course.objects.all().order_by("id").reverse()[0].id
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
-	
 	template = loader.get_template('main/new.html')
 	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
  	return HttpResponse(template.render(context,request))
@@ -128,7 +127,7 @@ def newCourse(request):
 @user_passes_test(isInstructor)
 def deployCourse(request):
 	participants = Participant.objects.filter(course_id = request.POST['course_id'])
-	print participants
+	
 	if not participants:
 		course = Course.objects.filter(pk=request.POST['course_id'])[0]
 		course.deployed = 1 - course.deployed
@@ -195,9 +194,11 @@ def completeCourse(request, course_id, participant_id):
 	if participantObj.access == modCount:
 		courseObj = Course.objects.filter(pk=course_id)[0]
 		var = History.objects.filter(course=course_id, participant= participant_id)
+		print var
 		if var:
-			var[0].date = datetime.date.today
+			var[0].dateCompleted = datetime.date.today()
 			var[0].save()
+			
 		else:
 			history = History(course=courseObj, participant=participantObj)
 			history.save()
@@ -259,7 +260,6 @@ def loadComponents(request):
 				participantObj.access = access + 1
 				participantObj.save()
 		canAdd = 0
-		print lastModule
 
 	component_list = Component.objects.filter(module_id=moduleID, course_id=courseID).order_by("position")
 	context = {'components': component_list, 'module_id': moduleID, 'canAdd': canAdd , 'lastModule': lastModule }
@@ -421,6 +421,8 @@ def adminchange(request):
 			x = Instructor.objects.filter(instructor=us)
 			if not Course.objects.filter(instructor=x):
 				us=User.objects.filter(id=request.POST['u_id'])[0]
+				us.is_staff=False
+				us.save()
 				Instructor.objects.filter(instructor_id=us.id).delete()
 				print "deleted"
 				return HttpResponse("change")
@@ -429,6 +431,8 @@ def adminchange(request):
 				return HttpResponse("no")
 		elif request.POST['val']=='1':
 				us=User.objects.filter(id=request.POST['u_id'])[0]
+				us.is_staff=True
+				us.save()
 				x = Instructor(us.id)
 				x.save()
 				return HttpResponse("done")
