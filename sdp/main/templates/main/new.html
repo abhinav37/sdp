@@ -46,6 +46,7 @@
 					},
 					data: {module_id: this.id, course_id: {{course_id}}, module_name: $("#module_name").val() }
 				}).done(function( msg ) {
+					$("#module_name").val("");
 					$("#moduleContainer").html(msg);						
 					$( "#modules" ).sortable({ stop: modulesSortEventHandler });
 					$( "#modules" ).disableSelection();
@@ -76,6 +77,9 @@
 					},
 					data: {module_id: this.id, course_id: {{course_id}} }
 				}).done(function( msg ) {
+					$("#moduleEdit").show();
+					var search = "#modules li #"+modSelected;
+					$("#moduleRenameText").val($(search).html());
 					$("#compContainer").html(msg);
 					$( "#components" ).sortable({ stop: compsSortEventHandler });
 					$( "#components" ).disableSelection();
@@ -153,9 +157,71 @@
 					data: fd
 				}).done(function( msg ) {
 					$("#componentBody").html(msg);
-		
+				});
+			});	
+
+			$("#compContainer").on("click", ".componentDelete", function(event){
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "deleteComponent/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {course_id: {{course_id}}, module_id: modSelected, component_id: this.id }
+				}).done(function( msg ) {
+					$("#compContainer").html(msg);
+				});
+			});	
+
+			$("#renameMod").click(function(){
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "renameModule/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {course_id: {{course_id}}, module_id: modSelected, module_name: $("#moduleRenameText").val() }
+				}).done(function( msg ) {
+					$("#moduleContainer").html(msg);						
+					$( "#modules" ).sortable({ stop: modulesSortEventHandler });
+					$( "#modules" ).disableSelection();
+					
+					//restore old order of modules
+					modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
+					$.each(modulesOrder, function(key, val){
+						var mod = "#modules > #"+val;
+						$( "#modules" ).append($(mod));
+					});
+					$("#moduleContainer").find('#' + modSelected).addClass("active");
 				});
 			});		
+
+			$("#deleteMod").click(function(){
+				var csrftoken = getCookie('csrftoken');
+				$.ajax({
+					method: "POST",
+					url: "deleteModule/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {course_id: {{course_id}}, module_id: modSelected }
+				}).done(function( msg ) {
+					$("#moduleEdit").hide();
+					$("#compContainer").hide();
+					$("#moduleContainer").html(msg);						
+					$( "#modules" ).sortable({ stop: modulesSortEventHandler });
+					$( "#modules" ).disableSelection();
+					
+					//restore old order of modules
+					modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
+					$.each(modulesOrder, function(key, val){
+						var mod = "#modules > #"+val;
+						$( "#modules" ).append($(mod));
+					});
+				});
+			});	
 		});
 		
 		function formSubmit(){
@@ -176,6 +242,7 @@
 	}
 	</script>
 </head>
+
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
@@ -194,7 +261,7 @@
 					<li><a href="Home.html#ab">About Us</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="{%url "logout"%}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+					<li><a href="{%url "logout" %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
 				</ul>
 			</div>
 		</div>
@@ -220,14 +287,14 @@
 			<p>New News and programs</p>
 		</marquee>
 	</div>
-	
-	
-	
+
+
+
 	<div class="container">
-	<h4>Enter Course Details</h4>	
+		<h4>Enter Course Details</h4>
 		<div class="col-md-12">
 			<div class="row well">
-				
+
 				<form action="{% url 'instructor' %}" method="post">
 					{% csrf_token %}
 					<div class="col-sm-6">
@@ -252,41 +319,47 @@
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
-				
+
 				{% for category in categories %}
-			<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
-			{% endfor %}
+				<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
+				{% endfor %}
 			</div>
 		</div>
 	</div>
-	
-	<div  class="container">
-		<div class="col-md-12">
-			<div class="row well">
-			<div id="moduleContainer"></div>
-			<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
-	<a href="#" id="addMod" onclick="unhide()">Add Module</a>
-	
-	</div>
-		</div>
-	</div>
-	
+
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
-	
-	<div id="compContainer"></div>
-	
-	<input type="hidden" value="{{course_id}}" name="course_id" />
-	<input type="hidden" value="" name="modulePositions" id="modulePositions" />
-	<input type="hidden" value="" name="compsPositions" id="compsPositions" />
-	<input type="submit" value="Add Course" onclick="formSubmit()" /></div>
+				<div id="moduleContainer"></div>
+				<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
+				<a href="#" id="addMod" onclick="unhide()">Add Module</a>
+				<div id="moduleEdit" hidden>
+					</br>
+					<input type="text" name="moduleRename" id="moduleRenameText" />
+					<a href="#" id="renameMod">Rename Module</a>
+					<a href="#" id="deleteMod">Delete Module</a>
+				</div>
+				</br>
+			</div>
 		</div>
 	</div>
-	
+
+	<div class="container">
+		<div class="col-md-12">
+			<div class="row well">
+
+				<div id="compContainer"></div>
+
+				<input type="hidden" value="{{course_id}}" name="course_id" />
+				<input type="hidden" value="" name="modulePositions" id="modulePositions" />
+				<input type="hidden" value="" name="compsPositions" id="compsPositions" />
+				<input type="submit" value="Add Course" onclick="formSubmit()" /></div>
+		</div>
+	</div>
+
 	</form>
 	<script>$("#compContainer").hide();</script>
-	
+
 	</div>
 	<footer class="site-footer" style="padding-bottom: 10px;">
 		<p class="text-muted" align="center">Contact us</p>

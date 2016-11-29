@@ -9,13 +9,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 import json
 
-#Tests for users
+#######Tests for users#######
 def isInstructor(user):
     return user.is_staff==1
 
 def isAdmin(user):
-	print user.is_superuser
 	return user.is_superuser
+#############################
 
 def isHR(user):
 	ishr = HR.objects.filter(hr_id=user_id)
@@ -44,11 +44,11 @@ def participant(request):
 	template = loader.get_template('main/participant.html')
 
 	if participantObj.course_id is not None:
-		allCourses = Course.objects.exclude(pk=participantObj.course_id)
+		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
 		enrolledCourse = Course.objects.filter(pk=participantObj.course_id)[0]
 		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses, }
 	else:
-		allCourses = Course.objects.all()
+		allCourses = Course.objects.filter(deployed=1)
 		context = {'allCourses': allCourses, }
 	return HttpResponse(template.render(context,request))
 
@@ -92,7 +92,7 @@ def instructor(request):
 @login_required
 @user_passes_test(isInstructor)
 def newCourse(request):
-	#TODO change category id, intructor id, deployed implementation
+	#TODO deployed implementation
 	newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=-1, instructor_id=request.user.id)
 	newCourse.save()
 
@@ -105,8 +105,20 @@ def newCourse(request):
  	return HttpResponse(template.render(context,request))
 
 @login_required
+@user_passes_test(isInstructor)
+def deployCourse(request):
+	participants = Participant.objects.filter(course_id = request.POST['course_id'])
+	print participants
+	if not participants:
+		course = Course.objects.filter(pk=request.POST['course_id'])[0]
+		course.deployed = 1 - course.deployed
+		course.save()
+	 	return HttpResponse("Success")
+	else:
+		return HttpResponse("Fail")
+
+@login_required
 def view_course(request,course_id):
-	#TODO get logged in participant id
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
@@ -132,7 +144,6 @@ def view_course(request,course_id):
 
 @login_required
 def loadModules(request, course_id):
-	#TODO get logged in participant id
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	lastUnlocked = participantObj.access
@@ -144,7 +155,6 @@ def loadModules(request, course_id):
 
 @login_required
 def addDrop(request):
-	#TODO get logged in participant id
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	if request.POST['drop'] == "1":
@@ -185,7 +195,7 @@ def loadComponentBody(request):
 	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
 	if compFile:
-		#TODO delete old file if exits
+		#TODO delete old file if exists
 		componentObj.file = compFile
 		componentObj.save()
 	
@@ -206,6 +216,31 @@ def partiComponentBody(request, course_id):
 
 @login_required
 @user_passes_test(isInstructor)
+def renameModule(request):
+	course_id = request.POST['course_id']
+	moduleToChange = Module.objects.filter(pk=request.POST['module_id'])[0]
+	moduleToChange.name = request.POST['module_name']
+	moduleToChange.save()
+
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
+	template = loader.get_template('main/module.html')
+	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
+def deleteModule(request):
+	course_id = request.POST['course_id']
+	moduleToDelete = Module.objects.filter(pk=request.POST['module_id'])[0]
+	moduleToDelete.delete()
+
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
+	template = loader.get_template('main/module.html')
+	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
 def addModule(request):
 	course_id = request.POST['course_id']
 	module_list = Module.objects.filter(course_id=course_id).order_by("position")
@@ -219,12 +254,21 @@ def addModule(request):
 	new_module = Module(name=request.POST['module_name'], position = module_position+1, course = courseObj)
 	new_module.save()
 
-	#calling the newCourse funciton again
-	
-	module_list = Module.objects.filter(course_id=course_id).order_by("position")
-	
+	module_list = Module.objects.filter(course_id=course_id).order_by("position")	
 	template = loader.get_template('main/module.html')
 	context = {'modules': module_list}
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
+def deleteComponent(request):
+	course_id = request.POST['course_id']
+	compToDelete = Component.objects.filter(pk=request.POST['component_id'])[0]
+	compToDelete.delete()
+
+	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")
+	template = loader.get_template('main/componentList.html')
+	context = {'components': component_list, 'canAdd': 1}
  	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -242,7 +286,6 @@ def addComponent(request):
 	new_component.save()
 
 	component_list = Component.objects.filter(course_id=request.POST['course_id'], module_id=request.POST['module_id']).order_by("position")
-	
 	template = loader.get_template('main/componentList.html')
 	context = {'components': component_list, 'canAdd': 1}
  	return HttpResponse(template.render(context,request))
@@ -257,7 +300,6 @@ def editCourse(request, course_id):
 
 	template = loader.get_template('main/editCourse.html')
 	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
-
  	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -270,8 +312,10 @@ def admin(request):
 	
 	context = {'all_categories': all_categories,'all_users': all_users,'all_instructor':all_instructor }
 	return HttpResponse(template.render(context,request))
-	
-def admindel(request):
+
+@login_required
+@user_passes_test(isAdmin)
+def deleteCategory(request):
 	try:
 		if request.POST['category_id']:
 			x = Category.objects.filter(id=request.POST['category_id'])
@@ -289,35 +333,38 @@ def admindel(request):
 		return HttpResponse("ex")
 		print e
 		pass
-	
-def adminchange(request):
+
+@login_required
+@user_passes_test(isAdmin)
+def adminchange(request): 
 	try:
 		if request.POST['val']=='2':
-			us=User.objects.filter(username=request.POST['name'])
+			
+			us=User.objects.filter(id=request.POST['u_id'])
 			x = Instructor.objects.filter(instructor=us)
 			if not Course.objects.filter(instructor=x):
-				us=User(username=request.POST['name'])
-				x = Instructor(us)
-				x.save()
-				print "yes"
+				us=User.objects.filter(id=request.POST['u_id'])[0]
+				Instructor.objects.filter(instructor_id=us.id).delete()
+				print "deleted"
 				return HttpResponse("change")
 			else:
 				print "has course"
 				return HttpResponse("no")
 		elif request.POST['val']=='1':
-				us=User(username=request.POST['name'])
-				x = Instructor(us)
+				us=User.objects.filter(id=request.POST['u_id'])[0]
+				x = Instructor(us.id)
 				x.save()
 				return HttpResponse("done")
 		
 	
 	except Exception, e:
-		return HttpResponse("expetion")
 		print e
+		return HttpResponse("expetion")
 		pass
 
-
-def newcat(request):
+@login_required
+@user_passes_test(isAdmin)
+def newCategory(request):
 	try:
 		if request.POST['cat']:
 			newCat=Category(name=request.POST['cat'])
@@ -325,7 +372,6 @@ def newcat(request):
 			return HttpResponse(newCat.id)
 		else:
 			return HttpResponse("exist")
-		
 	except Exception, e:
 		print e
 		pass
