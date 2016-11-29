@@ -1,0 +1,32 @@
+
+{% block content %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+			<a class="navbar-brand" href="#">Staff Development Platform	</a>
+		</div>
+		<div class="collapse navbar-collapse" id="myNavbar">
+			<ul class="nav navbar-nav">
+				{%if request.user.is_superuser%}
+                <li ><a href='{%url "admin"}'>Admin</a></li>
+				{% endif %}
+                <li><a href='{%url "participant"%}'>Courses Offered</a></li>
+				{%if request.user.is_staff%}
+				<li><a href='{%url "instructor"%}'>Instructor</a></li>
+                {% endif %}
+                {%if request.user.is_staff%}
+                <li><a href='{%url "participantList" %}'>HR</a></li>
+                {% endif %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+{% endblock %}

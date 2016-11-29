@@ -376,6 +376,8 @@ def adminchange(request):
 			x = Instructor.objects.filter(instructor=us)
 			if not Course.objects.filter(instructor=x):
 				us=User.objects.filter(id=request.POST['u_id'])[0]
+				us.is_staff=False
+				us.save()
 				Instructor.objects.filter(instructor_id=us.id).delete()
 				print "deleted"
 				return HttpResponse("change")
@@ -384,6 +386,8 @@ def adminchange(request):
 				return HttpResponse("no")
 		elif request.POST['val']=='1':
 				us=User.objects.filter(id=request.POST['u_id'])[0]
+				us.is_staff=True
+				us.save()
 				x = Instructor(us.id)
 				x.save()
 				return HttpResponse("done")
