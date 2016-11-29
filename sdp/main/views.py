@@ -392,6 +392,23 @@ def newCategory(request):
 		print e
 		pass
 
+
+@login_required
+@user_passes_test(isAdmin)
+def renamecat(request):
+	try:
+		if request.POST['cat_id']:
+			x=Category.objects.filter(id=request.POST['cat_id'])[0]
+			x.name=request.POST['cat_na']
+			x.save()
+			print "renamed"
+			return HttpResponse("rnm")
+		else:
+			return HttpResponse("not")
+	except Exception, e:
+		print e
+		pass
+
 def register(request):
 	return callReg(request, {})
 
