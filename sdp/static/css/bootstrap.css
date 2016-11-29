@@ -46,6 +46,26 @@
 .site-footer,.page-wrap:after {
 	height: 60px;
 }
+.rnm {
+	background-color:white;
+	color:blue;
+	border: none;
+    
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+.rnm:hover {
+    background-color:blue;
+    color: white;
+}
+
 .del {
 	background-color:white;
 	color:red;

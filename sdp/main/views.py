@@ -42,15 +42,34 @@ def participant(request):
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
+<<<<<<< HEAD
 	courseObj = History.objects.filter(participant=request.user.id)
 
+=======
+>>>>>>> 554e97e1f290cd911f1e14976e5fba3086583784
 	if participantObj.course_id is not None:
 		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
+		ids=[]
+		for course in allCourses:
+			if not course.category_id in ids:
+				ids.append(course.category_id)
+				
+		allCategory=Category.objects.filter(id__in=ids)
 		enrolledCourse = Course.objects.filter(pk=participantObj.course_id)[0]
-		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses, }
+		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses,'allCategory':allCategory, }
 	else:
 		allCourses = Course.objects.filter(deployed=1)
+<<<<<<< HEAD
 		context = {'allCourses': allCourses, 'courseObj':courseObj }
+=======
+		ids=[]
+		for course in allCourses:
+			if not course.category_id in ids:
+				ids.append(course.category_id)
+				
+		allCategory=Category.objects.filter(id__in=ids)
+		context = {'allCourses': allCourses,'allCategory':allCategory, }
+>>>>>>> 554e97e1f290cd911f1e14976e5fba3086583784
 	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -124,7 +143,10 @@ def view_course(request,course_id):
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template=loader.get_template('main/courseInfo.html')
 	course = Course.objects.filter(id=course_id)[0]
-	lastModule = Module.objects.filter(course_id=course_id).last().id
+	x=Module.objects.filter(course_id=course_id)
+	lastModule=Module()
+	if x:
+		lastModule = x.last().id
 	
 	if participantObj.course_id is None:
 		#not enrolled in any course, show everything + option to enroll
@@ -173,7 +195,9 @@ def completeCourse(request, course_id, participant_id):
 	modCount = Module.objects.filter(course_id=course_id).count()
 	participantObj = Participant.objects.filter(pk=participant_id)[0]
 	if participantObj.access == modCount:
-		#history = History(course=course_id, participant=participant_id)
+		courseObj = Course.objects.filter(pk=course_id)[0]
+		history = History(course=courseObj, participant=participantObj)
+		history.save()
 		participantObj.course_id = None
 		participantObj.access = 0
 		participantObj.save()
@@ -209,12 +233,18 @@ def loadComponents(request):
 	participantID = request.POST.get('participant_id', False)
 	moduleID = request.POST['module_id']
 	courseID = request.POST['course_id']
+	modList = Module.objects.filter(course_id=courseID).order_by("position")
+	lastModule = modList.last().id
 	canAdd = 1
+<<<<<<< HEAD
 	lastModule = Module()
+=======
+	modList = Module.objects.filter(course_id=courseID).order_by("position")
+	lastModule = modList.last().id
+>>>>>>> 554e97e1f290cd911f1e14976e5fba3086583784
 	if participantID:
 		participantObj = Participant.objects.filter(pk=participantID)[0]
 		access = participantObj.access
-		modList = Module.objects.filter(course_id=courseID).order_by("position")
 		noOfMods = modList.count()
 		accessibleMod = modList[access-1].id
 		if accessibleMod == int(moduleID):
@@ -222,7 +252,6 @@ def loadComponents(request):
 				participantObj.access = access + 1
 				participantObj.save()
 		canAdd = 0
-		lastModule = modList.last().id
 		print lastModule
 
 	component_list = Component.objects.filter(module_id=moduleID, course_id=courseID).order_by("position")
@@ -413,6 +442,23 @@ def newCategory(request):
 			return HttpResponse(newCat.id)
 		else:
 			return HttpResponse("exist")
+	except Exception, e:
+		print e
+		pass
+
+
+@login_required
+@user_passes_test(isAdmin)
+def renamecat(request):
+	try:
+		if request.POST['cat_id']:
+			x=Category.objects.filter(id=request.POST['cat_id'])[0]
+			x.name=request.POST['cat_na']
+			x.save()
+			print "renamed"
+			return HttpResponse("rnm")
+		else:
+			return HttpResponse("not")
 	except Exception, e:
 		print e
 		pass

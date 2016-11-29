@@ -24,7 +24,37 @@
 	$(document).ready(function() {
 				$("#addMod").click(function(){
 			})});
+	function renamecat(cid,o){
+
+		var value=$("#reName").val();
+		var csrftoken = getCookie('csrftoken');
+				$.ajax({
+						method: "POST",
+						url: "renamecat/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: {cat_id: cid,cat_na: value}
+					}).done(function( msg ){
+								
+							if(msg!='rnm')
+							{
+									alert("NOT");
+							}
+								else
+							{ 
+									$(o.parentNode.parentNode).html('<td><h4><a href="course/'+cid+'/">'+value+'</a></h4></td>\
+									<td><button onclick="fxdel(this,'+value+','+cid+')" class="del">Delete</button></td>\
+									<td><button onclick="fxrnm(this,'+value+','+cid+')" class="rnm">Rename</button></td>');
+							}
+					});
+
+	}
+	function fxrnm(o,name,cid)
+	{
+		$(o.parentNode).html('<input type="text" value=\''+name+'\' name="rename" id="reName" required/><input class="rnm" type="submit" value="Rename" onclick="renamecat('+cid+',this)" />');
 	
+	}
 	function fxdel(o,name,cid)
 	{
 			var p=o.parentNode.parentNode;
@@ -97,9 +127,10 @@
 	{
 		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input type="submit" value="Add Category" onclick="newcat()" /></div></div></div></div>'); 
 	}
-	
+
+
 	function newcat()
-	{		alert("Enter Category");
+	{
 			var value=$("#catName").val();
 			if(value!="")
 			{
@@ -115,7 +146,7 @@
 										if(msg=='exist')
 											alert("Category with this name already exists!");
 										else
-											$("#tt").append('<tr><td><h4><a href="course/'+msg+'/">'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><tr>');
+											$("#tt").append('<tr><td><h4><a href="course/'+msg+'/">'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
 							});
 			$("#openc").html('<a onclick=opencat()>   Create new Cateory</a>');
 		}
@@ -191,6 +222,7 @@
 								<tr>
 									<th>Category</th>
 									<th>Delete</th>
+									<th>Rename</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -201,6 +233,9 @@
 									</td>
 									<td>
 										<button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')" class="del">Delete</button>
+									</td>
+									<td>
+										<button onclick="fxrnm(this,'{{ category.name }}','{{ category.id }}')" class="rnm">Rename</button>
 									</td>
 								</tr>
 								{% endfor %}

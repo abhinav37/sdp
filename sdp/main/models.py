@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 
 from django.db import models
+import datetime
 
 # Create your models here.
 
@@ -63,7 +64,7 @@ class HR(models.Model):
 class History(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	participant = models.ForeignKey(Participant)
-	
+	dateCompleted = models.DateField(default=datetime.date.today)	
 
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
