@@ -18,7 +18,7 @@ def isAdmin(user):
 #############################
 
 def isHR(user):
-	ishr = HR.objects.filter(hr_id=user_id)
+	ishr = HR.objects.filter(hr_id=user.id)
 	if ishr:
 		return True
 	else:
@@ -42,6 +42,7 @@ def participant(request):
 	participantID = request.user.id
 	participantObj = Participant.objects.filter(pk=participantID)[0]
 	template = loader.get_template('main/participant.html')
+	courseObj = History.objects.filter(participant=request.user.id)
 
 	if participantObj.course_id is not None:
 		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
@@ -49,7 +50,7 @@ def participant(request):
 		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses, }
 	else:
 		allCourses = Course.objects.filter(deployed=1)
-		context = {'allCourses': allCourses, }
+		context = {'allCourses': allCourses, 'courseObj':courseObj }
 	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -143,6 +144,31 @@ def view_course(request,course_id):
 	context={'course': course, 'modules': modules, 'enrollStatus': x, 'participant_id': participantID, 'lastModule': lastModule }
 	return HttpResponse(template.render(context,request))
 
+def viewFullContent(request,course_id):
+	participantID = request.user.id
+	participantObj = Participant.objects.filter(pk=participantID)[0]
+	template=loader.get_template('main/viewFullContent.html')
+	course = Course.objects.filter(id=course_id)[0]
+	lastModule = Module.objects.filter(course_id=course_id).last()
+	print course
+	if participantObj.course_id is None:
+		#not enrolled in any course, show everything + option to enroll
+		modules = Module.objects.filter(course_id=course_id).order_by("position")
+		x = 3
+	else:
+		if participantObj.course_id == int(course_id):
+			#load course accordingly, as this is Participant's enrolled course
+			lastUnlocked = participantObj.access
+			modules = Module.objects.filter(course_id=course_id).order_by("position")
+			x = 1
+		else:
+			#load course accordingly, Participant is enrolled in another course. give option to drop current course to get this course
+			modules = Module.objects.filter(course_id=course_id).order_by("position")
+			x = 2
+	print modules
+	context={'course': course, 'modules': modules, 'enrollStatus': x, 'participant_id': participantID }
+	return HttpResponse(template.render(context,request))
+
 def completeCourse(request, course_id, participant_id):
 	modCount = Module.objects.filter(course_id=course_id).count()
 	participantObj = Participant.objects.filter(pk=participant_id)[0]
@@ -184,6 +210,7 @@ def loadComponents(request):
 	moduleID = request.POST['module_id']
 	courseID = request.POST['course_id']
 	canAdd = 1
+	lastModule = Module()
 	if participantID:
 		participantObj = Participant.objects.filter(pk=participantID)[0]
 		access = participantObj.access
@@ -417,17 +444,20 @@ def regComplete(request):
 		#TODO redirect to login page
 		return redirect('login')
 
-
+@login_required
+@user_passes_test(isHR)
 def participantList(request):
 	template = loader.get_template('main/hr.html')
 	all_users = User.objects.all()
 	context = {'all_users' : all_users}
 	return HttpResponse(template.render(context,request))
 
-
+@login_required
+@user_passes_test(isHR)
 def courseHistory(request, participant_id):	
 	template = loader.get_template('main/courseHistory.html')
 	courseHistory = History.objects.filter(participant=participant_id)
-	participantObj = Participant.objects.filter(pk = participant_id)
-	context = {'courseHistory': courseHistory, 'participantObj': participantObj[0]}
+	
+	context = {'courseHistory': courseHistory}
+	
 	return HttpResponse(template.render(context,request))
