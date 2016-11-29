@@ -31,7 +31,8 @@ urlpatterns = [
 	url(r'^regComplete/$', views.regComplete, name='regComplete'),
 	url(r'^participant/course/(?P<course_id>\d+)/partiComponentBody/$', views.partiComponentBody, name='partiComponentBody'),
 	url(r'^participant/course/(?P<course_id>\d+)/loadModules/$', views.loadModules, name='loadModules'),
-
+	url(r'^hr/$', views.participantList, name='participantList'),
+	url(r'^hr/(?P<participant_id>\d+)/$', views.courseHistory, name='courseHistory'),
     url(r'^login/$', auth_views.login, {'template_name': 'main/login.html'}, name='login'),
     url(r'^logout/$', views.logOut, name='logout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

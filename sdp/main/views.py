@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import Course, Category, Participant, Module, Component, Instructor
+from .models import Course, Category, Participant, Module, Component, Instructor, HR, History
 from django.shortcuts import redirect
 
 from django.contrib.auth.models import User
@@ -17,6 +17,13 @@ def isAdmin(user):
 	return user.is_superuser
 #############################
 
+def isHR(user):
+	ishr = HR.objects.filter(hr_id=user_id)
+	if ishr:
+		return True
+	else:
+		return False
+
 def index(request):
 	if request.user.is_authenticated:
 		return redirect('participant')
@@ -27,6 +34,7 @@ def logOut(request):
 	if request.user.is_authenticated:
 		logout(request)
 	return redirect('login') 
+
 
 @login_required
 def participant(request):
@@ -342,30 +350,30 @@ def deleteCategory(request):
 
 @login_required
 @user_passes_test(isAdmin)
-def adminchange(request):
+def adminchange(request): 
 	try:
 		if request.POST['val']=='2':
-			us=User.objects.filter(username=request.POST['name'])
+			
+			us=User.objects.filter(id=request.POST['u_id'])
 			x = Instructor.objects.filter(instructor=us)
 			if not Course.objects.filter(instructor=x):
-				us=User(username=request.POST['name'])
-				x = Instructor(us)
-				x.save()
-				print "yes"
+				us=User.objects.filter(id=request.POST['u_id'])[0]
+				Instructor.objects.filter(instructor_id=us.id).delete()
+				print "deleted"
 				return HttpResponse("change")
 			else:
 				print "has course"
 				return HttpResponse("no")
 		elif request.POST['val']=='1':
-				us=User(username=request.POST['name'])
-				x = Instructor(us)
+				us=User.objects.filter(id=request.POST['u_id'])[0]
+				x = Instructor(us.id)
 				x.save()
 				return HttpResponse("done")
 		
 	
 	except Exception, e:
-		return HttpResponse("expetion")
 		print e
+		return HttpResponse("expetion")
 		pass
 
 @login_required
@@ -408,4 +416,18 @@ def regComplete(request):
 		newParti.save()
 		#TODO redirect to login page
 		return redirect('login')
-	
+
+
+def participantList(request):
+	template = loader.get_template('main/hr.html')
+	all_users = User.objects.all()
+	context = {'all_users' : all_users}
+	return HttpResponse(template.render(context,request))
+
+
+def courseHistory(request, participant_id):	
+	template = loader.get_template('main/courseHistory.html')
+	courseHistory = History.objects.filter(participant=participant_id)
+	participantObj = Participant.objects.filter(pk = participant_id)
+	context = {'courseHistory': courseHistory, 'participantObj': participantObj[0]}
+	return HttpResponse(template.render(context,request))
