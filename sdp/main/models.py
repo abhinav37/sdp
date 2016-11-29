@@ -63,6 +63,16 @@ class Participant(models.Model):
 	def __str__(self):
 		return self.participant.first_name + " " + self.participant.last_name 
 
+class HR(models.Model):
+	hr_id = models.IntegerField(default=0)
+
+
+class History(models.Model):
+	history_id = models.IntegerField(default=0)
+	course = models.ForeignKey(Course, on_delete=models.CASCADE)
+	participant = models.ForeignKey(Participant)
+	
+
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 

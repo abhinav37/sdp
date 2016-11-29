@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import Course, Category, Participant, Module, Component, Instructor
+from .models import Course, Category, Participant, Module, Component, Instructor, HR, History
 from django.shortcuts import redirect
 
 from django.contrib.auth.models import User
@@ -17,6 +17,13 @@ def isAdmin(user):
 	print user.is_superuser
 	return user.is_superuser
 
+def isHR(user):
+	ishr = HR.objects.filter(hr_id=user_id)
+	if ishr:
+		return True
+	else:
+		return False
+
 def index(request):
 	if request.user.is_authenticated:
 		return redirect('participant')
@@ -27,6 +34,7 @@ def logOut(request):
 	if request.user.is_authenticated:
 		logout(request)
 	return redirect('login') 
+
 
 @login_required
 def participant(request):
@@ -348,4 +356,18 @@ def regComplete(request):
 		newParti.save()
 		#TODO redirect to login page
 		return redirect('login')
-	
+
+
+def participantList(request):
+	template = loader.get_template('main/hr.html')
+	all_users = User.objects.all()
+	context = {'all_users' : all_users}
+	return HttpResponse(template.render(context,request))
+
+
+def courseHistory(request, participant_id):	
+	template = loader.get_template('main/courseHistory.html')
+	courseHistory = History.objects.filter(participant=participant_id)
+	participantObj = Participant.objects.filter(pk = participant_id)
+	context = {'courseHistory': courseHistory, 'participantObj': participantObj[0]}
+	return HttpResponse(template.render(context,request))
