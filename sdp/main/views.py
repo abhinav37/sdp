@@ -161,7 +161,9 @@ def completeCourse(request, course_id, participant_id):
 	modCount = Module.objects.filter(course_id=course_id).count()
 	participantObj = Participant.objects.filter(pk=participant_id)[0]
 	if participantObj.access == modCount:
-		#history = History(course=course_id, participant=participant_id)
+		courseObj = Course.objects.filter(pk=course_id)[0]
+		history = History(course=courseObj, participant=participantObj)
+		history.save()
 		participantObj.course_id = None
 		participantObj.access = 0
 		participantObj.save()
@@ -197,6 +199,8 @@ def loadComponents(request):
 	participantID = request.POST.get('participant_id', False)
 	moduleID = request.POST['module_id']
 	courseID = request.POST['course_id']
+	modList = Module.objects.filter(course_id=courseID).order_by("position")
+	lastModule = modList.last().id
 	canAdd = 1
 	modList = Module.objects.filter(course_id=courseID).order_by("position")
 	lastModule = modList.last().id
