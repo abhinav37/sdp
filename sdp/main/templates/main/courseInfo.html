@@ -50,10 +50,22 @@
             data: { }
 			  	}).done(function( msg ) {
 				  	$("#moduleContainer").html(msg);
+            checkIfCourseComplete();
             $("#"+modSelected).addClass("active");
           });
 				});
 			});
+
+      function checkIfCourseComplete(){
+        lastModule = $("#lastModule").html();
+        if(modSelected == lastModule){
+          $("#completeCourse").show();
+        }
+      }      
+
+       $("#completeCourse").click(function(event){
+         window.location.href = {{participant_id}}+"/complete";
+       });
 
       $("#compContainer").on("click", ".componentLoad", function(event){
 				if(compSelected==this.id)
@@ -129,7 +141,7 @@
     <div class="col-md-12">
 
       {% if course %}
-      <p> Name: {{ course.name }} </p>
+      <p> Name: {{ course.name }}</p>
       <p> Category: {{ course.category }}</p>
       <p> Insructor: {{ course.instructor }}</p>
       <p> Description: {{ course.description }}</p>
@@ -163,6 +175,7 @@
           <input type="submit" value="Drop" />
         </div>
       </form>
+      <input type="submit" value="Mark course as completed" id="completeCourse" hidden/>
       {% endif %} {% if enrollStatus == 2 %}
       <form name="form" action="{% url 'addDrop' %}" method="POST">
         {% csrf_token %}
