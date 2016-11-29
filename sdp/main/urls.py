@@ -11,6 +11,7 @@ urlpatterns = [
 	url(r'^participant/$', views.participant, name='participant'),
 	url(r'^instructor/$', views.instructor, name='instructor'),
 	url(r'^instructor/new/$', views.newCourse, name='newCourse'),
+	url(r'^instructor/deployCourse/$', views.deployCourse, name='deployCourse'),
 	url(r'^instructor/edit/(?P<course_id>\d+)/$', views.editCourse, name='editCourse'),
 	url(r'^participant/course/(?P<course_id>\d+)/$', views.view_course, name='view'),
 	url(r'^addDrop/$', views.addDrop, name='addDrop'),

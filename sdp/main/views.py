@@ -36,11 +36,11 @@ def participant(request):
 	template = loader.get_template('main/participant.html')
 
 	if participantObj.course_id is not None:
-		allCourses = Course.objects.exclude(pk=participantObj.course_id)
+		allCourses = Course.objects.filter(deployed=1).exclude(pk=participantObj.course_id)
 		enrolledCourse = Course.objects.filter(pk=participantObj.course_id)[0]
 		context = {'enrolledCourse': enrolledCourse, 'allCourses': allCourses, }
 	else:
-		allCourses = Course.objects.all()
+		allCourses = Course.objects.filter(deployed=1)
 		context = {'allCourses': allCourses, }
 	return HttpResponse(template.render(context,request))
 
@@ -95,6 +95,19 @@ def newCourse(request):
 	template = loader.get_template('main/new.html')
 	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
  	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
+def deployCourse(request):
+	participants = Participant.objects.filter(course_id = request.POST['course_id'])
+	print participants
+	if not participants:
+		course = Course.objects.filter(pk=request.POST['course_id'])[0]
+		course.deployed = 1 - course.deployed
+		course.save()
+	 	return HttpResponse("Success")
+	else:
+		return HttpResponse("Fail")
 
 @login_required
 def view_course(request,course_id):
