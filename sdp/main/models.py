@@ -13,11 +13,22 @@ class Instructor(models.Model):
     )
 	def __str__(self):
 		return self.instructor.first_name + " " + self.instructor.last_name 
+	
+	def getCourses(self):
+		return Course.objects.filter(instructor=self)
+
+	def createCourse(self):
+		newCourse = Course(name="New Course", description="Add a description for your course", deployed=0, category_id=-1, instructor=self)
+		newCourse.save()
+		return newCourse
 
 class Category(models.Model):
 	name = models.CharField(max_length=40)
 	def __str__(self):
 		return self.name
+
+	def getCourses(self):
+		return Course.objects.filter(category=self)
 
 class Course(models.Model):
 	category = models.ForeignKey(Category)
@@ -28,12 +39,36 @@ class Course(models.Model):
 	def __str__(self):
 		return self.name
 
+	def getModuleCount(self):
+		return self.getModules().count()
+
+	def getModules(self):
+		return Module.objects.filter(course = self)
+
+	def addModule(self, moduleName, modulePosition):
+		new_module = Module(name = moduleName, position = modulePosition, course = self)
+		new_module.save()
+
+	def getParticipants(self):
+		return Participant.objects.filter(course = self)
+
+	def toggleDeployed(self):
+		self.deployed = 1 - self.deployed
+		self.save()
+
 class Module(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	name = models.CharField(max_length=40)
 	position = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
+
+	def getComponents(self):
+		return Component.objects.filter(course=self.course, module=self)
+	
+	def addComponent(self, componentName, componentPosition):
+		newComponent = Component(name = componentName, file = None, position = componentPosition, course = self.course, module = self)
+		newComponent.save()
 
 def fileUploadPath(instance, filename):
     return '{0}/{1}/{2}'.format(instance.course.id, instance.module.id, filename)
@@ -55,7 +90,23 @@ class Participant(models.Model):
 	course = models.ForeignKey(Course, null=True, blank=True, default = None)
 	access = models.IntegerField(default=0)
 	def __str__(self):
-		return self.participant.first_name + " " + self.participant.last_name 
+		return self.participant.first_name + " " + self.participant.last_name
+	
+	def getEnrolledCourse(self):
+		return self.course
+
+	def enroll(self, course):
+		self.course = course 
+		self.access = 1
+		self.save()
+
+	def dropCurrentCourse(self):
+		self.course = None
+		self.access = 0
+		self.save()
+	
+	def getCompletedCourses(self):
+		return History.objects.filter(participant=self)
 
 class HR(models.Model):
 	hr_id = models.IntegerField(default=0)
@@ -64,7 +115,11 @@ class HR(models.Model):
 class History(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	participant = models.ForeignKey(Participant)
-	dateCompleted = models.DateField(default=datetime.date.today)	
+	dateCompleted = models.DateField(default=datetime.date.today)
+
+	def updateDate(self, date):
+		self.dateCompleted = date 
+		self.save()
 
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver

@@ -53,18 +53,16 @@
 <h4>Suggested Courses</h4>
         
       <div class="row well">
-        {% if allCourses %}
-            {% for cat in allCategory %}
-                      
-            <h4>{{ cat.name }}</h4>
+        {% if courseList %}
+            {% for cat,courses in courseList.items %}
+        
+            <h4>{{ cat }}</h4>
             <ul>
-              {% for course in allCourses %}
-                  {% if cat.id == course.category_id %}
+              {% for course in courses %}
                   <div class="row">
                     <h7><a href="course/{{ course.id }}/">{{ course.name }}</a></h7>
                     <p> {{course.description}} </p>
                   </div>
-                  {% endif %}
               {% endfor %}
             </ul>
             {% endfor %}
@@ -75,9 +73,9 @@
 
       <div class="row well">
         <h4>Completed Courses</h4>
-        {% if courseObj %}
+        {% if courseHistory %}
         <ul>
-          {% for course in courseObj %}
+          {% for course in courseHistory %}
           <div class="row">
             <h7><a href="{% url 'completedCourses' course.course_id %}">{{ course.course }}</a></h7>
           </div>

@@ -37,7 +37,7 @@
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {module_id: this.id, course_id: {{course.id}} }
+					data: {module_id: this.id, course_id: {{course.id}}, override:1 }
 				}).done(function( msg ) {
 					$("#compContainer").html(msg);
 				});
