@@ -1,10 +1,48 @@
-<meta charset="utf-8"> {% load static %}
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/bootstrap.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<title>Administrator</title>
+<head>
+	<title>Administrator</title>
+</head>
+<script>
+	function myFunction() {
+		var input, filter, table, tr, td, i;
+		input = document.getElementById("myInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("instructorTable");
+		tr = table.getElementsByTagName("tr");
+
+		// Loop through all table rows, and hide those who don't match the search query
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[0];
+			if (td) {
+				if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			} 
+		}
+	}
+
+	function myFunction2() {
+		var input, filter, table, tr, td, i;
+		input = document.getElementById("myInput2");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("tt");
+		tr = table.getElementsByTagName("tr");
+
+		// Loop through all table rows, and hide those who don't match the search query
+		for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[0];
+			if (td) {
+				if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			} 
+		}
+	}
+</script>
+
 <script>
 	function getCookie(name) {
 				var cookieValue = null;
@@ -21,45 +59,33 @@
 				}
 				return cookieValue;
 			}
-	$(document).ready(function() {
-				$("#addMod").click(function(){
-			})});
-	function renamecat(cid,o){
 
+	function renamecat(cid,o){
 		var value=$("#reName").val();
 		var csrftoken = getCookie('csrftoken');
-				$.ajax({
-						method: "POST",
-						url: "renamecat/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: {cat_id: cid,cat_na: value}
-					}).done(function( msg ){
-								
-							if(msg!='rnm')
-							{
-									alert("NOT");
-							}
-								else
-							{ 
-									$(o.parentNode.parentNode).html('<td><h4><a>'+value+'</a></h4></td>\
-									<td><button onclick="fxdel(this,'+value+','+cid+')" class="del">Delete</button></td>\
-									<td><button onclick="fxrnm(this,'+value+','+cid+')" class="rnm">Rename</button></td>');
-							}
-					});
-
+		$.ajax({
+				method: "POST",
+				url: "renamecat/",
+				beforeSend: function( xhr ) {
+					xhr.setRequestHeader("X-CSRFToken", csrftoken);
+				},
+				data: {cat_id: cid,cat_na: value}
+			}).done(function( msg ){	
+				if(msg!='rnm'){
+						alert("NOT");
+				}else{ 
+						$(o.parentNode.parentNode).html('<td><h4><a>'+value+'</a></h4></td>\
+						<td><button onclick="fxdel(this,'+value+','+cid+')" class="del">Delete</button></td>\
+						<td><button onclick="fxrnm(this,'+value+','+cid+')" class="rnm">Rename</button></td>');
+				}
+		});
 	}
-	function fxrnm(o,name,cid)
-	{
+	function fxrnm(o,name,cid){
 		$(o.parentNode).html('<input type="text" value=\''+name+'\' name="rename" id="reName" required/><input class="rnm" type="submit" value="Rename" onclick="renamecat('+cid+',this)" />');
-	
 	}
-	function fxdel(o,name,cid)
-	{
-			var p=o.parentNode.parentNode;
-	   	if(confirm("Are you sure?"))
-			{
+	function fxdel(o,name,cid){
+		var p=o.parentNode.parentNode;
+	   	if(confirm("Are you sure?")){
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 						method: "POST",
@@ -68,38 +94,31 @@
 							xhr.setRequestHeader("X-CSRFToken", csrftoken);
 						},
 						data: {category_id: cid,category_na: name}
-					}).done(function( msg ){
-								
-							if(msg!='del')
-							{
+					}).done(function( msg ){						
+							if(msg!='del'){
 									alert("Cannot be deleted conatins some courses");
-							}
-								else
-							{ 
+							}else{ 
 									p.parentNode.removeChild(p);
 							}
 					});
-	    }
+		}
 	}
-			 
-			
-	function fx1(username,id)
-	{
+
+	function fx1(username,id){
 			document.getElementById(id+"_t").innerHTML="Yes";
 			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			var csrftoken = getCookie('csrftoken');
 			$.ajax({
-						method: "POST",
-						url: "adminchange/",
-						beforeSend: function( xhr ) {
-							xhr.setRequestHeader("X-CSRFToken", csrftoken);
-						},
-						data: {u_id: id,val: '1'}
-					}).done();
+				method: "POST",
+				url: "adminchange/",
+				beforeSend: function( xhr ) {
+					xhr.setRequestHeader("X-CSRFToken", csrftoken);
+				},
+				data: {u_id: id,val: '1'}
+			}).done();
 	}		
 	
-	function fx2(username,id)
-	{				
+	function fx2(username,id){				
 		var csrftoken = getCookie('csrftoken');
 		$.ajax({
 			method: "POST",
@@ -109,49 +128,43 @@
 			},
 			data: {u_id: id,val: 2}
 		}).done(function(msg){
-						if(msg=='change')
-						{
-							document.getElementById(id+"_t").innerHTML="No";
-							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\','+id+')" type="checkbox" ><div class="slider round"></div></label>';
-						}
-					else
-			{		alert("instructor has courses")
-							document.getElementById(id+"_t").innerHTML="Yes";
-							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
+			if(msg=='change'){
+				document.getElementById(id+"_t").innerHTML="No";
+				document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx1(\''+username+'\','+id+')" type="checkbox" ><div class="slider round"></div></label>';
+			}
+			else{	
+				alert("instructor has courses")
+				document.getElementById(id+"_t").innerHTML="Yes";
+				document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			}						
-			});
-	    
+		});
 	}		
 	
-	function opencat()
-	{
+	function opencat(){
 		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input type="submit" value="Add Category" onclick="newcat()" /></div></div></div></div>'); 
 	}
 
-
-	function newcat()
-	{
+	function newcat(){
 			var value=$("#catName").val();
-			if(value!="")
-			{
+			if(value!=""){
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
-								method: "POST",
-								url: "newCategory/",
-								beforeSend: function( xhr ) {
-									xhr.setRequestHeader("X-CSRFToken", csrftoken);
-								},
-								data: {cat: value}
-							}).done(function(msg){
-										if(msg=='exist')
-											alert("Category with this name already exists!");
-										else
-											$("#tt").append('<tr><td><h4><a>'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
-							});
+					method: "POST",
+					url: "newCategory/",
+					beforeSend: function( xhr ) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					},
+					data: {cat: value}
+					}).done(function(msg){
+						if(msg=='exist')
+							alert("Category with this name already exists!");
+						else
+							$("#tt").append('<tr><td><h4><a>'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
+				});
 			$("#openc").html('<a onclick=opencat()>   Create new Cateory</a>');
 		}
 		else
-		alert("Enter Category");
+			alert("Enter Category");
 	}
 	
 	function fx(username,instructor,id)
@@ -162,38 +175,16 @@
 			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 		}		
 	}
-</script>
-
-{% include "main/navbar.html" %}
-
-<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-	<div class="modal-dialog">
-		<div class="loginmodal-container">
-			<h1>Login to Your Account</h1><br>
-			<form>
-				<input type="text" name="user" placeholder="Username">
-				<input type="password" name="pass" placeholder="Password">
-				<input type="submit" name="login" class="login loginmodal-submit" value="Login">
-			</form>
-
-			<div class="login-help">
-				<a href="#">Register</a> - <a href="#">Forgot Password</a>
-			</div>
-		</div>
-	</div>
+</script> {% include "main/navbar.html" %}
+<div class="container-fluid" id="ticker" style="padding-top: 60px;">
 </div>
-
-	<div class="container-fluid" id="ticker" style="padding-top: 60px;">
-		<marquee>
-			
-		</marquee>
-	</div>
 <div class="container" style="padding-top:10px">
 	<h4>Categories <button type="button" style="font-size:10px;" class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button></h4>
 	<div class="col-md-12">
 		<div class="row well">
 			<div class="collapse" id="demo">
 				{% if all_categories %}
+				<input type="text" id="myInput2" onkeyup="myFunction2()" placeholder="Search for category..">
 				<ul>
 					<div class="row">
 						<table class="table" id="tt">
@@ -239,9 +230,10 @@
 		<div class="row well">
 			<div class="collapse" id="demo2">
 				{% if all_users %}
+				<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
 				<ul>
 					<div class="row">
-						<table class="table">
+						<table class="table" id="instructorTable">
 							<thead>
 								<tr>
 									<th>Username</th>
@@ -252,29 +244,28 @@
 							<tbody>
 								{% for user in all_users %}
 								<tr>
-								<td>
-									<h4>{{ user }}</h4>
-								</td>
-								<td id="{{ user.id }}_t">No</td>
-								<td id="{{ user.id }}_s">
-									<label class="switch"><input type="checkbox" onclick="fx1('{{user.username}}',{{user.id}})" > 
+									<td>
+										<h4>{{ user }}</h4>
+									</td>
+									<td id="{{ user.id }}_t">No</td>
+									<td id="{{ user.id }}_s">
+										<label class="switch"><input type="checkbox" onclick="fx1('{{user.username}}',{{user.id}})" > 
 											<div class="slider round"></div>
 										</label>
-								</td>
-								{% for instructor in all_instructor %}
-								<script type="text/javascript">
+									</td>
+									{% for instructor in all_instructor %}
+									<script type="text/javascript">
 										fx('{{ user.username }}','{{ instructor.instructor }}',{{ user.id }});
-									</script> 
-								{% endfor %}
+									</script> {% endfor %}
 								</tr>
 								{% endfor %}
 							</tbody>
 						</table>
 				</ul>
 				{% else %}
-				<p>No user added</p>
+					<p>No user added</p>
 				{% endif %}
-				</div>
 			</div>
 		</div>
 	</div>
+</div>

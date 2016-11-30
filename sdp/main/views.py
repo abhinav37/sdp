@@ -43,7 +43,8 @@ def participant(request):
 	categories = Category.objects.all()
 	for category in categories:
 		courses = category.getCourses().filter(deployed=1).exclude(pk=participantObj.course_id)
-		courseList[category] = courses
+		if courses:
+			courseList[category] = courses
 	
 	context = {'enrolledCourse': participantObj.getEnrolledCourse(), 'courseList': courseList, 'courseHistory':courseHistory }	
 	template = loader.get_template('main/participant.html')
@@ -411,7 +412,7 @@ def courseHistory(request, participant_id):
 	participantObj = Participant.objects.get(pk=participant_id)
 	courseHistory = participantObj.getCompletedCourses() 
 
-	context = {'courseHistory': courseHistory, 'name': participantObj.name }
+	context = {'courseHistory': courseHistory, 'name': participantObj }
 	template = loader.get_template('main/courseHistory.html')
 	return HttpResponse(template.render(context,request))
 

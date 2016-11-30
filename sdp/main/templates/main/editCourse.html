@@ -1,13 +1,7 @@
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/static/css/bootstrap.css">
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<title>Instructor</title>
-	<script>
+	<title>Instructor</title>
+</head>
+<script>
 			function getCookie(name) {
 				var cookieValue = null;
 				if (document.cookie && document.cookie !== '') {
@@ -114,31 +108,10 @@
 				}
 			}
 		</script>
-</head>
 
 <body>
 	{% include "main/navbar.html" %}
-	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-		<div class="modal-dialog">
-			<div class="loginmodal-container">
-				<h1>Login to Your Account</h1><br>
-				<form>
-					<input type="text" name="user" placeholder="Username">
-					<input type="password" name="pass" placeholder="Password">
-					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
-				</form>
-
-				<div class="login-help">
-					<a href="#">Register</a> - <a href="#">Forgot Password</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container-fluid" id="ticker" style="padding-top: 60px;">
-		<marquee>
-			
-		</marquee>
-	</div>
+	<div class="container-fluid" id="ticker" style="padding-top: 60px;"></div>
 	<div class="container">
 		<div class="col-md-12">
 			<h4>Enter Course Details</h4>
@@ -150,7 +123,7 @@
 							<label for="courseName">Course Name:</label>
 						</div>
 						<div class="col-sm-6">
-							<input type="text" name="courseName" id="courseName" value="{{course.name}}"/>
+							<input type="text" name="courseName" id="courseName" value="{{course.name}}" />
 							</br>
 							</br>
 						</div>
@@ -158,13 +131,14 @@
 							<label for="courseDesc">Course Description: </label>
 						</div>
 						<div class="col-sm-6">
-							<input type="text" name="courseDesc" id="courseDesc" value="{{course.description}}"/>
+							<input type="text" name="courseDesc" id="courseDesc" value="{{course.description}}" />
 							</br>
 							</br>
 						</div>
 						{% for category in categories %}
-                            <input type="radio" name="category" value="{{ category.id }}" required  {% if course.category_id == category.id %} checked {% endif %}/> {{ category.name }} </br>
-                        {% endfor %}
+						<input type="radio" name="category" value="{{ category.id }}" required {% if course.category_id==c ategory.id %} checked
+							{% endif %}/> {{ category.name }} </br>
+						{% endfor %}
 					</div>
 
 					<div id="moduleContainer">{% include "main/module.html" %}</div>
@@ -174,13 +148,12 @@
 					<a href="#" id="addMod" />Add Module</a>
 					</br>
 					</br>
-					
+
 					<input type="hidden" value="{{course.id}}" name="course_id" />
 					<input type="hidden" value="" name="modulePositions" id="modulePositions" />
 					<input type="hidden" value="" name="compsPositions" id="compsPositions" />
 					<input type="submit" value="Save Changes" onclick="formSubmit()" /></div>
 			</form>
 		</div>
-
-
+	</div>
 </body>

@@ -15,31 +15,28 @@
     }
 </script>
 <title>Register</title>
-{% if error %}
-    Username already exists! Try a different username.
-{% endif %}
+{% if error %} Username already exists! Try a different username. {% endif %}
 <link rel="stylesheet" href="/static/css/bootstrap.min.css">
 <link rel="stylesheet" href="/static/css/bootstrap.css">
+
 <body style="background-color:#7c9e85;">
-  <div class="modal-dialog">
-    <div class="loginmodal-container">
-      <h1>Please enter your details</h1><br>
-      
-<form action="{% url 'regComplete' %}" method="post"  onsubmit="return validate();">
-    {% csrf_token %}
-    
-        <label for="fname">First Name:</label>
-        <input type="text" name="fname" id="fname" {% if error %} value="{{fname}}" {% endif %} required/>
-        <label for="lname">Last Name:</label>
-        <input type="text" name="lname" id="lname" {% if error %} value="{{lname}}" {% endif %} required/>
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" {% if error %} value="{{username}}" {% endif %} required/>
-        <label for="pwd">Password:</label>
-        <input type="password" name="pwd" id="pwd" required/>
-        <label for="rpwd">Repeat Password:</label>
-        <input type="password" name="rpwd" id="rpwd" required/>
-    <input type="submit" name="login" class="login loginmodal-submit" value="Register"></div>
-</form>
-</div>
-  </div>
-  </body>
+    <div class="modal-dialog">
+        <div class="loginmodal-container">
+            <h1>Please enter your details</h1><br>
+            <form action="{% url 'regComplete' %}" method="post" onsubmit="return validate();">
+                {% csrf_token %}
+                <label for="fname">First Name:</label>
+                <input type="text" name="fname" id="fname" {% if error %} value="{{fname}}" {% endif %} required/>
+                <label for="lname">Last Name:</label>
+                <input type="text" name="lname" id="lname" {% if error %} value="{{lname}}" {% endif %} required/>
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" {% if error %} value="{{username}}" {% endif %} required/>
+                <label for="pwd">Password:</label>
+                <input type="password" name="pwd" id="pwd" required/>
+                <label for="rpwd">Repeat Password:</label>
+                <input type="password" name="rpwd" id="rpwd" required/>
+                <input type="submit" name="login" class="login loginmodal-submit" value="Register">
+            </form>
+        </div>
+    </div>
+</body>

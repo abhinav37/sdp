@@ -1,32 +1,30 @@
 <div class="row">
+    <div class="form-group">
+        {% csrf_token %}
+        <div class="col-sm-6">
+            <label for="compName">Component Name:</label>
+        </div>
+        <div class="col-sm-6">
+            <input type="text" name="compName" id="compName" required value="{{component.name}}" />
+            </br>
+            </br>
+        </div>
+        <div class="col-sm-6">
+            <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
+        </div>
+        <div class="col-sm-6">
+            <input type="file" name="compFile" id="compFile" {% if component.file==N one %} required {% endif %} />
+        </div>
+    </div>
 
-<div class="form-group">
-    {% csrf_token %}
-    <div class="col-sm-6">
-        <label for="compName">Component Name:</label>
+    <div style="padding-top:10px"></div>
+    <div class="row">
+        <div class="col-sm-6">
+            <a href="#" class="componentDelete" id="{{component.id}}"> Delete Component </a>
+        </div>
+        <div class="col-sm-6">
+            <a href="#" class="componentSubmit" id="{{component.id}}"> Update Component </a>
+        </div>
     </div>
-    <div class="col-sm-6">
-        <input type="text" name="compName" id="compName" required value="{{component.name}}" />
-        </br>
-        </br>
-    </div>
-    <div class="col-sm-6">
-        <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
-    </div>
-    <div class="col-sm-6">
-        <input type="file" name="compFile" id="compFile" {% if component.file ==  None %} required {% endif %} />
-    </div>
+    <div style="padding-top:40px"></div>
 </div>
-</div>
-<div style="padding-top:10px"></div>
-<div class="row" >
-    <div class="col-sm-6">
-        <a href="#" class="componentDelete" id="{{component.id}}"> Delete Component </a>   
-     </div>
-
-    <div class="col-sm-6">
-        <a href="#" class="componentSubmit" id="{{component.id}}"> Update Component </a>
-    </div>
-   
-</div>
-<div style="padding-top:40px"></div>
