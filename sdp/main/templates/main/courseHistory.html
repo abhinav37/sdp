@@ -10,28 +10,7 @@
 </head>
 </body>
 <div id="body">
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="#">Staff Development Platform	</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="Home.html">Home</a></li>
-        <li><a href="#">Courses Offered</a></li>
-        <li><a href="Home.html#ab">About Us</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="{%url "logout"%}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+{% include "main/navbar.html" %}
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
   <div class="modal-dialog">
     <div class="loginmodal-container">
@@ -48,12 +27,6 @@
     </div>
   </div>
 </div>
-<div class="container-fluid" id="ticker" style="padding-top: 60px;">
-  <marquee>
-    <p>New News and programs</p>
-  </marquee>
-</div>
-
 <div class="container">
   <div class="col-md-12">
     <h4>All Participants</h4>
@@ -105,11 +78,6 @@
       </div>
     </div>
   </div>
-</div>
-<div class="container-fluid" id="ticker" style="padding-top: 60px;">
-  <marquee>
-    <p>New News and programs</p>
-  </marquee>
 </div>
 
 <div class="container">
