@@ -8,12 +8,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 import json,datetime
-#functions
-def getUsers():
-	return User.objects.all()
 
-
-#######Tests for users#######
+############## User Functions ##############
 def isInstructor(user):
     return user.is_staff==1
 
@@ -26,7 +22,11 @@ def isHR(user):
 		return True
 	else:
 		return False
-#############################
+
+def getUsers():
+	return User.objects.all()
+
+############## Index Views ##############
 
 def index(request):
 	if request.user.is_authenticated:
@@ -88,6 +88,8 @@ def instructor(request):
 		context = {'course_list': course_list}
 		return HttpResponse(template.render(context,request))
 
+############## Course Views ##############
+
 @login_required
 @user_passes_test(isInstructor)
 def newCourse(request):
@@ -99,6 +101,18 @@ def newCourse(request):
 
 	template = loader.get_template('main/new.html')
 	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
+ 	return HttpResponse(template.render(context,request))
+
+@login_required
+@user_passes_test(isInstructor)
+def editCourse(request, course_id):
+	courseObj = Course.objects.filter(pk=course_id)[0]
+	modules = Module.objects.filter(course_id=course_id).order_by("position")
+	components = Component.objects.filter(course_id=course_id).order_by("position")
+	category_list = Category.objects.all()
+
+	template = loader.get_template('main/editCourse.html')
+	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
  	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -178,6 +192,8 @@ def addDrop(request):
 
 	return redirect(participant)
 
+############## Component Views ##############
+
 @login_required															
 def loadComponents(request):
 	participantID = request.POST.get('participant_id', False)
@@ -212,7 +228,7 @@ def loadComponentBody(request):
 	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
 	if compFile:
-		#TODO delete old file if exists
+		os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.file))
 		componentObj.file = compFile
 		componentObj.save()
 	
@@ -226,7 +242,7 @@ def loadComponentBody(request):
 
 @login_required
 def partiComponentBody(request, course_id):
-	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
+	componentObj = Component.objects.get(pk=request.POST['component_id'])
 	context = {'component': componentObj}
 	template = loader.get_template('main/partiComponentBody.html')
 	return HttpResponse(template.render(context,request))
@@ -234,7 +250,7 @@ def partiComponentBody(request, course_id):
 @login_required
 @user_passes_test(isInstructor)
 def deleteComponent(request):
-	compToDelete = Component.objects.filter(pk=request.POST['component_id'])[0]
+	compToDelete = Component.objects.get(pk=request.POST['component_id'])
 	compToDelete.delete()
 	moduleObj = Module.objects.get(pk=request.POST['module_id'])
 	component_list = moduleObj.getComponents().order_by("position")
@@ -259,17 +275,7 @@ def addComponent(request):
 	context = {'components': component_list, 'canAdd': 1}
  	return HttpResponse(template.render(context,request))
 
-@login_required
-@user_passes_test(isInstructor)
-def editCourse(request, course_id):
-	courseObj = Course.objects.filter(pk=course_id)[0]
-	modules = Module.objects.filter(course_id=course_id).order_by("position")
-	components = Component.objects.filter(course_id=course_id).order_by("position")
-	category_list = Category.objects.all()
-
-	template = loader.get_template('main/editCourse.html')
-	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
- 	return HttpResponse(template.render(context,request))
+############## Admin Views ##############
 
 @login_required
 @user_passes_test(isAdmin)
@@ -287,20 +293,18 @@ def admin(request):
 def adminchange(request): 
 	try:
 		if request.POST['val']=='2':
-			us=User.objects.filter(id=request.POST['u_id'])
-			x = Instructor.objects.filter(instructor=us)
-			if not Course.objects.filter(instructor=x):
-				us=User.objects.filter(id=request.POST['u_id'])[0]
+			us = User.objects.filter(id=request.POST['u_id'])
+			instructorObj = Instructor.objects.filter(instructor=us)
+			if instructorObj.getCourses() is None:
+				us=User.objects.get(pk=request.POST['u_id'])
 				us.is_staff=False
 				us.save()
-				Instructor.objects.filter(instructor_id=us.id).delete()
-				print "deleted"
+				Instructor.objects.get(pk=us.id).delete()
 				return HttpResponse("change")
 			else:
-				print "has course"
 				return HttpResponse("no")
 		elif request.POST['val']=='1':
-				us=User.objects.filter(id=request.POST['u_id'])[0]
+				us=User.objects.get(pk=request.POST['u_id'])
 				us.is_staff=True
 				us.save()
 				x = Instructor(us.id)
@@ -333,15 +337,12 @@ def deleteCategory(request):
 	try:
 		if request.POST['category_id']:
 			x = Category.objects.filter(id=request.POST['category_id'])
-			if not Course.objects.filter(category=x):
-				Category.objects.filter(id=request.POST['category_id']).delete()
-				print "yes del"		
+			if x.getCourses() is None:
+				Category.objects.get(pk=request.POST['category_id']).delete()
 				return HttpResponse("del")
 			else:
-				print "no del"
 				return HttpResponse("no")
-		else:
-			
+		else:	
 			return HttpResponse("no")
 	except Exception, e:
 		return HttpResponse("ex")
@@ -354,8 +355,7 @@ def renameCategory(request):
 	try:
 		if request.POST['cat_id']:
 			catObj = Category.objects.get(pk=request.POST['cat_id'])
-			catObj.name = request.POST['cat_na']
-			catObj.save()
+			catObj.rename(request.POST['cat_na'])
 			return HttpResponse("rnm")
 		else:
 			return HttpResponse("not")
@@ -408,10 +408,10 @@ def participantList(request):
 @login_required
 @user_passes_test(isHR)
 def courseHistory(request, participant_id):	
-	courseHistory = Participant.objects.get(pk=participant_id).getCompletedCourses() 
+	participantObj = Participant.objects.get(pk=participant_id)
+	courseHistory = participantObj.getCompletedCourses() 
 
-	print courseHistory
-	context = {'courseHistory': courseHistory}
+	context = {'courseHistory': courseHistory, 'name': participantObj.name }
 	template = loader.get_template('main/courseHistory.html')
 	return HttpResponse(template.render(context,request))
 

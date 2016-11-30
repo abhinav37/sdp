@@ -29,6 +29,10 @@ class Category(models.Model):
 
 	def getCourses(self):
 		return Course.objects.filter(category=self)
+	
+	def rename(self, name):
+		self.name = name
+		self.save()
 
 class Course(models.Model):
 	category = models.ForeignKey(Category)
