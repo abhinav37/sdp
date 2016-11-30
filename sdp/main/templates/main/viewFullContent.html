@@ -40,23 +40,9 @@
 					data: {module_id: this.id, course_id: {{course.id}} }
 				}).done(function( msg ) {
 					$("#compContainer").html(msg);
-          var csrftoken = getCookie('csrftoken');
-          $.ajax({
-            method: "POST",
-            url: "loadModules/",
-            beforeSend: function( xhr ) {
-              xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            },
-            data: { }
-			  	}).done(function( msg ) {
-				  	$("#moduleContainer").html(msg);
-            checkIfCourseComplete();
-            $("#"+modSelected).addClass("active");
-          });
 				});
 			});
 
-    
       $("#compContainer").on("click", ".componentLoad", function(event){
 				if(compSelected==this.id)
 					return;

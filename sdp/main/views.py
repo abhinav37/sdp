@@ -250,9 +250,9 @@ def loadComponents(request):
 	lastModule = modList.last().id
 	canAdd = 1
 	if isInstructor(request.user):
-		canAdd=1
+		canAdd = 0
 	else:
-		canAdd =0
+		canAdd = 1
 	lastModule = Module()
 
 	modList = Module.objects.filter(course_id=courseID).order_by("position")
