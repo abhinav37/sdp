@@ -13,7 +13,7 @@
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
 				{%if request.user.is_superuser%}
-                <li ><a href='{%url "admin"}'>Admin</a></li>
+                <li ><a href='{%url "admin" %}'>Admin</a></li>
 				{% endif %}
                 <li><a href='{%url "participant"%}'>Courses Offered</a></li>
 				{%if request.user.is_staff%}

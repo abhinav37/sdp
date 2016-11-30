@@ -8,6 +8,10 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 import json,datetime
+#functions
+def getUsers():
+	return User.objects.all()
+
 
 #######Tests for users#######
 def isInstructor(user):
@@ -101,11 +105,15 @@ def instructor(request):
 		newCourse.save()
 	except Exception, e:
 		print e
+		print request.POST['course_id']
 		pass
 	finally:
 		#TODO intructor id based on login
-		course_list = Course.objects.filter(instructor_id=request.user.id)
+		course_list = Course.objects.filter(instructor_id=request.user.id).exclude(category_id=-1)
 		template = loader.get_template('main/instructor.html')
+		courseDelete = Course.objects.filter(category_id=-1)
+		for course in courseDelete:
+			course.delete()
 		context = {'course_list': course_list}
 		return HttpResponse(template.render(context,request))
 
@@ -384,7 +392,7 @@ def editCourse(request, course_id):
 def admin(request):		
 	template = loader.get_template('main/admin.html')
 	all_categories = Category.objects.all()
-	all_users = User.objects.all()
+	all_users = getUsers()
 	all_instructor= Instructor.objects.filter()
 	
 	context = {'all_categories': all_categories,'all_users': all_users,'all_instructor':all_instructor }
@@ -505,7 +513,7 @@ def regComplete(request):
 @user_passes_test(isHR)
 def participantList(request):
 	template = loader.get_template('main/hr.html')
-	all_users = User.objects.all()
+	all_users = getUsers()
 	context = {'all_users' : all_users}
 	return HttpResponse(template.render(context,request))
 
