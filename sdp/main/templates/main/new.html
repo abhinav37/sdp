@@ -38,7 +38,6 @@
 		
 		$(document).ready(function() {
 			$("#addMod").click(function(){
-				if($("#module_name").val()!=""){
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -61,15 +60,9 @@
 					});
 					$("#moduleContainer").find('#' + modSelected).addClass("active");
 				});
-				}
-		else
-		alert("Enter module name");	
 			});	
 		
 			$("#moduleContainer").on("click", ".moduleLoad", function(event){
-				if(modSelected==this.id)
-					return;
-		
 				modSelected = this.id;
 				$("#compContainer").html("Loading...");
 		
@@ -100,7 +93,6 @@
 			});	
 		
 			$("#compContainer").on("click", ".addCom", function(event){	
-				if($("#component_name").val()!=""){
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -125,10 +117,7 @@
 						$( "#components" ).append($(comp));
 					});					
 				});
-		}
-		else
-		alert("Enter module name");	
-		});
+			});
 		
 			$("#compContainer").on("click", ".componentLoad", function(event){	
 				var csrftoken = getCookie('csrftoken');
@@ -319,33 +308,15 @@
 		<div class="col-md-12">
 			<div class="row well">
 				<div id="moduleContainer"></div>
-					<div class="row">
-						<div class="col-md-6">
-							<input type="button" class="btn btn-info" value="Add Module" href="#" id="addMod" style="padding-right:40px"onclick="unhide()"></input>
-						</div>
-						<div class="col-md-6">
-							<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
-						</div>
-						
-					</div>
-					<div style="padding-top:10px"></div>
-					<div id="moduleEdit" hidden>
-						<div class="row">
-							<div class="col-md-6">
-								<a href="#" id="renameMod">Rename Module</a>
-							</div>
-							<div class="col-md-6">
-								<input type="text" name="moduleRename" id="moduleRenameText" />
-							</div>
-						</div>
-
-						<div class="row" style="padding-top:10px">
-							<div class="col-md-6">
-								<a href="#" id="deleteMod">Delete Module</a>
-							</div>
-						</div>
-					</div>
+				<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
+				<a href="#" id="addMod" onclick="unhide()">Add Module</a>
+				<div id="moduleEdit" hidden>
+					</br>
+					<input type="text" name="moduleRename" id="moduleRenameText" />
+					<a href="#" id="renameMod">Rename Module</a>
+					<a href="#" id="deleteMod">Delete Module</a>
 				</div>
+				</br>
 			</div>
 		</div>
 	</div>
@@ -360,7 +331,7 @@
 				<input type="hidden" value="" name="modulePositions" id="modulePositions" />
 				<input type="hidden" value="" name="compsPositions" id="compsPositions" />
 
-				<input type="submit" value="Add Course" class="btn btn-info" onclick="formSubmit()" /></div>
+				<input type="submit" value="Add Course" onclick="formSubmit()" /></div>
 		</div>
 	</div>
 
