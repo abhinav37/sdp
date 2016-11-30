@@ -1,3 +1,5 @@
+<div class="row">
+
 <div class="form-group">
     {% csrf_token %}
     <div class="col-sm-6">
@@ -15,6 +17,16 @@
         <input type="file" name="compFile" id="compFile" {% if component.file ==  None %} required {% endif %} />
     </div>
 </div>
+</div>
+<div style="padding-top:10px"></div>
+<div class="row" >
+    <div class="col-sm-6">
+        <a href="#" class="componentDelete" id="{{component.id}}"> Delete Component </a>   
+     </div>
 
-<a href="#" class="componentSubmit" id="{{component.id}}"> Update Component </a>
-<a href="#" class="componentDelete" id="{{component.id}}"> Delete Component </a>
+    <div class="col-sm-6">
+        <a href="#" class="componentSubmit" id="{{component.id}}"> Update Component </a>
+    </div>
+   
+</div>
+<div style="padding-top:40px"></div>

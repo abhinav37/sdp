@@ -9,9 +9,13 @@
 
 {% if canAdd == 1 %}
 <form action="" method="post" >
-	<input type="text" placeholder="Enter the component name" name ="component_name" id="component_name" />
-	<a href="#" class="addCom">Add Component</a></br>
+
+</br>
+	<input type="button" class="btn btn-info addCom" value="Add Component" class="addCom"></input>
+	<input type="text" placeholder="Enter the component" name ="component_name" id="component_name" />
+	</br>
 </form>	
+</br>
 </br>
 {% else %}
 	<p id="lastModule" hidden>{{lastModule}}</p>
