@@ -4,7 +4,10 @@
 <link rel="stylesheet" href="/static/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<div id="body">
+<head>
+  <title>Participant</title>
+</head>
+<body>
 {% include "main/navbar.html" %}
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
   <div class="modal-dialog">
@@ -21,11 +24,6 @@
       </div>
     </div>
   </div>
-</div>
-<div class="container-fluid" id="ticker" style="padding-top: 60px;">
-  <marquee>
-    <p>New News and programs</p>
-  </marquee>
 </div>
   {% if enrolledCourse %}
     
@@ -88,9 +86,4 @@
     </div>
   </div>
 </div>
-</div>
-
-<footer class="site-footer" style="padding-bottom: 10px;">
-  <p class="text-muted" align="center">Contact us</p>
-  <p class="text-muted" align="center">2016</p>
-</footer>
+<body>

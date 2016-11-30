@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/static/css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
+<title>Administrator</title>
 <script>
 	function getCookie(name) {
 				var cookieValue = null;
@@ -43,7 +43,7 @@
 							}
 								else
 							{ 
-									$(o.parentNode.parentNode).html('<td><h4><a href="course/'+cid+'/">'+value+'</a></h4></td>\
+									$(o.parentNode.parentNode).html('<td><h4><a>'+value+'</a></h4></td>\
 									<td><button onclick="fxdel(this,'+value+','+cid+')" class="del">Delete</button></td>\
 									<td><button onclick="fxrnm(this,'+value+','+cid+')" class="rnm">Rename</button></td>');
 							}
@@ -86,7 +86,7 @@
 	function fx1(username,id)
 	{
 			document.getElementById(id+"_t").innerHTML="Yes";
-			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\''+id+')" type="checkbox" checked><div class="slider round"></div></label>';
+			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			var csrftoken = getCookie('csrftoken');
 			$.ajax({
 						method: "POST",
@@ -117,7 +117,7 @@
 					else
 			{		alert("instructor has courses")
 							document.getElementById(id+"_t").innerHTML="Yes";
-							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\''+id+')" type="checkbox" checked><div class="slider round"></div></label>';
+							document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 			}						
 			});
 	    
@@ -146,7 +146,7 @@
 										if(msg=='exist')
 											alert("Category with this name already exists!");
 										else
-											$("#tt").append('<tr><td><h4><a href="course/'+msg+'/">'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
+											$("#tt").append('<tr><td><h4><a>'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
 							});
 			$("#openc").html('<a onclick=opencat()>   Create new Cateory</a>');
 		}
@@ -182,12 +182,6 @@
 		</div>
 	</div>
 </div>
-<div class="container-fluid" id="ticker" style="padding-top: 60px;">
-	<marquee>
-		<p>New News and programs</p>
-	</marquee>
-</div>
-
 
 <div class="container" style="padding-top:10px">
 	<h4>Categories <button type="button" style="font-size:10px;" class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button></h4>
@@ -209,7 +203,7 @@
 								{% for category in all_categories %}
 								<tr>
 									<td>
-										<h4><a href="course/{{ category.id }}/">{{ category.name }}</a></h4>
+										<h4><a>{{ category.name }}</a></h4>
 									</td>
 									<td>
 										<button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')" class="del">Delete</button>
@@ -279,8 +273,3 @@
 			</div>
 		</div>
 	</div>
-
-	<footer class="site-footer" style="padding-bottom: 10px;">
-		<p class="text-muted" align="center">Contact us</p>
-		<p class="text-muted" align="center">2016</p>
-	</footer>
