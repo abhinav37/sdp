@@ -34,14 +34,27 @@
 
 <div class="container">
   <div class="col-md-12">
-    <h4>All Participants</h4>
+    <h4>{{ name }}</h4>
     <div class="row well">
     {% if courseHistory %} 
-      {% for course in courseHistory %}
       <div class="row">
-        <h4>{{course.course}}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp {{course.dateCompleted}}</a></h4>
-      </div>
-      {% endfor %}
+       <table class="table">
+							<thead>
+								<tr>
+									<th>Course Name</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+					<tbody>
+         {% for course in courseHistory %}
+     			<tr>
+             <td><h4>{{course.course}}</h4></td><td><h4>{{course.dateCompleted}}</h4></td>
+          </tr>
+         {% endfor %}
+          <tbody>
+      </table>
+       </div>
+      
     {% else %}
       <p>The participant has not completed any course.</p>
     {% endif %}
