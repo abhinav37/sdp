@@ -136,7 +136,7 @@
 							</br>
 						</div>
 						{% for category in categories %}
-						<input type="radio" name="category" value="{{ category.id }}" required {% if course.category_id==c ategory.id %} checked
+						<input type="radio" name="category" value="{{ category.id }}" required {% if course.category_id == category.id %} checked
 							{% endif %}/> {{ category.name }} </br>
 						{% endfor %}
 					</div>

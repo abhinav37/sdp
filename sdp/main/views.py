@@ -97,20 +97,18 @@ def instructor(request):
 def newCourse(request):
 	instructorObj = Instructor.objects.get(pk=request.user.id)
 	courseObj = instructorObj.createCourse()
-	course_id = courseObj.id
 	category_list = Category.objects.all()
-	module_list = courseObj.getModules().order_by("position")
 
 	template = loader.get_template('main/new.html')
-	context = {'categories': category_list, 'modules': module_list, 'course_id': course_id }
+	context = {'categories': category_list, 'course_id': courseObj.id }
  	return HttpResponse(template.render(context,request))
 
 @login_required
 @user_passes_test(isInstructor)
 def editCourse(request, course_id):
-	courseObj = Course.objects.filter(pk=course_id)[0]
-	modules = Module.objects.filter(course_id=course_id).order_by("position")
-	components = Component.objects.filter(course_id=course_id).order_by("position")
+	courseObj = Course.objects.get(pk=course_id)
+	modules = courseObj.getModules().order_by("position")
+	components = courseObj.getComponents().order_by("position")
 	category_list = Category.objects.all()
 
 	template = loader.get_template('main/editCourse.html')
@@ -122,7 +120,6 @@ def editCourse(request, course_id):
 def deployCourse(request):
 	courseObj = Course.objects.get(pk=request.POST['course_id'])
 	participants = courseObj.getParticipants()
-	
 	if not participants:
 		courseObj.toggleDeployed()
 	 	return HttpResponse("Success")
@@ -152,8 +149,8 @@ def view_course(request,course_id):
 	return HttpResponse(template.render(context,request))
 
 def viewFullContent(request,course_id):
-	participantObj = Participant.objects.filter(pk=request.user.id)[0]
-	courseObj = Course.objects.filter(id=course_id)[0]
+	participantObj = Participant.objects.get(pk=request.user.id)
+	courseObj = Course.objects.get(pk=course_id)
 	modules = courseObj.getModules().order_by("position")
 	
 	if participantObj.course_id is None:
@@ -171,9 +168,9 @@ def viewFullContent(request,course_id):
 def completeCourse(request, course_id, participant_id):
 	courseObj = Course.objects.get(pk=course_id)
 	modCount = courseObj.getModuleCount()
-	participantObj = Participant.objects.filter(pk=participant_id)[0]
+	participantObj = Participant.objects.get(pk=participant_id)
 	if participantObj.access == modCount:
-		courseHistory = History.objects.filter(course=course_id, participant= participant_id)
+		courseHistory = History.objects.filter(course=courseObj, participant=participantObj)
 		if courseHistory:
 			courseHistory[0].updateDate(datetime.date.today())
 		else:
@@ -185,7 +182,7 @@ def completeCourse(request, course_id, participant_id):
 
 @login_required
 def addDrop(request):
-	participantObj = Participant.objects.filter(pk=request.user.id)[0]
+	participantObj = Participant.objects.get(pk=request.user.id)
 	if request.POST['drop'] == "1":
 		participantObj.dropCurrentCourse()
 	else:

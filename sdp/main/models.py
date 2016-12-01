@@ -49,6 +49,9 @@ class Course(models.Model):
 	def getModules(self):
 		return Module.objects.filter(course = self)
 
+	def getComponents(self):
+		return Component.objects.filter(course = self)
+
 	def addModule(self, moduleName, modulePosition):
 		new_module = Module(name = moduleName, position = modulePosition, course = self)
 		new_module.save()
