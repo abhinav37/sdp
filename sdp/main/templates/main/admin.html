@@ -142,7 +142,7 @@
 	}		
 	
 	function opencat(){
-		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input type="submit" value="Add Category" onclick="newcat()" /></div></div></div></div>'); 
+		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input class="btn btn-info" type="submit" value="Add Category" onclick="newcat()" /></div></div></div></div>'); 
 	}
 
 	function newcat(){
@@ -160,7 +160,7 @@
 						if(msg=='exist')
 							alert("Category with this name already exists!");
 						else
-							$("#tt").append('<tr><td><h4><a>'+value+'</a></h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
+							$("#tt").append('<tr><td><h4>'+value+'</h4></td><td><button onclick="fxdel(this,\''+value+'\',\''+msg+'\')"class="del">Delete</button</td><td><button onclick="fxrnm(this,\''+value+'\',\''+msg+'\')"class="rnm">Rename</button</td><tr>');
 				});
 			$("#openc").html('<a onclick=opencat()>   Create new Cateory</a>');
 		}
@@ -185,7 +185,10 @@
 		<div class="row well">
 			<div class="collapse" id="demo">
 				{% if all_categories %}
-				<input type="text" id="myInput2" onkeyup="myFunction2()" placeholder="Search for category..">
+				<div class="input-group col-md-11">
+            		<i class="input-group-addon glyphicon glyphicon-search"></i>
+           			<input type="text" class="form-control" id="myInput2" onkeyup="myFunction2()" placeholder="Search for category..">
+          		</div>
 				<ul>
 					<div class="row">
 						<table class="table" id="tt">
@@ -200,7 +203,7 @@
 								{% for category in all_categories %}
 								<tr>
 									<td>
-										<h4><a>{{ category.name }}</a></h4>
+										<h4>{{ category.name }}</h4>
 									</td>
 									<td>
 										<button onclick="fxdel(this,'{{ category.name }}','{{ category.id }}')" class="del">Delete</button>
@@ -220,7 +223,7 @@
 			</div>
 		</div>
 		<div id="openc">
-			<a onclick=opencat()>   Create new Cateory</a>
+			<a class="btn btn-info btn-sm" onclick=opencat()>   Create new Cateory</a>
 		</div>
 	</div>
 </div>
@@ -231,7 +234,10 @@
 		<div class="row well">
 			<div class="collapse" id="demo2">
 				{% if all_users %}
-				<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
+				<div class="input-group col-md-11">
+            		<i class="input-group-addon glyphicon glyphicon-search"></i>
+           			<input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
+          		</div>
 				<ul>
 					<div class="row">
 						<table class="table" id="instructorTable">
@@ -248,7 +254,7 @@
 									<td>
 										<h4>{{ user }}</h4>
 									</td>
-									<td id="{{ user.id }}_t">No</td>
+									<td id="{{ user.id }}_t" hidden >No</td>
 									<td id="{{ user.id }}_s">
 										<label class="switch"><input type="checkbox" onclick="fx1('{{user.username}}',{{user.id}})" > 
 											<div class="slider round"></div>
