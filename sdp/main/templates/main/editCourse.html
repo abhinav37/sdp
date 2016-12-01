@@ -65,6 +65,7 @@
 						},
 						data: {module_id: this.id, course_id: {{course.id}} }
 					}).done(function( msg ) {
+						$("#moduleEdit").show();
 						$("#compContainer").html(msg);
 						$( "#components" ).sortable();
 						$( "#components" ).disableSelection();
@@ -93,7 +94,84 @@
 						$("#components").sortable();
 						$("#components").disableSelection();
 					});
+				});
+
+				$("#compContainer").on("click", ".componentLoad", function(event){	
+					var csrftoken = getCookie('csrftoken');
+					$.ajax({
+						method: "POST",
+						url: "/main/instructor/new/loadComponentBody/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: { component_id: this.id }
+					}).done(function( msg ) {
+						$("#componentBody").html(msg);
+					});
+				});	
+
+				$("#compContainer").on("click", ".componentDelete", function(event){
+					var csrftoken = getCookie('csrftoken');
+					$.ajax({
+						method: "POST",
+						url: "/main/instructor/new/deleteComponent/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: {course_id: {{course.id}}, module_id: modSelected, component_id: this.id }
+					}).done(function( msg ) {
+						$("#compContainer").html(msg);
+					});
+				});	
+
+				$("#renameMod").click(function(){
+					var csrftoken = getCookie('csrftoken');
+					$.ajax({
+						method: "POST",
+						url: "/main/instructor/new/renameModule/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: {course_id: {{course.id}}, module_id: modSelected, module_name: $("#moduleRenameText").val() }
+					}).done(function( msg ) {
+						$("#moduleContainer").html(msg);						
+						$( "#modules" ).sortable({ stop: modulesSortEventHandler });
+						$( "#modules" ).disableSelection();
+						
+						//restore old order of modules
+						modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
+						$.each(modulesOrder, function(key, val){
+							var mod = "#modules > #"+val;
+							$( "#modules" ).append($(mod));
+						});
+						$("#moduleContainer").find('#' + modSelected).addClass("active");
+					});
 				});		
+
+				$("#deleteMod").click(function(){
+					var csrftoken = getCookie('csrftoken');
+					$.ajax({
+						method: "POST",
+						url: "deleteModule/",
+						beforeSend: function( xhr ) {
+							xhr.setRequestHeader("X-CSRFToken", csrftoken);
+						},
+						data: {course_id: {{course.id}}, module_id: modSelected }
+					}).done(function( msg ) {
+						$("#moduleEdit").hide();
+						$("#compContainer").hide();
+						$("#moduleContainer").html(msg);						
+						$( "#modules" ).sortable({ stop: modulesSortEventHandler });
+						$( "#modules" ).disableSelection();
+						
+						//restore old order of modules
+						modulesOrder.push($("#modules").sortable( "toArray" )[$("#modules").sortable( "toArray" ).length - 1]);
+						$.each(modulesOrder, function(key, val){
+							var mod = "#modules > #"+val;
+							$( "#modules" ).append($(mod));
+						});
+					});
+				});	
 			});
 
 			function formSubmit(){
@@ -142,6 +220,12 @@
 					</div>
 
 					<div id="moduleContainer">{% include "main/module.html" %}</div>
+									<div id="moduleEdit" hidden>
+					</br>
+					<input type="text" name="moduleRename" id="moduleRenameText" />
+					<a href="#" id="renameMod">Rename Module</a>
+					<a href="#" id="deleteMod">Delete Module</a>
+				</div>
 					<div id="compContainer"></div>
 
 					<input type="text" placeholder="enter the module name" name="module_name" id="module_name" />

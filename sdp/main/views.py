@@ -100,7 +100,7 @@ def newCourse(request):
 	category_list = Category.objects.all()
 
 	template = loader.get_template('main/new.html')
-	context = {'categories': category_list, 'course_id': courseObj.id }
+	context = {'categories': category_list, 'course': courseObj }
  	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -111,8 +111,8 @@ def editCourse(request, course_id):
 	components = courseObj.getComponents().order_by("position")
 	category_list = Category.objects.all()
 
-	template = loader.get_template('main/editCourse.html')
-	context = {'course': courseObj,'modules': modules ,'components': components, 'categories': category_list}
+	template = loader.get_template('main/new.html')
+	context = {'course': courseObj, 'modules': modules, 'components': components, 'categories': category_list, 'edit': 1}
  	return HttpResponse(template.render(context,request))
 
 @login_required
@@ -218,6 +218,7 @@ def loadComponents(request):
 	moduleObj = Module.objects.get(pk=request.POST['module_id'])
 	component_list = moduleObj.getComponents().order_by("position")
 	context = {'components': component_list, 'module_id': request.POST['module_id'], 'canAdd': canAdd , 'lastModule': lastModule }
+	print context
 	template = loader.get_template('main/componentList.html')
 	return HttpResponse(template.render(context,request))
 

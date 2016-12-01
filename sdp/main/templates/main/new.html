@@ -1,6 +1,6 @@
 <head>
 	{% include "main/navbar.html" %}
-	<title>New Course</title>
+	{% if edit %} <title>Edit Course</title> {% else %} <title>New Course</title> {% endif %}
 	<script>
 		function getCookie(name) {
 			var cookieValue = null;
@@ -40,11 +40,11 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "addModule/",
+					url: "{% url 'addModule' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {module_id: this.id, course_id: {{course_id}}, module_name: $("#module_name").val() }
+					data: {module_id: this.id, course_id: {{course.id}}, module_name: $("#module_name").val() }
 				}).done(function( msg ) {
 					$("#module_name").val("");
 					$("#moduleContainer").html(msg);						
@@ -68,15 +68,17 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "loadComponents/",
+					url: "{% url 'loadComponents' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {module_id: this.id, course_id: {{course_id}} }
+					data: {module_id: this.id, course_id: {{course.id}} }
 				}).done(function( msg ) {
+					console.log(msg);
 					$("#moduleEdit").show();
 					var search = "#modules li #"+modSelected;
 					$("#moduleRenameText").val($(search).html());
+					unhide();
 					$("#compContainer").html(msg);
 					$( "#components" ).sortable({ stop: compsSortEventHandler });
 					$( "#components" ).disableSelection();
@@ -95,11 +97,11 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "addComponent/",
+					url: "{% url 'addComponent' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {module_id: modSelected, course_id: {{course_id}}, component_name: $("#component_name").val() }
+					data: {module_id: modSelected, course_id: {{course.id}}, component_name: $("#component_name").val() }
 				}).done(function( msg ) {
 					$("#compContainer").html(msg);
 					$("#components").sortable({ stop: compsSortEventHandler });
@@ -122,12 +124,13 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "loadComponentBody/",
+					url: "{% url 'loadComponentBody' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
 					data: { component_id: this.id }
 				}).done(function( msg ) {
+					console.log(msg);
 					$("#componentBody").html(msg);
 				});
 			});	
@@ -147,7 +150,7 @@
 					method: "POST",
 					processData: false,
 							contentType: false,
-					url: "loadComponentBody/",
+					url: "{% url 'loadComponentBody' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
@@ -161,11 +164,11 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "deleteComponent/",
+					url: "{% url 'deleteComponent' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {course_id: {{course_id}}, module_id: modSelected, component_id: this.id }
+					data: {course_id: {{course.id}}, module_id: modSelected, component_id: this.id }
 				}).done(function( msg ) {
 					$("#compContainer").html(msg);
 				});
@@ -175,11 +178,11 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "renameModule/",
+					url: "{% url 'renameModule' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {course_id: {{course_id}}, module_id: modSelected, module_name: $("#moduleRenameText").val() }
+					data: {course_id: {{course.id}}, module_id: modSelected, module_name: $("#moduleRenameText").val() }
 				}).done(function( msg ) {
 					$("#moduleContainer").html(msg);						
 					$( "#modules" ).sortable({ stop: modulesSortEventHandler });
@@ -199,11 +202,11 @@
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
-					url: "deleteModule/",
+					url: "{% url 'deleteModule' %}",
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {course_id: {{course_id}}, module_id: modSelected }
+					data: {course_id: {{course.id}}, module_id: modSelected }
 				}).done(function( msg ) {
 					$("#moduleEdit").hide();
 					$("#compContainer").hide();
@@ -253,7 +256,7 @@
 						<label for="courseName">Course Name:</label>
 					</div>
 					<div class="col-sm-6">
-						<input type="text" name="courseName" id="courseName" required/>
+						<input type="text" name="courseName" id="courseName" {% if edit %} value="{{course.name}}" {% endif %} required/>
 						</br>
 						</br>
 					</div>
@@ -261,7 +264,7 @@
 						<label for="courseDesc">Course Description: </label>
 					</div>
 					<div class="col-sm-6">
-						<input type="text" name="courseDesc" id="courseDesc" required/>
+						<input type="text" name="courseDesc" id="courseDesc" {% if edit %} value="{{course.description}}" {% endif %} required/>
 						</br>
 						</br>
 					</div>
@@ -271,9 +274,8 @@
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
-
 				{% for category in categories %}
-				<input type="radio" name="category" value="{{ category.id }}" required/> {{ category.name }} </br>
+				<input type="radio" name="category" value="{{ category.id }}" required {% if course.category_id == category.id %} checked {% endif %}/> {{ category.name }} </br>
 				{% endfor %}
 			</div>
 		</div>
@@ -282,7 +284,7 @@
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
-				<div id="moduleContainer"></div>
+				<div id="moduleContainer">{% include "main/module.html" %}</div>
 				<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
 				<a href="#" id="addMod" onclick="unhide()">Add Module</a>
 				<div id="moduleEdit" hidden>
@@ -302,7 +304,7 @@
 
 				<div id="compContainer"></div>
 
-				<input type="hidden" value="{{course_id}}" name="course_id" />
+				<input type="hidden" value="{{course.id}}" name="course_id" />
 				<input type="hidden" value="" name="modulePositions" id="modulePositions" />
 				<input type="hidden" value="" name="compsPositions" id="compsPositions" />
 
