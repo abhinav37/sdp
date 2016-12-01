@@ -4,7 +4,8 @@ from .models import Course, Category, Participant, Module, Component, Instructor
 from django.shortcuts import redirect
 
 from django.contrib.auth.models import User
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 import json,datetime
@@ -364,7 +365,7 @@ def renameCategory(request):
 		print e
 		pass
 
-############## Registration Views ##############
+############## Login/Logout/Registration Views ##############
 def callReg(request, context1):
 	template = loader.get_template('main/register.html')
 	return HttpResponse(template.render(context1, request))
@@ -395,6 +396,20 @@ def logOut(request):
 	if request.user.is_authenticated:
 		logout(request)
 	return redirect('login')
+
+def auth(request):
+	username = request.POST['username']
+	password = request.POST['password']
+	user = authenticate(username=username, password=password)
+	if user is not None:
+		login(request, user)
+		request.user.isHR = isHR(request.user)
+		return redirect('participant')
+	else:
+		form = AuthenticationForm(request)
+		context = {'form' : form, 'error': "Invalid, please try again!"}
+		template = loader.get_template('main/login.html')
+		return HttpResponse(template.render(context,request))
 
 ############## HR Views ##############
 

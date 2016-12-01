@@ -1,6 +1,7 @@
 <head>
 	<title>Administrator</title>
 </head>
+{% include "main/navbar.html" %}
 <script>
 	function myFunction() {
 		var input, filter, table, tr, td, i;
@@ -175,7 +176,7 @@
 			document.getElementById(id+"_s").innerHTML='<label class="switch"><input onclick="fx2(\''+username+'\','+id+')" type="checkbox" checked><div class="slider round"></div></label>';
 		}		
 	}
-</script> {% include "main/navbar.html" %}
+</script> 
 <div class="container-fluid" id="ticker" style="padding-top: 60px;">
 </div>
 <div class="container" style="padding-top:10px">

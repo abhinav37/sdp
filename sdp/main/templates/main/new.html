@@ -1,4 +1,5 @@
 <head>
+	{% include "main/navbar.html" %}
 	<title>New Course</title>
 	<script>
 		function getCookie(name) {
@@ -31,6 +32,11 @@
 		
 		$(document).ready(function() {
 			$("#addMod").click(function(){
+				if( !$("#module_name").val() ){
+					alert("Add Module Name!");
+					return;
+				}
+
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -235,7 +241,6 @@
 </head>
 
 <body>
-	{% include "main/navbar.html" %}
 	<div class="container-fluid" id="ticker" style="padding-top: 60px;"></div>
 	<div class="container">
 		<h4>Enter Course Details</h4>

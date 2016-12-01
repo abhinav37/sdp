@@ -24,7 +24,7 @@
   {% endif %}
   <div class="container">
     <div class="col-md-12">
-      <div class="col-md-9">
+      <div class="col-md-12">
         <h4>Suggested Courses</h4>
         <div class="row well">
           {% if courseList %} 
@@ -42,9 +42,9 @@
           <p>No other courses are available.</p>
           {% endif %}
         </div>
-
+        
+        <h4>Completed Courses</h4>
         <div class="row well">
-          <h4>Completed Courses</h4>
           {% if courseHistory %}
           <ul>
             {% for course in courseHistory %}
@@ -54,7 +54,7 @@
             {% endfor %}
           </ul>
           {% else %}
-          <p>No other courses are available.</p>
+          <p>You have not completed any course.</p>
           {% endif %}
         </div>
       </div>

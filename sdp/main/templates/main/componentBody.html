@@ -13,7 +13,7 @@
             <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
         </div>
         <div class="col-sm-6">
-            <input type="file" name="compFile" id="compFile" {% if component.file==N one %} required {% endif %} />
+            <input type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
         </div>
     </div>
 

@@ -6,10 +6,12 @@
   <div class="modal-dialog">
     <div class="loginmodal-container">
       <h1>Login to Your Account</h1><br>
-      <form method="post">
+      {% if error %}
+        <p>{{error}}</p>
+      {% endif %}
+      <form action="{% url 'auth' %}" method="post">
             {% csrf_token %}
-    {{ form.as_p }}
-
+            {{ form.as_p }}
         <input type="submit" name="login" class="login loginmodal-submit" value="Login">
       </form>
 

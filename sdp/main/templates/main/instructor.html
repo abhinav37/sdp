@@ -1,5 +1,6 @@
 <head>
   <title>Instructor</title>
+  {% include "main/navbar.html" %}
   <script>
     function myFunction() {
       // Declare variables 
@@ -65,16 +66,15 @@
   </script>
 </head>
 <div id="body">
-  {% include "main/navbar.html" %}
   <div class="container-fluid" id="ticker" style="padding-top: 60px;"></div>
 
   <div class="container">
     <div class="col-md-12">
       <h4>Your Courses</h4>
       <div class="row well">
+        {% if course_list %}
         <div class="row">
           <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for course..">
-
           <table class="table" id="coursesTable">
             <thead>
               <tr>
@@ -100,6 +100,9 @@
             </tbody>
           </table>
         </div>
+        {% else %}
+          <p>You have not created any courses.</p>
+        {% endif %}
       </div>
       <div style="padding-bottom: 10px;">
         <a href="new">Create New Course</a>
