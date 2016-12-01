@@ -9,9 +9,14 @@
       {% if error %}
         <p>{{error}}</p>
       {% endif %}
+      {% if user.is_authenticated %}
+        <p>Your account doesn't have access to this page. To proceed, please login with an account that has access.</p>
+      {% endif %}
       <form action="{% url 'auth' %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
+        
+        <input type="hidden" name="next" value="{{ next }}" />
         <input type="submit" name="login" class="login loginmodal-submit" value="Login">
       </form>
 

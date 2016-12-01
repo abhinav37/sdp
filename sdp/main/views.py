@@ -401,7 +401,10 @@ def auth(request):
 	if user is not None:
 		login(request, user)
 		request.session['isHR'] = isHR(request.user)
-		return redirect('participant')
+		if not request.POST['next']:
+			return redirect('participant')
+		else:
+			return redirect(request.POST['next'])
 	else:
 		form = AuthenticationForm(request)
 		context = {'form' : form, 'error': "Invalid, please try again!"}
