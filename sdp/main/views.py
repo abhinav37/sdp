@@ -400,7 +400,7 @@ def auth(request):
 	user = authenticate(username=username, password=password)
 	if user is not None:
 		login(request, user)
-		request.user.isHR = isHR(request.user)
+		request.session['isHR'] = isHR(request.user)
 		return redirect('participant')
 	else:
 		form = AuthenticationForm(request)
