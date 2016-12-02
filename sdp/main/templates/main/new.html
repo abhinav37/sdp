@@ -93,7 +93,6 @@
 			});	
 		
 			$("#compContainer").on("click", ".addCom", function(event){	
-				alert( $("#compType").val() );
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -132,23 +131,12 @@
 				}).done(function( msg ) {
 					$("#componentBody").html(msg);
 				});
-			});	
-
-			$("#compContainer").on("change", "#compType", function(event){	
-				var selected = $('#compType').find(":selected").text();
-				if(selected == "Video"){
-					$('#videoComponent').show();
-					$('#fileComponent').hide();
-				}else{
-					$('#videoComponent').hide();
-					$('#fileComponent').show();
-				}
-			});	
+			});		
 		
 			$("#compContainer").on("click", ".componentSubmit", function(event){
 				var fd = new FormData();
-				var selected = $('#compType').find(":selected").text();
-				if(selected == "File"){
+				var selected = $('#tagForUpload').val();
+				if(selected == "file"){
 					var file = $("#compFile")[0].files[0];
 					fd.append('compFile', file);
 				}else{

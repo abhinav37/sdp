@@ -93,14 +93,6 @@ class Component(models.Model):
 	def __str__(self):
 		return self.name
 
-	def createFile(self, file):
-		newFile = FileComponent(course=self.course, module=self.module, position=self.position, name=self.name, file=file)
-		newFile.save()
-
-	def createVideo(self, url):
-		newFile = VideoComponent(course=self.course, module=self.module, position=self.position, name=self.name, video=url)
-		newFile.save()
-
 class FileComponent(Component):
 	file = models.FileField(upload_to=fileUploadPath, null=True, blank=True, default = None)
 	

@@ -18,6 +18,7 @@
                 <div class="col-sm-6">
                     <input type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
                 </div>
+                <input type="hidden" value="file" id="tagForUpload" />
             </div>
         {% else %}
             <div id="videoComponent">
@@ -27,6 +28,7 @@
                 <div class="col-sm-6">
                     <input type="text" name="compVideo" id="compVideo" {% if component.url == None %} required {% endif %} />
                 </div>
+                <input type="hidden" value="video" id="tagForUpload" />
             </div>
         {% endif %}
     </div>

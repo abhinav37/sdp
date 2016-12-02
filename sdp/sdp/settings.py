@@ -65,14 +65,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
-                
             ],
         },
     },
 ]
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
-)
 
 WSGI_APPLICATION = 'sdp.wsgi.application'
 
@@ -131,7 +127,7 @@ STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ( os.path.join('static'), )
+STATICFILES_DIRS = ( '/mnt/c/Users/Kanak/Desktop/sdp/sdp/static', )
 
 MEDIA_ROOT = '/mnt/c/Users/Kanak/Desktop/sdp/sdp/uploads'
 MEDIA_URL = '/uploads/'

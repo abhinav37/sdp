@@ -227,16 +227,19 @@ def loadComponentBody(request):
 	fileType = request.POST.get('fileType', False)
 	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.get(pk=request.POST['component_id'])
+	print request.POST['component_id']
 
 	if fileType:
 		compFile = request.FILES.get('compFile', False)
 		if compFile:
 			#os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.fileComponent.file))
-			componentObj.createFile(compFile)
+			componentObj.filecomponent.file = compFile
+			componentObj.filecomponent.save()
 		else:
 			compVideo = request.POST.get('compVideo', False)
 			if compVideo:
-				componentObj.createVideo(compVideo)
+				componentObj.videocomponent.video = compVideo
+				componentObj.videocomponent.save()
 	
 	if compName:
 		componentObj.name = compName
@@ -253,12 +256,10 @@ def loadComponentBody(request):
 @login_required
 def partiComponentBody(request, course_id):
 	componentObj = Component.objects.get(pk=request.POST['component_id'])
+	print componentObj
 	try:
-
 		context = {'component': componentObj.filecomponent}
-
 	except FileComponent.DoesNotExist: 
-
 		context = {'component': componentObj.videocomponent}
 
 	template = loader.get_template('main/partiComponentBody.html')
