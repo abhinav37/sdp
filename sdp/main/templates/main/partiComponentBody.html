@@ -1,1 +1,12 @@
-<embed src="/main{{MEDIA_URL}}{{component.file}}" width=100% />
+{% if component.file %}
+	<embed src="/main{{MEDIA_URL}}{{component.file}}" width=100% />
+{% else %}
+	{% load embed_video_tags %}
+	The video tag:
+	{% video component.video as my_video %}
+		URL: {{ my_video.url }}
+		Thumbnail: {{ my_video.thumbnail }}
+		Backend: {{ my_video.backend }}
+		{% video my_video "large" %}
+	{% endvideo %}
+{% endif %}
