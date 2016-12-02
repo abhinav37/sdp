@@ -93,6 +93,7 @@
 			});	
 		
 			$("#compContainer").on("click", ".addCom", function(event){	
+				alert( $("#compType").val() );
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -100,7 +101,7 @@
 					beforeSend: function( xhr ) {
 						xhr.setRequestHeader("X-CSRFToken", csrftoken);
 					},
-					data: {module_id: modSelected, course_id: {{course.id}}, component_name: $("#component_name").val() }
+					data: {module_id: modSelected, course_id: {{course.id}}, component_name: $("#component_name").val(), compType: $("#compType").val() }
 				}).done(function( msg ) {
 					$("#compContainer").html(msg);
 					$("#components").sortable({ stop: compsSortEventHandler });

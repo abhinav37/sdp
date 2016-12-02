@@ -242,17 +242,24 @@ def loadComponentBody(request):
 		componentObj.name = compName
 
 	componentObj.save()
-	context = {'component': componentObj}
+	try:
+		context = {'component': componentObj.filecomponent, 'type': 'File'}	
+	except FileComponent.DoesNotExist: 
+		context = {'component': componentObj.videocomponent, 'type': 'Video'}
+
 	template = loader.get_template('main/componentBody.html')
 	return HttpResponse(template.render(context,request))
 
 @login_required
 def partiComponentBody(request, course_id):
 	componentObj = Component.objects.get(pk=request.POST['component_id'])
-	if componentObj.videocomponent:
-		context = {'component': componentObj.videocomponent}
-	else:
+	try:
+
 		context = {'component': componentObj.filecomponent}
+
+	except FileComponent.DoesNotExist: 
+
+		context = {'component': componentObj.videocomponent}
 
 	template = loader.get_template('main/partiComponentBody.html')
 	return HttpResponse(template.render(context,request))
@@ -278,7 +285,7 @@ def addComponent(request):
 		component_position = 0
 	else:
 		component_position = comps.order_by("position").reverse()[0].position
-	moduleObj.addComponent(request.POST['component_name'], component_position + 1)
+	moduleObj.addComponent(request.POST['component_name'], component_position + 1, request.POST['compType'])
 
 	component_list = moduleObj.getComponents().order_by("position")
 	template = loader.get_template('main/componentList.html')

@@ -10,30 +10,25 @@
             </br>
         </div>
 
-        <div id="compTypeDiv" class="col-sm-6">
-            <select id="compType" name="compType">
-                <option value="file">File</option>
-                <option value="video">Video</option>
-            </select>    
-        </div>
-
-        <div id="fileComponent">
-            <div class="col-sm-6">
-                <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
+        {% if type == 'File' %}
+            <div id="fileComponent">
+                <div class="col-sm-6">
+                    <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
+                </div>
             </div>
-            <div class="col-sm-6">
-                <input type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
+        {% else %}
+            <div id="videoComponent">
+                <div class="col-sm-6">
+                    <label for="compVideo">Video: {{component.url}} </a></label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" name="compVideo" id="compVideo" {% if component.url == None %} required {% endif %} />
+                </div>
             </div>
-        </div>
-
-        <div id="videoComponent" hidden>
-            <div class="col-sm-6">
-                <label for="compVideo">Video: {{component.url}} </a></label>
-            </div>
-            <div class="col-sm-6">
-                <input type="text" name="compVideo" id="compVideo" {% if component.url == None %} required {% endif %} />
-            </div>
-        </div>
+        {% endif %}
     </div>
 
     <div style="padding-top:10px"></div>

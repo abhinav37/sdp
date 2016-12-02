@@ -74,9 +74,13 @@ class Module(models.Model):
 	def getComponents(self):
 		return Component.objects.filter(course=self.course, module=self)
 	
-	def addComponent(self, componentName, componentPosition):
-		newComponent = Component(name = componentName, position = componentPosition, course = self.course, module = self)
-		newComponent.save()
+	def addComponent(self, componentName, componentPosition, compType):
+		if compType == 'video':
+			newComponent = VideoComponent(name = componentName, position = componentPosition, course = self.course, module = self, video="https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+			newComponent.save()
+		else:
+			newComponent = FileComponent(name = componentName, position = componentPosition, course = self.course, module = self)
+			newComponent.save()
 
 def fileUploadPath(instance, filename):
     return '{0}/{1}/{2}'.format(instance.course.id, instance.module.id, filename)
