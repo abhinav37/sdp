@@ -236,8 +236,7 @@ def loadComponentBody(request):
 		else:
 			compVideo = request.POST.get('compVideo', False)
 			if compVideo:
-				videoComp = VideoComponent(component=componentObj, video=compVideo)
-				videoComp.save()
+				componentObj.createVideo(compVideo)
 	
 	if compName:
 		componentObj.name = compName
@@ -250,7 +249,11 @@ def loadComponentBody(request):
 @login_required
 def partiComponentBody(request, course_id):
 	componentObj = Component.objects.get(pk=request.POST['component_id'])
-	context = {'component': componentObj}
+	if componentObj.videocomponent:
+		context = {'component': componentObj.videocomponent}
+	else:
+		context = {'component': componentObj.filecomponent}
+
 	template = loader.get_template('main/partiComponentBody.html')
 	return HttpResponse(template.render(context,request))
 
