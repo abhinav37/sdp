@@ -1,22 +1,29 @@
+
+	<div class="container">
+		<div class="col-md-12">
+			<div class="row well">
+                <h4>Edit Component: {{component.name}}</h4>
 <div class="row">
     <div class="form-group">
+        
         {% csrf_token %}
         <div class="col-sm-6">
             <label for="compName">Component Name:</label>
         </div>
         <div class="col-sm-6">
             <input type="text" name="compName" id="compName" required value="{{component.name}}" />
-            </br>
-            </br>
+            
         </div>
-
+</br>
+</br>
         {% if type == 'File' %}
             <div id="fileComponent">
                 <div class="col-sm-6">
                     <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
                 </div>
+                
                 <div class="col-sm-6">
-                    <input type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
+                    <button class="btn btn-info" style="margin-left: 2px;" type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} >Choose file</button>
                 </div>
                 <input type="hidden" value="file" id="tagForUpload" />
             </div>
@@ -33,14 +40,18 @@
         {% endif %}
     </div>
 
-    <div style="padding-top:10px"></div>
+    <div style="padding-top:20px"></div>
     <div class="row">
         <div class="col-sm-6">
-            <a href="#" class="componentDelete" id="{{component.id}}"> Delete Component </a>
+            <button type="button"  class="componentDelete" id="{{component.id}}"> Delete Component </a>
         </div>
         <div class="col-sm-6">
-            <a href="#" class="componentSubmit" id="{{component.id}}"> Update Component </a>
+            <button type="button"  class="componentSubmit" id="{{component.id}}"> Update Component </a>
         </div>
     </div>
     <div style="padding-top:40px"></div>
+</div>
+
+</div>
+</div>
 </div>

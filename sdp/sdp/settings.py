@@ -127,7 +127,7 @@ STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ( '/mnt/c/Users/Kanak/Desktop/sdp/sdp/static', )
+STATICFILES_DIRS = ( 'C:/sdp/work/sdp/sdp/static', )
 
 MEDIA_ROOT = '/mnt/c/Users/Kanak/Desktop/sdp/sdp/uploads'
 MEDIA_URL = '/uploads/'

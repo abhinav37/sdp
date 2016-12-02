@@ -75,11 +75,14 @@
         {% if course_list %}
         <ul>
         <div class="row">
-          <div class="input-group col-md-11">
-            <i class="input-group-addon glyphicon glyphicon-search"></i>
-            <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for course..">
-          </div>
-          <table class="table" id="coursesTable">
+          
+		<div id="search-form" class="form-group col-md-9">
+              <div class="input-group">
+                <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
+              </div>
+            </div>
+        <table class="table" id="coursesTable">
             <thead>
               <tr>
                 <th>

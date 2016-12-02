@@ -185,10 +185,13 @@
 		<div class="row well">
 			<div class="collapse" id="demo">
 				{% if all_categories %}
-				<div class="input-group col-md-11">
-            		<i class="input-group-addon glyphicon glyphicon-search"></i>
-           			<input type="text" class="form-control" id="myInput2" onkeyup="myFunction2()" placeholder="Search for category..">
-          		</div>
+		<div id="search-form" class="form-group">
+              <div class="input-group">
+                <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <input type="text" class="form-control" id="myInput2" onkeyup="myFunction2()" placeholder="Search for category..">
+              </div>
+            </div>
+
 				<ul>
 					<div class="row">
 						<table class="table" id="tt">
@@ -234,10 +237,15 @@
 		<div class="row well">
 			<div class="collapse" id="demo2">
 				{% if all_users %}
-				<div class="input-group col-md-11">
-            		<i class="input-group-addon glyphicon glyphicon-search"></i>
-           			<input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
-          		</div>
+		
+		<div id="search-form" class="form-group">
+              <div class="input-group">
+                <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
+              </div>
+            </div>
+
+		
 				<ul>
 					<div class="row">
 						<table class="table" id="instructorTable">

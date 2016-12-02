@@ -2,8 +2,8 @@
 <meta charset="utf-8"> {% load static %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<link rel="stylesheet" href="/static/css/bootstrap.min.css">
-<link rel="stylesheet" href="/static/css/bootstrap.css">
+<link rel="stylesheet" href="{{STATIC_URL}}/static/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{STATIC_URL}}/static/css/bootstrap.css">
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}/static/favicon.ico" />
@@ -15,8 +15,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-			<a class="navbar-brand" href="#">Staff Development Platform	</a>
+			<a class="navbar-brand">Staff Development Platform	</a>
 		</div>
+		
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
 				{%if request.user.is_superuser %}
@@ -25,7 +26,7 @@
 				<li><a href='{% url "participant" %}'>Courses Offered</a></li>
 				{%if request.user.is_staff %}
 				<li><a href='{%url "instructor" %}'>Instructor</a></li>
-				{% endif %} {%if request.session.isHR %}
+					{% endif %} {%if request.session.isHR %}
 				<li><a href='{%url "participantList" %}'>HR</a></li>
 				{% endif %}
 			</ul>

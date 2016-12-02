@@ -1,32 +1,41 @@
+
+
+	<div class="container">
+		<div class="col-md-12">
+			<div class="row well">
+<h4>Component:</h4>
+
 <ul class="nav nav-tabs" id="components">
 {% for component in components %}
-	<li role="presentation" id="{{ component.id }}"><a data-toggle="tab" href="#" class="componentLoad" id="{{ component.id }}">{{ component.name }}</a></li>
+	<li role="presentation" id="{{ component.id }}"><a data-toggle="tab"  class="componentLoad" id="{{ component.id }}">{{ component.name }}</a></li>
 {% endfor %}
 </ul>
-</br>
 
-<div id="componentBody"></div>
+
 
 {% if canAdd == 1 %}
 <form action="" method="post" >
-
-</br>
-	<input type="button" class="btn btn-info addCom" value="Add Component" class="addCom"></input>
+<div class="col-md-6" >
 	<input type="text" placeholder="Enter the component" name ="component_name" id="component_name" />
-	<div id="compTypeDiv" class="col-sm-6">
-        <select id="compType" name="compType">
+	<button type="button" class="addi"  value="Add Component" id="addCom">Add Component</button>
+
+	</div>
+
+	<div id="compTypeDiv" class="col-md-6">
+        <select id="compType" class="soflow" name="compType">
             <option value="file">File</option>
             <option value="video">Video</option>
         </select>    
     </div>
-	</br>
+	
 </form>	
-</br>
-</br>
 {% else %}
 	<p id="lastModule" hidden>{{lastModule}}</p>
 {% endif %}
 
+</div>
+</div>
+</div>
 
-
+<div id="componentBody"></div>
 

@@ -75,9 +75,12 @@
 					data: {module_id: this.id, course_id: {{course.id}} }
 				}).done(function( msg ) {
 					$("#moduleEdit").show();
+					
 					var search = "#modules li #"+modSelected;
 					$("#moduleRenameText").val($(search).html());
 					unhide();
+					$("#modname").html("Edit module: "+$(search).html());
+					
 					$("#compContainer").html(msg);
 					$( "#components" ).sortable({ stop: compsSortEventHandler });
 					$( "#components" ).disableSelection();
@@ -92,7 +95,7 @@
 				});
 			});	
 		
-			$("#compContainer").on("click", ".addCom", function(event){	
+			$("#compContainer").on("click", "#addCom", function(event){	
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -180,6 +183,7 @@
 			});	
 
 			$("#renameMod").click(function(){
+				 
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -279,6 +283,7 @@
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
+				<h4>Select from Categories:</h4>
 				{% for category in categories %}
 				<input type="radio" name="category" value="{{ category.id }}" required {% if course.category_id == category.id %} checked {% endif %}/> {{ category.name }} </br>
 				{% endfor %}
@@ -289,25 +294,36 @@
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
+				<h4>Modules:</h4>			
 				<div id="moduleContainer">{% include "main/module.html" %}</div>
 				<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
-				<a href="#" id="addMod" onclick="unhide()">Add Module</a>
-				<div id="moduleEdit" hidden>
-					</br>
-					<input type="text" name="moduleRename" id="moduleRenameText" />
-					<a href="#" id="renameMod">Rename Module</a>
-					<a href="#" id="deleteMod">Delete Module</a>
-				</div>
-				</br>
+				<button class="addi" id="addMod" type="button" onclick="unhide()">Add Module</button>
+				
 			</div>
 		</div>
 	</div>
+<div id="moduleEdit" hidden>
+	<div class="container">
+		<div class="col-md-12">
+			<div class="row well">
+				<h4 id="modname"></h4>
+					<input type="text" name="moduleRename" id="moduleRenameText" />
+					<button class="rnm" id="renameMod" type="button">Rename Module</button>
+					<button class="del" id="deleteMod" type="button">Delete Module</button>
+
+
+				</div>
+			</div>
+		</div>
+
+</div>
+
+				<div id="compContainer"></div>
 
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
 
-				<div id="compContainer"></div>
 
 				<input type="hidden" value="{{course.id}}" name="course_id" />
 				<input type="hidden" value="" name="modulePositions" id="modulePositions" />
