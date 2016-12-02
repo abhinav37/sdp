@@ -62,9 +62,7 @@
 			});	
 		
 			$("#moduleContainer").on("click", ".moduleLoad", function(event){
-				modSelected = this.id;
-				$("#compContainer").html("Loading...");
-		
+				modSelected = this.id;	
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -95,7 +93,12 @@
 				});
 			});	
 		
-			$("#compContainer").on("click", "#addCom", function(event){	
+			$("#compContainer").on("click", "#addCom", function(event){
+				if( !$("#component_name").val() ){
+					alert("Add Component Name!");
+					return;
+				}
+
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({
 					method: "POST",
@@ -141,9 +144,17 @@
 				var selected = $('#tagForUpload').val();
 				if(selected == "file"){
 					var file = $("#compFile")[0].files[0];
+					if(!file){
+						alert("Add File!");
+						return;
+					}
 					fd.append('compFile', file);
 				}else{
 					var url = $("#compVideo").val();
+					if(!url){
+						alert("Add Video URL!");
+						return;
+					}
 					fd.append('compVideo', url);			
 				}
 				fd.append('fileType', selected);
@@ -183,6 +194,10 @@
 			});	
 
 			$("#renameMod").click(function(){
+				if( !$("#moduleRenameText").val() ){
+					alert("Add New Module Name!");
+					return;
+				}
 				 
 				var csrftoken = getCookie('csrftoken');
 				$.ajax({

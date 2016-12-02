@@ -83,7 +83,7 @@ class Module(models.Model):
 			newComponent.save()
 
 def fileUploadPath(instance, filename):
-    return '{0}/{1}/{2}'.format(instance.course.id, instance.module.id, filename)
+    return '{0}/{1}/{2}/{3}'.format(instance.course.id, instance.module.id, instance.id, filename)
 
 class Component(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
