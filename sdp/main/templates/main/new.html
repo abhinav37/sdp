@@ -74,7 +74,6 @@
 					},
 					data: {module_id: this.id, course_id: {{course.id}} }
 				}).done(function( msg ) {
-					console.log(msg);
 					$("#moduleEdit").show();
 					var search = "#modules li #"+modSelected;
 					$("#moduleRenameText").val($(search).html());
@@ -130,16 +129,33 @@
 					},
 					data: { component_id: this.id }
 				}).done(function( msg ) {
-					console.log(msg);
 					$("#componentBody").html(msg);
 				});
+			});	
+
+			$("#compContainer").on("change", "#compType", function(event){	
+				var selected = $('#compType').find(":selected").text();
+				if(selected == "Video"){
+					$('#videoComponent').show();
+					$('#fileComponent').hide();
+				}else{
+					$('#videoComponent').hide();
+					$('#fileComponent').show();
+				}
 			});	
 		
 			$("#compContainer").on("click", ".componentSubmit", function(event){
 				var fd = new FormData();
-				var file = $("#compFile")[0].files[0];
-				fd.append('compFile', file);
-				fd.append('component_id', this.id)
+				var selected = $('#compType').find(":selected").text();
+				if(selected == "File"){
+					var file = $("#compFile")[0].files[0];
+					fd.append('compFile', file);
+				}else{
+					var url = $("#compVideo").val();
+					fd.append('compVideo', url);			
+				}
+				fd.append('fileType', selected);
+				fd.append('component_id', this.id);
 				fd.append('compName', $("#compName").val());
 				for (var [key, value] of fd.entries()) { 
 					console.log(key, value);

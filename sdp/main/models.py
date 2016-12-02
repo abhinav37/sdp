@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
+from embed_video.fields import EmbedVideoField
 
 from django.db import models
 import datetime
@@ -74,7 +75,7 @@ class Module(models.Model):
 		return Component.objects.filter(course=self.course, module=self)
 	
 	def addComponent(self, componentName, componentPosition):
-		newComponent = Component(name = componentName, file = None, position = componentPosition, course = self.course, module = self)
+		newComponent = Component(name = componentName, position = componentPosition, course = self.course, module = self)
 		newComponent.save()
 
 def fileUploadPath(instance, filename):
@@ -84,11 +85,16 @@ class Component(models.Model):
 	course = models.ForeignKey(Course, on_delete=models.CASCADE)
 	module = models.ForeignKey(Module)
 	name = models.CharField(max_length=40)
-	file = models.FileField(upload_to=fileUploadPath, null=True, blank=True, default = None)
 	position = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
+
+class FileComponent(Component):
+	file = models.FileField(upload_to=fileUploadPath, null=True, blank=True, default = None)
 	
+class VideoComponent(Component):
+	video = EmbedVideoField()
+
 class Participant(models.Model):
 	participant = models.OneToOneField(
         User,

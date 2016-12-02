@@ -224,13 +224,20 @@ def loadComponents(request):
 
 @login_required
 def loadComponentBody(request):
-	compFile = request.FILES.get('compFile', False)
+	fileType = request.POST.get('fileType', False)
 	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
-	if compFile:
-		os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.file))
-		componentObj.file = compFile
-		componentObj.save()
+	if filetype and fileType == "File":
+		compFile = request.FILES.get('compFile', False)
+		if compFile:
+			os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.file))
+			componentObj.file = compFile
+			componentObj.save()
+		else:
+			compVideo = request.POST.get('compVideo', False)
+			if compVideo:
+				componentObj.url = compVideo
+				componentObj.save()
 	
 	if compName:
 		componentObj.name = compName
