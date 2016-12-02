@@ -226,23 +226,22 @@ def loadComponents(request):
 def loadComponentBody(request):
 	fileType = request.POST.get('fileType', False)
 	compName = request.POST.get('compName', False)
-	componentObj = Component.objects.filter(pk=request.POST['component_id'])[0]
+	componentObj = Component.objects.get(pk=request.POST['component_id'])
+
 	if filetype and fileType == "File":
 		compFile = request.FILES.get('compFile', False)
 		if compFile:
-			os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.file))
-			componentObj.file = compFile
-			componentObj.save()
+			os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.fileComponent.file))
+			componentObj.fileComponent.file = compFile
 		else:
 			compVideo = request.POST.get('compVideo', False)
 			if compVideo:
-				componentObj.url = compVideo
-				componentObj.save()
+				componentObj.videoComponent.url = compVideo
 	
 	if compName:
 		componentObj.name = compName
-		componentObj.save()
 
+	componentObj.save()
 	context = {'component': componentObj}
 	template = loader.get_template('main/componentBody.html')
 	return HttpResponse(template.render(context,request))
