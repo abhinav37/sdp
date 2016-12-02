@@ -89,6 +89,10 @@ class Component(models.Model):
 	def __str__(self):
 		return self.name
 
+	def createFile(self, file):
+		newFile = FileComponent(course=self.course, module=self.module, position=self.position, name=self.name, file=file)
+		newFile.save()
+
 class FileComponent(Component):
 	file = models.FileField(upload_to=fileUploadPath, null=True, blank=True, default = None)
 	
@@ -137,7 +141,10 @@ class History(models.Model):
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 
-@receiver(pre_delete, sender=Component)
-def component_delete(sender, instance, **kwargs):
-    # Pass false so FileField doesn't save the model.
-    instance.file.delete(False)
+# @receiver(pre_delete, sender=Component)
+# def component_delete(sender, instance, **kwargs):
+#     # Pass false so FileField doesn't save the model.
+#     instance.FileComponent.file.delete(False)
+
+
+

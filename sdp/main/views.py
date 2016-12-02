@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .models import Course, Category, Participant, Module, Component, Instructor, HR, History
+from .models import Course, Category, Participant, Module, Component, Instructor, HR, History, VideoComponent, FileComponent
 from django.shortcuts import redirect
 
 from django.contrib.auth.models import User
@@ -228,15 +228,16 @@ def loadComponentBody(request):
 	compName = request.POST.get('compName', False)
 	componentObj = Component.objects.get(pk=request.POST['component_id'])
 
-	if filetype and fileType == "File":
+	if fileType:
 		compFile = request.FILES.get('compFile', False)
 		if compFile:
-			os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.fileComponent.file))
-			componentObj.fileComponent.file = compFile
+			#os.remove(os.path.join(settings.MEDIA_ROOT, componentObj.fileComponent.file))
+			componentObj.createFile(compFile)
 		else:
 			compVideo = request.POST.get('compVideo', False)
 			if compVideo:
-				componentObj.videoComponent.url = compVideo
+				videoComp = VideoComponent(component=componentObj, video=compVideo)
+				videoComp.save()
 	
 	if compName:
 		componentObj.name = compName
