@@ -3,6 +3,7 @@
 		<div class="col-md-12">
 			<div class="row well">
                 <h4>Edit Component: {{component.name}}</h4>
+                </br>
 <div class="row">
     <div class="form-group">
         
@@ -22,9 +23,11 @@
                     <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
                 </div>
                 
-                <div class="col-sm-6">
-                    <button class="btn btn-info" style="margin-left: 2px;" type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} >Choose file</button>
-                </div>
+                
+                   <div class="fileUpload btn btn-primary"style=" margin-left:15px" >
+                        <span>Upload</span>
+                        <input type="file" class="upload" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
+                    </div>
                 <input type="hidden" value="file" id="tagForUpload" />
             </div>
         {% else %}
@@ -40,7 +43,7 @@
         {% endif %}
     </div>
 
-    <div style="padding-top:20px"></div>
+    
     <div class="row">
         <div class="col-sm-6">
             <button type="button"  class="componentDelete" id="{{component.id}}"> Delete Component </a>
