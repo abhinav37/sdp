@@ -313,7 +313,7 @@
 				<input type="hidden" value="" name="modulePositions" id="modulePositions" />
 				<input type="hidden" value="" name="compsPositions" id="compsPositions" />
 
-				<input type="submit" value="Add Course" onclick="formSubmit()" /></div>
+				<input type="submit" value="{% if edit %} Save Changes {% else %} Add Course {% endif %}" onclick="formSubmit()" /></div>
 		</div>
 	</div>
 

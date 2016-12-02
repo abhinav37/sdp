@@ -141,10 +141,13 @@ class History(models.Model):
 from django.db.models.signals import pre_delete
 from django.dispatch.dispatcher import receiver
 
-# @receiver(pre_delete, sender=Component)
-# def component_delete(sender, instance, **kwargs):
-#     # Pass false so FileField doesn't save the model.
-#     instance.FileComponent.file.delete(False)
+@receiver(pre_delete, sender=Component)
+def component_delete(sender, instance, **kwargs):
+     # Pass false so FileField doesn't save the model.
+	try:
+		instance.filecomponent.file.delete(False)
+	except FileComponent.DoesNotExist:
+		pass
 
 
 

@@ -23,7 +23,7 @@
         {% else %}
             <div id="videoComponent">
                 <div class="col-sm-6">
-                    <label for="compVideo">Video: {{component.url}} </a></label>
+                    <label for="compVideo">Video: <a href="{{component.video}}" target='_blank'> {{component.video}} </a></label>
                 </div>
                 <div class="col-sm-6">
                     <input type="text" name="compVideo" id="compVideo" {% if component.url == None %} required {% endif %} />
