@@ -77,7 +77,7 @@
 					var search = "#modules li #"+modSelected;
 					$("#moduleRenameText").val($(search).html());
 					unhide();
-					$("#modname").html("Edit module: "+$(search).html());
+					$("#modname").html("Edit module");
 					
 					$("#compContainer").html(msg);
 					$( "#components" ).sortable({ stop: compsSortEventHandler });
@@ -309,11 +309,10 @@
 	<div class="container">
 		<div class="col-md-12">
 			<div class="row well">
-				<h4>Modules:</h4>			
+				<h4>Modules</h4>			
 				<div id="moduleContainer">{% include "main/module.html" %}</div>
 				<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
 				<button class="addi" id="addMod" type="button" onclick="unhide()">Add Module</button>
-				
 			</div>
 		</div>
 	</div>

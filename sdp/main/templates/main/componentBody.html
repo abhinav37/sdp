@@ -1,62 +1,51 @@
-
-	<div class="container">
-		<div class="col-md-12">
-			<div class="row well">
-                <h4>Edit Component: {{component.name}}</h4>
-                </br>
-<div class="row">
-    <div class="form-group">
-        
-        {% csrf_token %}
-        <div class="col-sm-6">
-            <label for="compName">Component Name:</label>
-        </div>
-        <div class="col-sm-6">
-            <input type="text" name="compName" id="compName" required value="{{component.name}}" />
-            
-        </div>
-</br>
-</br>
-        {% if type == 'File' %}
-            <div id="fileComponent">
-                <div class="col-sm-6">
-                    <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
-                </div>
-                   <div class="fileUpload btn btn-primary"style=" margin-left:15px" >
-                        <span>Upload</span>
-                        <input type="file" class="upload" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
+<div class="container">
+    <div class="col-md-12">
+        <div class="row well">
+            <h4>Edit Component: {{component.name}}</h4>
+            <div class="row">
+                <div class="form-group">
+                    {% csrf_token %}
+                    <div class="col-sm-6">
+                        <label for="compName">Component Name:</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" name="compName" id="compName" required value="{{component.name}}" />
                     </div>
 
-                <div class="col-sm-6">
-                    <input class="btn btn-info" style="margin-left: 2px;" type="file" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} >Choose file</button>
+                    {% if type == 'File' %}
+                    <div id="fileComponent">
+                        <div class="col-sm-6" style="margin-top:10px">
+                            <label for="compFile">File: <a href="/main{{MEDIA_URL}}{{component.file}}" target='_blank'> {{component.file}} </a></label>
+                        </div>
+                        <div class="fileUpload btn btn-primary" style=" margin-left:15px">
+                            <span>Upload</span>
+                            <input type="file" class="upload" name="compFile" id="compFile" {% if component.file == None %} required {% endif %} />
+                        </div>
+                        <input type="hidden" value="file" id="tagForUpload" />
+                    </div>
+                    {% else %}
+                    <div id="videoComponent">
+                        <div class="col-sm-6">
+                            <label for="compVideo">Video: {%if component.video != "https://www.youtube.com/watch?v=dQw4w9WgXcQ" %} <a href="{{component.video}}" target='_blank'> {{component.video}} </a> {% endif %}</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="compVideo" id="compVideo" {% if component.url == None %} required {% endif %} />
+                        </div>
+                        <input type="hidden" value="video" id="tagForUpload" />
+                    </div>
+                    {% endif %}
                 </div>
-                <input type="hidden" value="file" id="tagForUpload" />
-            </div>
-        {% else %}
-            <div id="videoComponent">
-                <div class="col-sm-6">
-                    <label for="compVideo">Video: <a href="{{component.video}}" target='_blank'> {{component.video}} </a></label>
-                </div>
-                <div class="col-sm-6">
-                    <input type="text" name="compVideo" id="compVideo" {% if component.url == None %} required {% endif %} />
-                </div>
-                <input type="hidden" value="video" id="tagForUpload" />
-            </div>
-        {% endif %}
-    </div>
 
-    
-    <div class="row">
-        <div class="col-sm-6">
-            <button type="button"  class="componentDelete" id="{{component.id}}"> Delete Component </a>
-        </div>
-        <div class="col-sm-6">
-            <button type="button"  class="componentSubmit" id="{{component.id}}"> Update Component </a>
+
+                <div class="row">
+                    <div class="col-sm-6" style="margin-left:15px">
+                        <button type="button" class="componentDelete" id="{{component.id}}"> Delete Component </button>
+                    </div>
+                    <div class="col-sm-6" style="margin-left:-15px">
+                        <button type="button" class="componentSubmit" id="{{component.id}}"> Update Component </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div style="padding-top:40px"></div>
-</div>
-
-</div>
-</div>
 </div>

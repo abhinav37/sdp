@@ -74,16 +74,11 @@
       <p> Category: {{ course.category }}</p>
       <p> Insructor: {{ course.instructor }}</p>
       <p> Description: {{ course.description }}</p>
-      {% if enrollStatus == 1 %}
-      
-      {% endif %}
       </br>
       
-      <p> Modules </p>
+      <h4> Modules </h4>
       <div id="moduleContainer">
-        {% if enrollStatus == 1 %} {% include "main/module.html" %} {% else %} {% for module in modules %}
-        <li> {{module.name}} </li>
-        {% endfor %} {% endif %}
+        {% include "main/module.html" %} 
       </div>
 
       <div id="compContainer"></div>

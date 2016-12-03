@@ -98,7 +98,7 @@
       <p> Description: {{ course.description }}</p>
       </br>
       
-      <p> Modules </p>
+      <h4> Modules </h4>
       <div id="moduleContainer">
         {% if enrollStatus == 1 %} {% include "main/module.html" %} {% else %} {% for module in modules %}
         <li> {{module.name}} </li>
@@ -107,6 +107,7 @@
 
       <div id="compContainer"></div>
 
+      </br>
       {% if enrollStatus == 1 %}
       <form name="form" action="{% url 'addDrop' %}" method="POST">
         {% csrf_token %}

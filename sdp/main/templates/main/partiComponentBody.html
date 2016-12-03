@@ -1,9 +1,11 @@
 {% if component.file %}
 	<embed src="/main{{MEDIA_URL}}{{component.file}}" width=100% />
 {% else %}
-	{% load embed_video_tags %}
-	{% video component.video as my_video %}
-		{% video my_video "medium" %}
-	{% endvideo %}
+	<div style="margin-left:15px;">
+		{% load embed_video_tags %}
+		{% video component.video as my_video %}
+			{% video my_video "medium" %}
+		{% endvideo %}
+	</div>
 {% endif %}
 
