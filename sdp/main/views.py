@@ -47,7 +47,11 @@ def participant(request):
 		if courses:
 			courseList[category] = courses
 	
-	context = {'enrolledCourse': participantObj.getEnrolledCourse(), 'courseList': courseList, 'courseHistory':courseHistory }	
+	if participantObj.getEnrolledCourse():
+		context = {'enrolledCourse': participantObj.getEnrolledCourse(), 'modCount': participantObj.getEnrolledCourse().getModuleCount(), 'access': participantObj.access-1, 'courseList': courseList, 'courseHistory':courseHistory }
+	else:
+		context = {'enrolledCourse': participantObj.getEnrolledCourse(), 'courseList': courseList, 'courseHistory':courseHistory }
+		
 	template = loader.get_template('main/participant.html')
 	return HttpResponse(template.render(context,request))
 
@@ -148,6 +152,7 @@ def view_course(request,course_id):
 	context={'course': courseObj, 'modules': modules, 'enrollStatus': x, 'participant_id': request.user.id }
 	return HttpResponse(template.render(context,request))
 
+@login_required
 def viewFullContent(request,course_id):
 	participantObj = Participant.objects.get(pk=request.user.id)
 	courseObj = Course.objects.get(pk=course_id)
@@ -165,6 +170,7 @@ def viewFullContent(request,course_id):
 	context={'course': courseObj, 'modules': modules, 'enrollStatus': x, 'participant_id': request.user.id }
 	return HttpResponse(template.render(context,request))
 
+@login_required
 def completeCourse(request, course_id, participant_id):
 	courseObj = Course.objects.get(pk=course_id)
 	modCount = courseObj.getModuleCount()

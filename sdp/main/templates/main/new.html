@@ -31,6 +31,13 @@
 		};
 		
 		$(document).ready(function() {
+			{% if edit %} 
+				{% if course.deployed == 0 %} 
+					$( "#modules" ).sortable();
+					$( "#modules" ).disableSelection();
+				{% endif %}
+			{% endif %}
+
 			$("#addMod").click(function(){
 				if( !$("#module_name").val() ){
 					alert("Add Module Name!");
@@ -252,10 +259,13 @@
 			if ($("#components li").length != 0){
 				compsForMods[modSelected] = $("#components").sortable( "toArray" );
 			}
-		
-			var modulePos = $("#modules").sortable( "toArray" );
-			if(modulePos.length !=0 )
-				$("#modulePositions").val( JSON.stringify(modulePos) );			
+			
+			{% if deployed == 0 %}
+				var modulePos = $("#modules").sortable( "toArray" );
+				if(modulePos.length !=0 )
+					$("#modulePositions").val( JSON.stringify(modulePos) );	
+			{% endif %}	
+				
 			if(!(Object.keys(compsForMods).length === 0 && compsForMods.constructor === Object)){
 				$("#compsPositions").val( JSON.stringify(compsForMods));
 			}
@@ -311,11 +321,15 @@
 			<div class="row well">
 				<h4>Modules</h4>			
 				<div id="moduleContainer">{% include "main/module.html" %}</div>
-				<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
-				<button class="addi" id="addMod" type="button" onclick="unhide()">Add Module</button>
+				{% if course.deployed == 0%} 
+					<input type="text" placeholder="Enter the module name" name="module_name" id="module_name" />
+					<button class="addi" id="addMod" type="button" onclick="unhide()">Add Module</button>
+				{% endif %}
 			</div>
 		</div>
 	</div>
+
+{% if course.deployed == 0%} 
 <div id="moduleEdit" hidden>
 	<div class="container">
 		<div class="col-md-12">
@@ -324,14 +338,11 @@
 					<input type="text" name="moduleRename" id="moduleRenameText" />
 					<button class="rnm" id="renameMod" type="button">Rename Module</button>
 					<button class="del" id="deleteMod" type="button">Delete Module</button>
-
-
 				</div>
 			</div>
 		</div>
-
 </div>
-
+{% endif %}
 				<div id="compContainer"></div>
 
 	<div class="container">
