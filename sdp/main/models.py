@@ -99,6 +99,9 @@ class FileComponent(Component):
 class VideoComponent(Component):
 	video = EmbedVideoField()
 
+class TextComponent(Component):
+	text = models.TextField(null=True, blank=True, default = None)
+
 class Participant(models.Model):
 	participant = models.OneToOneField(
         User,

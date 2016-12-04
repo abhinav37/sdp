@@ -127,9 +127,9 @@ STATIC_ROOT = ''
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ( 'C:/sdp/work/sdp/sdp/static', )
+STATICFILES_DIRS = ( 'static', )
 
-MEDIA_ROOT = '/mnt/c/Users/Kanak/Desktop/sdp/sdp/uploads'
+MEDIA_ROOT = 'uploads'
 MEDIA_URL = '/uploads/'
 
 LOGIN_REDIRECT_URL = 'participant'

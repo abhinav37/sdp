@@ -30,8 +30,9 @@
 				<li><a href='{%url "participantList" %}'>HR</a></li>
 				{% endif %}
 			</ul>
+
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+				<li><a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-in"></span> {{user.first_name}}</a></li>
 			</ul>
 		</div>
 	</div>
