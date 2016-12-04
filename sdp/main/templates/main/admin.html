@@ -1,6 +1,8 @@
 <head>
 	<title>Administrator</title>
 </head>
+
+<body>
 {% include "main/navbar.html" %}
 <script>
 	function myFunction() {
@@ -142,7 +144,7 @@
 	}		
 	
 	function opencat(){
-		$("#openc").html('<div class="container"> <div class="col-md-12"> <div class="row well"><div class="col-sm-6"> <label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input class="btn btn-info" type="submit" value="Add Category" onclick="newcat()" /></div></div></div></div>'); 
+		$("#openc").html('<div style="margin-left:30px"><label for="courseName">Category:</label> <input type="text" name="catname" id="catName" required/> <input class="btn btn-info" type="submit" value="Add Category" onclick="newcat()" />'); 
 	}
 
 	function newcat(){
@@ -177,20 +179,26 @@
 		}		
 	}
 </script> 
+
 <div class="container-fluid" id="ticker" style="padding-top: 60px;">
 </div>
-<div class="container" style="padding-top:10px">
-	<h4>Categories <button type="button" style="font-size:10px;" class="btn btn-info" data-toggle="collapse" data-target="#demo">View Categories</button></h4>
-	<div class="col-md-12">
-		<div class="row well">
-			<div class="collapse" id="demo">
+	
+<div class="container" style="padding-top:10px" >
+	<button type="button" style="font-size:20px;" class="btn btn-info btn-sm" data-toggle="collapse" data-target="#demo">Categories</button>
+	<div class="col-md-12" >
+		<div class="row well" >
+			<div class="collapse in" id="demo" style="margin: 0 auto; text-align:center">
 				{% if all_categories %}
-		<div id="search-form" class="form-group">
+	<div class="row">
+	<div class="col-sm-1"></div>
+		<div id="search-form" class="form-group col-sm-10">
               <div class="input-group">
                 <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
                 <input type="text" class="form-control" id="myInput2" onkeyup="myFunction2()" placeholder="Search for category..">
               </div>
             </div>
+<div class="col-sm-1"></div>
+</div>
 
 				<ul>
 					<div class="row">
@@ -223,27 +231,31 @@
 				{% else %}
 				<p>No categories are available.</p>
 				{% endif %}
+			
+			<div id="openc">
+				<a class="addi" onclick=opencat()>   Create New Category</a>
 			</div>
-		</div>
-		<div id="openc">
-			<a class="btn btn-info btn-sm" onclick=opencat()>   Create new Cateory</a>
+			</div>
 		</div>
 	</div>
 </div>
 
 <div class="container" style="padding-top:10px">
-	<h4>Users <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo2">View Users</button></h4>
+	<button type="button" style="font-size:20px;" class="btn btn-info btn-sm" data-toggle="collapse" data-target="#demo2">Users</button>
 	<div class="col-md-12">
 		<div class="row well">
-			<div class="collapse" id="demo2">
+			<div class="collapse in" id="demo2">
 				{% if all_users %}
-		
-		<div id="search-form" class="form-group">
+<div class="row">
+	<div class="col-sm-1"></div>
+		<div id="search-form" class="form-group col-sm-10">
               <div class="input-group">
                 <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
+                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for Username..">
               </div>
             </div>
+<div class="col-sm-1"></div>
+</div>
 
 		
 				<ul>
