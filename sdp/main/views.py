@@ -318,8 +318,9 @@ def adminchange(request):
 	try:
 		if request.POST['val']=='2':
 			us = User.objects.filter(id=request.POST['u_id'])
-			instructorObj = Instructor.objects.filter(instructor=us)
-			if instructorObj.getCourses() is None:
+			instructorObj = Instructor.objects.get(instructor=us)
+			print instructorObj.getCourses()
+			if not instructorObj.getCourses() :
 				us=User.objects.get(pk=request.POST['u_id'])
 				us.is_staff=False
 				us.save()

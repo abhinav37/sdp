@@ -73,15 +73,22 @@
       <h4>Your Courses</h4>
       <div class="row well">
         {% if course_list %}
-        <ul>
+        
         <div class="row">
-          
-		<div id="search-form" class="form-group col-md-9">
-              <div class="input-group">
-                <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
-              </div>
+	          <div class="col-sm-1"></div>
+		        <div id="search-form" class="form-group col-sm-10">
+                <div class="input-group">
+                  <span id="search-icon" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                  <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for username..">
+                </div>
             </div>
+          <div class="col-sm-1"></div>
+        </div>
+
+
+        <div class="row">
+
+        
         <table class="table" id="coursesTable">
             <thead>
               <tr>
@@ -107,10 +114,12 @@
             </tbody>
           </table>
         </div>
-        </ul>
         {% else %}
           <p>You have not created any courses.</p>
         {% endif %}
+          <div class="col-sm-1"></div>
+        </div>
+
       </div>
       <div style="padding-bottom: 10px;">
         <a class="btn btn-info btn-sm" href="new">Create New Course</a>
